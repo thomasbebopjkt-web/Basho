@@ -15,7 +15,7 @@ python3 build.py
 python3 -m http.server 8080 --directory site
 ```
 
-Then open http://localhost:8080. Pushing to `main` rebuilds and deploys automatically (`.github/workflows/pages.yml`).
+Then open http://localhost:8080. To publish, run `./deploy.sh`: it rebuilds, pushes `main`, and pushes the `site` folder to the `gh-pages` branch that GitHub Pages serves.
 
 ## Contact form
 
@@ -25,8 +25,8 @@ To receive enquiries by email instead, create a free form at https://formspree.i
 
 ## Going live (one-time)
 
-1. Create a GitHub repo and push this folder to `main`.
-2. Repo → Settings → Pages → Source: **GitHub Actions**.
+1. Run `./deploy.sh`.
+2. Repo → Settings → Pages → Source: **Deploy from a branch**, branch `gh-pages`, folder `/ (root)`.
 3. Settings → Pages → Custom domain: `www.bashoprojects.com` (also in `site/CNAME`), then tick **Enforce HTTPS** once it's available.
 4. At your domain registrar (Squarespace Domains if the domain was bought there), change DNS:
    - `www` → CNAME → `<your-github-username>.github.io`
