@@ -6,7 +6,10 @@ const FORM_TO = "laskarbebop@gmail.com";
 const FORM_CC = "thomasbebopjakarta@gmail.com";
 // Web3Forms access keys (web3forms.com), one per inbox. When set, these are used
 // instead of FormSubmit; each key delivers to the email it was created for.
-const WEB3FORMS_KEYS = [];
+const WEB3FORMS_KEYS = [
+  "406b0a11-d901-44cc-8a6e-754614f54aaa", // form "bashoprojects.com" → laskarbebop@gmail.com once verified
+  "d9019d5d-1b7f-4b34-87a4-36c5b986a880", // form "bashoprojects.com (copy 2)" → thomasbebopjakarta@gmail.com once verified
+];
 const FORM_ENDPOINT = WEB3FORMS_KEYS.length || FORM_TO ? "on" : "";
 const WHATSAPP_NUMBER = "6285921219087";
 
