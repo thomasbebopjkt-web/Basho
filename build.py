@@ -53,8 +53,8 @@ VENUES = {
         "card_img": "briq-hero.jpg",
         "address": "Jl. Prof. Joko Sutono SH No. 7B, Kebayoran Baru, South Jakarta",
         "street": "Jl. Prof. Joko Sutono SH No. 7B", "locality": "Kebayoran Baru, South Jakarta",
-        "hours_text": "Lunch 10:00–16:00 · Dinner 17:00–22:00",
-        "hours": EVERY_DAY([[10, 16], [17, 22]]),
+        "hours_text": "Mon–Fri dinner 17:00–22:00 · Sat–Sun all day 10:00–22:00",
+        "hours": {0: [[10, 22]], 1: [[17, 22]], 2: [[17, 22]], 3: [[17, 22]], 4: [[17, 22]], 5: [[17, 22]], 6: [[10, 22]]},
         "book": WA_GROUP,
         "menu": "https://drive.google.com/file/d/14s5RP07lYSFB83LDFETMX9C2kJ7qXe4m/view",
         "maps": "https://maps.app.goo.gl/oVa2PtMUAXVPxSpC8",
@@ -75,6 +75,8 @@ VENUES = {
         "tokopedia": "https://www.tokopedia.com/brock-butchery",
         "shopee": "https://shopee.co.id/brockbutchery",
         "tiktok": "https://www.tiktok.com/@brock.butchery",
+        "instagram": "https://www.instagram.com/brockbutchery/",
+        "ig_handle": "@brockbutchery",
         "schema_type": "Store",
     },
     "the-bluebell": {
@@ -186,7 +188,7 @@ def footer():
       </div>
       <div><h5>Projects</h5><ul>{venues}</ul></div>
       <div><h5>Company</h5><ul><li><a href="/services/">Services</a></li><li><a href="/about/">About us</a></li><li><a href="/blog/">Blog</a></li><li><a href="/contact/">Contact</a></li></ul></div>
-      <div><h5>Follow</h5><ul><li><a href="{VENUES['bebop']['instagram']}" target="_blank" rel="noopener">BEBOP on Instagram</a></li><li><a href="{VENUES['briq-bistro']['instagram']}" target="_blank" rel="noopener">BRIQ on Instagram</a></li><li><a href="{VENUES['the-bluebell']['instagram']}" target="_blank" rel="noopener">The Bluebell on Instagram</a></li><li><a href="{WA_GROUP}" target="_blank" rel="noopener">WhatsApp us</a></li></ul></div>
+      <div><h5>Follow</h5><ul><li><a href="{VENUES['bebop']['instagram']}" target="_blank" rel="noopener">BEBOP on Instagram</a></li><li><a href="{VENUES['briq-bistro']['instagram']}" target="_blank" rel="noopener">BRIQ on Instagram</a></li><li><a href="{VENUES['the-bluebell']['instagram']}" target="_blank" rel="noopener">The Bluebell on Instagram</a></li><li><a href="{VENUES['brock-butchery']['instagram']}" target="_blank" rel="noopener">Brock on Instagram</a></li><li><a href="{WA_GROUP}" target="_blank" rel="noopener">WhatsApp us</a></li></ul></div>
     </div>
     <div class="legal"><span>© <span data-year>2026</span> PT Basho Projects Capital</span><span>Made in Senopati, Jakarta</span></div>
   </div>
@@ -577,7 +579,7 @@ page("/bebop/", "BEBOP Bar + Kitchen | Jazz & Cocktail Bar in Senopati, Jakarta"
 v = VENUES["briq-bistro"]
 briq_faq = [
     ("Where is BRIQ Bistro?", "Jl. Prof. Joko Sutono SH No. 7B, Kebayoran Baru, South Jakarta — in the heart of Senopati, a short walk from BEBOP and The Bluebell."),
-    ("What are BRIQ’s opening hours?", "Lunch and brunch from 10:00 to 16:00, dinner from 17:00 to 22:00."),
+    ("What are BRIQ’s opening hours?", "Dinner from 17:00 to 22:00, Monday to Friday. At weekends we’re open all day, 10:00 to 22:00, for brunch, lunch and dinner."),
     ("What kind of food does BRIQ serve?", "Soulful French bistro cooking, and we’re best known for our steak frites. The kitchen also runs rotating pasta promos and monthly specials, so check Instagram for what’s on this week."),
     ("Is there outdoor seating?", "Yes, BRIQ has an outdoor terrace as well as the dining room."),
     ("How do I book a table at BRIQ?", "Message us on WhatsApp and we’ll confirm your table."),
@@ -618,14 +620,14 @@ venue_page = f"""
       <span class="eyebrow">The space</span>
       <h2>Casual, but <span class="serif">never careless.</span></h2>
       <p>An intimate, sunlit room by day and a cosy, low-lit bistro by night. Open shelves, textured walls, standing tables that invite you to linger and an outdoor terrace for a quick drink or a cigarette between courses.</p>
-      <p>We don’t chase trends. We build lasting tables for good conversations — lunch, dinner, drinks, or just a place to catch your breath in Senopati.</p>
+      <p>We don’t chase trends. We build lasting tables for good conversations — weeknight dinners, weekend brunches, drinks, or just a place to catch your breath in Senopati.</p>
     </div>
     <div class="reveal">
       <span class="eyebrow">The menu</span>
       <h2>Soulful French food, <span class="serif">generous portions.</span></h2>
       <div class="lineup" style="grid-template-columns:1fr">
-        <div><em>Lunch · from 10:00</em><b>Laid-back, full of flavour</b><span>Made for midday breaks and long catch-ups.</span></div>
-        <div><em>Dinner · from 17:00</em><b>A little slower, a little warmer</b><span>Dinner packages make sharing easy, so you can sit back.</span></div>
+        <div><em>Weekends · from 10:00</em><b>All-day Saturdays & Sundays</b><span>Long brunches, lazy lunches and catch-ups that roll into dinner.</span></div>
+        <div><em>Dinner · every night from 17:00</em><b>A little slower, a little warmer</b><span>Dinner packages make sharing easy, so you can sit back.</span></div>
         <div><em>Every month</em><b>Specials</b><span>Seasonal plates, creative one-offs and festive menus.</span></div>
         <div><em>The cellar</em><b>Wines that are easy to love</b><span>A thoughtful, approachable list, whether you’re new to wine or a seasoned sipper.</span></div>
       </div>
@@ -660,7 +662,7 @@ venue_page = f"""
   <div class="wrap split">
     <div class="reveal">
       <span class="eyebrow">Plan your visit</span>
-      <h2>Brunch, lunch and dinner <span class="serif">in Senopati</span></h2>
+      <h2>Dinner nightly, <span class="serif">all day at weekends</span></h2>
       {facts(v)}
     </div>
     <div class="reveal"><h2 class="h3">Good to know</h2>{faq_html(briq_faq)}</div>
@@ -669,7 +671,7 @@ venue_page = f"""
 {sisters("briq-bistro")}
 """
 page("/briq-bistro/", "BRIQ Bistro | Steak Frites & French Bistro in Senopati, Jakarta",
-     "BRIQ Bistro, Senopati: home of the steak frites, with weekly pasta promos, an approachable wine list and an outdoor terrace. Lunch from 10:00, dinner from 17:00. Book, menu & directions.",
+     "BRIQ Bistro, Senopati: home of the steak frites, with weekly pasta promos, an approachable wine list and an outdoor terrace. Dinner nightly from 17:00, all day at weekends. Book, menu & directions.",
      venue_page, image="/assets/img/briq-room.jpg", with_collab=False, body_class="venue v-briq",
      schema=[venue_schema(v, "briq-room.jpg"), faq_schema(briq_faq)])
 
@@ -689,7 +691,8 @@ venue_page = f"""
     ("No.1", "Order on Tokopedia", "Delivered to your door", v["tokopedia"]),
     ("No.2", "Order on Shopee", "Same cuts, your favourite app", v["shopee"]),
     ("No.3", "Trade enquiries", "Restaurants, hotels, groups", WA_GROUP),
-    ("No.4", "TikTok", "@brock.butchery", v["tiktok"]),
+    ("No.4", "Instagram", "@brockbutchery", v["instagram"]),
+    ("No.5", "TikTok", "@brock.butchery", v["tiktok"]),
 ], '<span>No trade account · No minimum order</span><span>Supplier to BRIQ Bistro</span>')}
 
 <section class="section">
