@@ -19,7 +19,7 @@ Then open http://localhost:8080. To publish, run `./deploy.sh`: it rebuilds, pus
 
 ## Contact form
 
-Contact-form enquiries and guest-list sign-ups are emailed to laskarbebop@gmail.com and thomasbebopjakarta@gmail.com. Add Web3Forms access keys to `WEB3FORMS_KEYS` in `site/assets/js/site.js` (one per inbox); until then FormSubmit is used, with WhatsApp as the fallback.
+Contact-form enquiries and guest-list sign-ups are emailed via Web3Forms (account: thomasbebopjkt@gmail.com) to thomasbebopjkt@gmail.com. Keys live in `WEB3FORMS_KEYS` at the top of `site/assets/js/site.js`. laskarbebop@gmail.com and thomasbebopjakarta@gmail.com are linked in Web3Forms but unverified; once verified, set each form's recipient and uncomment the second key. If Web3Forms fails, forms fall back to WhatsApp.
 
 ## Promos ("Now on")
 
