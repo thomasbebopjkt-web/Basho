@@ -234,3 +234,5 @@ body.g .sec-head .no b { color: inherit; text-decoration: underline; text-underl
 .person p { color: var(--soft); margin: 0 0 14px; }
 .person .pill svg { flex: none; }
 @media (max-width: 900px) { .people { grid-template-columns: 1fr; } .person__face { aspect-ratio: 16 / 10; } }
+.person__face img { filter: grayscale(1) contrast(1.05); transition: filter .5s; }
+.person:hover .person__face img { filter: none; }
