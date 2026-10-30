@@ -4,12 +4,16 @@
 Every page shares one header, footer, contact block and newsletter popup, defined below.
 Edit the content here, run `python3 build.py` (or `./deploy.sh` to publish).
 """
+import hashlib
 import json
 from html import escape
 from pathlib import Path
 
 ROOT = Path(__file__).parent / "site"
 DOMAIN = "https://www.bashoprojects.com"
+# Fingerprint of the CSS/JS so browsers fetch fresh copies after every deploy
+ASSET_V = hashlib.md5(b"".join((ROOT / "assets" / p).read_bytes() for p in
+                              ["css/site.css", "css/group.css", "css/venue.css", "js/site.js"])).hexdigest()[:8]
 
 # ---------------------------------------------------------------- shared data
 
@@ -217,9 +221,10 @@ def page(path, title, description, main, image="/assets/img/briq-hero.jpg", with
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Serif:ital@0;1&family=Space+Mono&family=Manrope:wght@400;500;600;700;800&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/css/site.css">
-<link rel="stylesheet" href="/assets/css/group.css">
-<script src="/assets/js/site.js" defer></script>
+<link rel="stylesheet" href="/assets/css/site.css?v={ASSET_V}">
+<link rel="stylesheet" href="/assets/css/group.css?v={ASSET_V}">
+<link rel="stylesheet" href="/assets/css/venue.css?v={ASSET_V}">
+<script src="/assets/js/site.js?v={ASSET_V}" defer></script>
 {ld}</head>
 <body class="{body_class}">
 {header()}
@@ -243,6 +248,11 @@ def redirect(old, new):
     out.write_text(f"""<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Redirecting…</title>
 <link rel="canonical" href="{DOMAIN}{new}"><meta http-equiv="refresh" content="0; url={new}"><meta name="robots" content="noindex">
 </head><body><a href="{new}">Continue</a></body></html>""")
+
+
+def marquee(text):
+    item = f"<span>{text}</span>" * 4
+    return f'<div class="marquee" aria-hidden="true"><div class="marquee__track">{item}{item}</div></div>'
 
 
 def img(src, alt, cls="", lazy=True):
@@ -313,44 +323,70 @@ def faq_html(faqs):
 # ---------------------------------------------------------------- venues
 
 
+VENUE_EXTRAS = {
+    "bebop": {"values": ["Curated", "Social", "Modern", "Soulful", "Jazz", "Cocktails", "Japanese plates"],
+              "quote": "Never plays the same note <em>twice.</em>", "by": "BEBOP Bar + Kitchen",
+              "more": [("jazz-2.jpg", "A full room on jazz night"), ("bebop-detail.jpg", "Cocktails at the bar"), ("bebop-hero.jpg", "The BEBOP crowd")]},
+    "briq-bistro": {"values": ["Organic", "Human", "Eclectic", "Raw", "Fine-casual", "Bon appétit"],
+                    "quote": "We don’t chase trends. We build <em>lasting tables.</em>", "by": "BRIQ Bistro",
+                    "more": [("briq-detail.jpg", "A plate at BRIQ"), ("briq-case-study.webp", "BRIQ Bistro, Jakarta Selatan"), ("briq-room.jpg", "The BRIQ dining room")]},
+    "brock-butchery": {"values": ["Honest", "Elevated", "Accessible", "Straightforward", "Grounded"],
+                       "quote": "Great meat shouldn’t be <em>a luxury.</em>", "by": "Brock Butchery",
+                       "more": [("brock-hero.jpg", "Steak on the grill"), ("brock-cuts.jpg", "Premium cuts from Brock"), ("briq-detail.jpg", "Brock beef at BRIQ Bistro")]},
+    "the-bluebell": {"values": ["Draught beer", "Ale", "Whisky", "Chophouse", "Six lines", "Cheers"],
+                     "quote": "A proper pint, a warm room and <em>nowhere to be.</em>", "by": "The Bluebell Public House",
+                     "more": [("bluebell-hall.jpg", "The dining hall at The Bluebell"), ("bluebell-bar-2.jpg", "Behind the bar"), ("bluebell-facade.jpg", "The Bluebell at night")]},
+}
+VENUE_KEY_BY_SHORT = {v["short"]: k for k, v in VENUES.items()}
+
+
 def hub(v, title, meta, deco, links, foot):
+    """The venue link hub. Closes the .vx-top wrapper opened by vhero(), then adds the values strip."""
     ext = ' target="_blank" rel="noopener"'
     rows = "".join(
         f'<li><a href="{u}"{ext if u.startswith("http") else ""}>'
         f'<span class="hub__no">{n}</span><span><strong>{t}</strong><small>{s}</small></span>{ICONS["arrow"]}</a></li>'
         for n, t, s, u in links)
+    words = VENUE_EXTRAS[VENUE_KEY_BY_SHORT[v["short"]]]["values"]
+    strip = " ✦ ".join(words) + " ✦ "
     return f"""<div class="wrap hub-wrap reveal">
   <nav class="hub" aria-label="{v['short']} quick links">
     <div class="hub__head">{deco}<span class="hub__title">{title}</span><span class="hub__meta">{meta}</span></div>
     <ol>{rows}</ol>
     <div class="hub__foot">{foot}</div>
   </nav>
-</div>"""
+</div>
+</div>
+<div class="vx-strip">{marquee(strip)}</div>"""
 
 
 def vhero(v, image, alt, h1, sub):
+    """Opens .vx-top; hub() closes it so the hub can float over the hero on wide screens."""
     hours = ""
     if v.get("hours"):
         late = ' data-late="1"' if v.get("late") else ""
-        hours = f'<span class="status" data-hours=\'{json.dumps(v["hours"])}\'{late}>{v["hours_text"]}</span><br>'
-    return f"""<section class="vhero">
+        hours = f'<span class="status" data-hours=\'{json.dumps(v["hours"])}\'{late}>{v["hours_text"]}</span>'
+    return f"""<div class="vx-top">
+<section class="vhero">
   {img(image, alt, lazy=False)}
   <div class="wrap">
-    {hours}<span class="eyebrow">A Basho Projects venue</span>
-    <h1>{h1}</h1>
+    <div class="vx-meta">{hours}<span class="eyebrow">A Basho Projects venue · Senopati</span></div>
+    <h1 class="vx-name">{h1}</h1>
     <p class="sub">{sub}</p>
   </div>
 </section>"""
 
 
 def gallery(v, images):
-    tiles = "".join(f'<div>{img(src, alt)}</div>' for src, alt in images)
-    ig = ""
+    ex = VENUE_EXTRAS[VENUE_KEY_BY_SHORT[v["short"]]]
+    pics = (list(images) + ex["more"])[:6]
+    tiles = "".join(f'<figure class="reveal">{img(src, alt)}<figcaption>{alt}</figcaption></figure>' for src, alt in pics)
     if v.get("instagram"):
-        ig = f'<a class="ig" href="{v["instagram"]}" target="_blank" rel="noopener">More on Instagram<small>{v["ig_handle"]}</small></a>'
-    elif v.get("tiktok"):
-        ig = f'<a class="ig" href="{v["tiktok"]}" target="_blank" rel="noopener">More on TikTok<small>@brock.butchery</small></a>'
-    return f'<div class="gallery">{tiles}{ig}</div>'
+        sticker = f'<a class="sticker" href="{v["instagram"]}" target="_blank" rel="noopener"><span>Follow along</span><b>{v["ig_handle"]}</b></a>'
+    else:
+        sticker = f'<a class="sticker" href="{v.get("tiktok", "#")}" target="_blank" rel="noopener"><span>Follow along</span><b>@brock.butchery</b></a>'
+    return f"""<div class="vx-quote reveal"><span class="eyebrow">In our words</span><blockquote>{ex["quote"]}</blockquote><cite>— {ex["by"]}</cite></div>
+<div class="collage">{tiles}{sticker}</div>"""
 
 
 def sisters(current):
@@ -670,6 +706,7 @@ venue_page = f"""
     <div class="reveal">{faq_html(brock_faq)}</div>
   </div>
 </section>
+<section class="section--tight"><div class="wrap">{gallery(v, [])}</div></section>
 {sisters("brock-butchery")}
 """
 page("/brock-butchery/", "Brock Butchery | Premium Meat Delivered in Jakarta",
@@ -800,16 +837,25 @@ POSTS = [
     },
 ]
 
+feat, rest = POSTS[0], POSTS[1:]
+feature = f"""<a class="journal-feature reveal" href="/blog/{feat['slug']}/">
+  <div class="ph">{img(feat['cover'], feat['title'])}</div>
+  <div><span class="eyebrow">Latest story</span><h2>{feat['title']}</h2><p class="lede">{feat['standfirst']}</p><div class="meta">{feat['date']} · Thomas Brown</div></div>
+</a>"""
 cards = "".join(f"""<a class="post-card reveal" href="/blog/{p['slug']}/">
   {img(p['cover'], '')}
   <div class="meta">{p['date']} · Thomas Brown</div>
   <h2 class="h3">{p['title']}</h2>
-</a>""" for p in POSTS)
+  <p class="muted">{p['standfirst']}</p>
+</a>""" for p in rest)
 
-page("/blog/", "Blog | News from BEBOP, BRIQ & The Bluebell | Basho Projects",
-     "News and stories from Basho Projects and its venues in Senopati, Jakarta: openings, live jazz at BEBOP and more.",
+page("/blog/", "Journal | Openings, Live Jazz & Stories from Senopati | Basho Projects",
+     "Stories from Basho Projects and its venues in Senopati, Jakarta: openings, live jazz at BEBOP, The Bluebell and more.",
      f"""<section class="section"><div class="wrap">
-  <span class="eyebrow">Blog</span><h1 style="margin-bottom:56px">News from <span class="serif">the group</span></h1>
+  <span class="eyebrow">The Journal</span>
+  <h1 style="font-size:clamp(56px,10vw,160px);margin-bottom:56px">Notes from <span class="serif" style="font-family:var(--serif);font-weight:400;color:var(--hot)">Senopati.</span></h1>
+  {feature}
+  <div class="sec-head"><span class="no"><b>More</b> / stories</span></div>
   <div class="posts">{cards}</div>
 </div></section>""", image="/assets/img/" + POSTS[0]["cover"])
 
@@ -839,9 +885,6 @@ for i, p in enumerate(POSTS):
 
 # ---------------------------------------------------------------- group pages (spliced into build.py)
 
-def marquee(text):
-    item = f"<span>{text}</span>" * 4
-    return f'<div class="marquee" aria-hidden="true"><div class="marquee__track">{item}{item}</div></div>'
 
 
 VENUE_PHOTOS = {"bebop": "bebop-bar.jpg", "briq-bistro": "briq-hero.jpg", "brock-butchery": "brock-hero.jpg", "the-bluebell": "bluebell-bar.jpg"}
@@ -1255,13 +1298,15 @@ page("/contact/", "Contact Basho Projects | Jakarta Hospitality Group",
       <h1 style="font-size:clamp(48px,7vw,104px)">Coffee, cocktails <span class="serif" style="font-family:var(--serif);font-weight:400;color:var(--hot)">or call.</span></h1>
       <p class="lede">Launching your first concept, reimagining a space, looking to invest, or just after a table? Tell us what you’re after and the right person will reply.</p>
       <p><a class="btn" href="{WA_GROUP}" target="_blank" rel="noopener">Message us on WhatsApp</a></p>
-      <h2 class="h4" style="margin-top:40px">Booking a table?</h2>
-      <ul class="facts">
-        {"".join(f'<li><span>{VENUES[k]["short"]}</span><span><a href="{VENUES[k]["path"]}">{VENUES[k]["tag"]} →</a></span></li>' for k in VENUE_ORDER)}
-      </ul>
       <p class="muted" style="margin-top:24px">PT Basho Projects Capital · Senopati, South Jakarta</p>
     </div>
     <div class="reveal">{contact_form()}</div>
+  </div>
+  <div class="wrap">
+    <div class="sec-head" style="margin-top:72px"><span class="no"><b>Or</b> / book straight with a venue</span></div>
+    <div class="contact-doors">
+      {"".join(f'<a href="{VENUES[k]["path"]}">{img(VENUE_PHOTOS[k], VENUES[k]["name"])}<span class="k">{VENUES[k]["tag"]}</span><span><b>{VENUES[k]["short"]} →</b></span></a>' for k in VENUE_ORDER)}
+    </div>
   </div>
 </section>
 """, image="/assets/img/bebop-bar.jpg", with_collab=False, schema=[ORG])
