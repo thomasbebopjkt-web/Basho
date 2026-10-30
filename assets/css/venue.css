@@ -122,3 +122,42 @@
 @media (max-width: 860px) { .contact-doors { grid-template-columns: 1fr 1fr; } }
 .v-bluebell .vx-name { font-size: clamp(54px, 8vw, 136px); }
 .v-bluebell .vx-name .serif { display: inline; }
+
+/* ---------- Now on: promo cards (from promos.json) ---------- */
+.vx-now { padding: clamp(40px, 6vw, 80px) 0 clamp(20px, 3vw, 40px); }
+.vx-now__head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
+.vx-now__head .eyebrow { margin: 0; }
+.vx-now__live { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--vmuted); }
+.vx-now__live::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: pulse 1.6s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: .3; transform: scale(.7); } }
+.promos { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
+.promo { grid-column: span 5; display: grid; grid-template-rows: auto 1fr; border-radius: 8px; overflow: hidden; border: 1px solid var(--vline); background: var(--vbg); transition: transform .35s, box-shadow .35s; }
+.promo:hover { transform: translateY(-4px) rotate(-.4deg); box-shadow: 0 24px 60px rgba(0,0,0,.25); }
+.promo__ph { aspect-ratio: 16 / 9; overflow: hidden; }
+.promo__ph img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s; }
+.promo:hover .promo__ph img { transform: scale(1.05); }
+.promo__body { padding: 22px 24px 26px; display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.promo__k { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+.promo h3 { font-family: var(--display); font-weight: 700; letter-spacing: -0.03em; font-size: clamp(26px, 2.6vw, 38px); line-height: 1; margin: 0; }
+.promo p { color: var(--vmuted); margin: 0 0 8px; }
+.promo--feat { grid-column: span 7; grid-template-columns: 1.1fr 1fr; grid-template-rows: none; background: var(--accent); border-color: var(--accent); color: #fff; }
+.promo--feat .promo__ph { aspect-ratio: auto; min-height: 280px; }
+.promo--feat .promo__body { justify-content: center; }
+.promo--feat .promo__k, .promo--feat p { color: rgba(255,255,255,.88); }
+.promo--feat .btn { background: #fff; border-color: #fff; color: #111; }
+.v-briq .promo--feat, .v-brock .promo--feat, .v-bluebell .promo--feat { color: var(--vbg); }
+.v-briq .promo--feat .promo__k, .v-briq .promo--feat p, .v-brock .promo--feat .promo__k, .v-brock .promo--feat p, .v-bluebell .promo--feat .promo__k, .v-bluebell .promo--feat p { color: var(--vbg); opacity: .9; }
+.promos > .promo:only-child { grid-column: 1 / -1; }
+.promo[hidden] { display: none; }
+@media (max-width: 900px) {
+  .promos { grid-template-columns: 1fr; }
+  .promo, .promo--feat { grid-column: auto; grid-template-columns: 1fr; }
+  .promo--feat .promo__ph { min-height: 0; aspect-ratio: 16 / 9; }
+}
+
+/* ---------- WiFi welcome bar ---------- */
+.wifi-hello { position: sticky; top: var(--header-h); z-index: 40; background: var(--accent, #e0482a); color: #fff; text-align: center; padding: 12px var(--pad); font-size: 15px; display: none; }
+.wifi-hello.is-on { display: block; }
+.wifi-hello b { font-family: var(--display); }
+.wifi-hello a { color: inherit; font-weight: 600; margin-left: 8px; }
+.v-briq .wifi-hello, .v-brock .wifi-hello, .v-bluebell .wifi-hello { color: var(--vbg); }
