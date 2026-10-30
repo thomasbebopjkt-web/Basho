@@ -79,7 +79,7 @@ VENUES = {
         "path": "/the-bluebell/",
         "tag": "British pub & chophouse · Senopati",
         "blurb": "Modern British public house and chophouse, Senopati. Owned and operated.",
-        "card_img": "bluebell-2.jpg",
+        "card_img": "bluebell-bar.jpg",
         "address": "Jl. Tulodong Atas No. 10 A-B, Senopati, South Jakarta 12190",
         "street": "Jl. Tulodong Atas No. 10 A-B", "locality": "Senopati, South Jakarta",
         "postcode": "12190",
@@ -110,20 +110,27 @@ def header():
     <button class="menu-toggle" aria-label="Menu" aria-expanded="false" aria-controls="nav"><span></span></button>
     <nav class="nav" id="nav" aria-label="Main">
       <div class="nav-drop">
-        <button aria-expanded="false">Our Projects</button>
-        <ul><li><a href="/our-projects/">All projects</a></li>{drop}</ul>
+        <button aria-expanded="false">Venues</button>
+        <ul><li><a href="/our-projects/">All venues</a></li>{drop}</ul>
       </div>
       <a href="/services/">Services</a>
-      <a href="/about/">About us</a>
-      <a href="/blog/">Blog</a>
+      <a href="/invest/">Invest</a>
+      <a href="/about/">About</a>
+      <a href="/blog/">Journal</a>
       <a class="btn" href="/contact/">Contact</a>
     </nav>
   </div>
 </header>"""
 
 
-def contact_form():
-    return """<form class="form" data-contact novalidate>
+ENQUIRY_TYPES = ["Work with us (services)", "Invest or partner on a project", "Table booking or private event",
+                 "Bubble + Squeak Media", "Press or collaboration", "Something else"]
+
+
+def contact_form(default=None):
+    opts = "".join(f'<option{" selected" if t == default else ""}>{t}</option>' for t in ENQUIRY_TYPES)
+    return f"""<form class="form" data-contact novalidate>
+  <div><label for="kind">I’m getting in touch about</label><select id="kind" name="enquiry_type">{opts}</select></div>
   <div class="row">
     <div><label for="fn">First name <span>(required)</span></label><input id="fn" name="first_name" required autocomplete="given-name"></div>
     <div><label for="ln">Last name <span>(required)</span></label><input id="ln" name="last_name" required autocomplete="family-name"></div>
@@ -136,7 +143,7 @@ def contact_form():
 </form>"""
 
 
-def collaborate():
+def collaborate(default=None):
     return f"""<section class="section dark" id="collaborate">
   <div class="wrap split">
     <div class="reveal">
@@ -146,7 +153,7 @@ def collaborate():
       <p><strong>Let’s talk — coffee, cocktails, or call.</strong></p>
       <p class="muted">PT Basho Projects Capital<br>Senopati, South Jakarta</p>
     </div>
-    <div class="reveal">{contact_form()}</div>
+    <div class="reveal">{contact_form(default)}</div>
   </div>
 </section>"""
 
@@ -183,7 +190,7 @@ def footer():
 
 
 def page(path, title, description, main, image="/assets/img/briq-hero.jpg", with_collab=True,
-         body_class="", schema=None):
+         body_class="g", schema=None, enquiry=None):
     url = DOMAIN + path
     ld = ""
     for s in (schema or []):
@@ -209,15 +216,16 @@ def page(path, title, description, main, image="/assets/img/briq-hero.jpg", with
 <link rel="icon" href="/assets/favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700;800&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Serif:ital@0;1&family=Space+Mono&family=Manrope:wght@400;500;600;700;800&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/site.css">
+<link rel="stylesheet" href="/assets/css/group.css">
 <script src="/assets/js/site.js" defer></script>
 {ld}</head>
 <body class="{body_class}">
 {header()}
 <main id="main">
 {main}
-{collaborate() if with_collab else ""}
+{collaborate(enquiry) if with_collab else ""}
 </main>
 {footer()}
 {newsletter_popup()}
@@ -302,265 +310,6 @@ def faq_html(faqs):
     return '<div class="faq">' + "".join(f"<details><summary>{q}</summary><p>{a}</p></details>" for q, a in faqs) + "</div>"
 
 
-# ---------------------------------------------------------------- home
-
-def venue_cards():
-    out = []
-    for key in VENUE_ORDER:
-        v = VENUES[key]
-        actions = [f'<a class="chip-btn" href="{v["path"]}">View venue</a>']
-        if v.get("book"):
-            actions.append(f'<a class="chip-btn" href="{v["book"]}" target="_blank" rel="noopener">Book a table</a>')
-        if v.get("menu"):
-            actions.append(f'<a class="chip-btn" href="{v["menu"]}" target="_blank" rel="noopener">Menu</a>')
-        if v.get("tokopedia"):
-            actions.append(f'<a class="chip-btn" href="{v["tokopedia"]}" target="_blank" rel="noopener">Order online</a>')
-        if v.get("maps") and not v.get("menu"):
-            actions.append(f'<a class="chip-btn" href="{v["maps"]}" target="_blank" rel="noopener">Directions</a>')
-        pic = (f'<div class="vcard__img vcard__logo">{img(v["card_img"], v["name"])}</div>' if v.get("logo")
-               else f'<div class="vcard__img" style="--pos:{v.get("card_pos", "center")}">{img(v["card_img"], v["name"] + ", " + v["tag"])}</div>')
-        out.append(f"""<article class="vcard reveal">
-  {pic}
-  <div class="vcard__body">
-    <span class="vcard__tag">{v["tag"]}</span>
-    <h3><a href="{v["path"]}" style="text-decoration:none">{v["name"]}</a></h3>
-    <p>{v["blurb"]}</p>
-    <div class="vcard__actions">{"".join(actions)}</div>
-  </div>
-</article>""")
-    return f'<div class="venue-cards">{"".join(out)}</div>'
-
-
-def marquee(text):
-    item = f"<span>{text}</span>" * 4
-    return f'<div class="marquee" aria-hidden="true"><div class="marquee__track">{item}{item}</div></div>'
-
-
-WHAT_WE_DO = {
-    "Marketing & Launch": ["Go-to-market strategy", "Pre-opening buzz, soft launch, and events", "Content planning, reels, and visual direction", "Campaigns, promotions, and retention strategies"],
-    "Project Development & Strategy": ["Concept validation and refinement", "Budgeting, forecasting, and P&L modelling", "Location sourcing and market fit", "Timeline management and roll-out planning"],
-    "Operations & Systems": ["SOPs for FOH, bar, and kitchen", "Team structure, hiring, and onboarding", "POS, inventory, reservation, and rota setup", "Cost control, margin planning, and reporting systems"],
-    "Creative & Brand Development": ["Naming and brand story", "Visual identity, voice, and narrative systems", "Spatial storytelling (uniforms, menus, playlists, sensory cues)"],
-    "Menu Creation": ["Signature cocktails and dish development", "Menu costing, engineering, and workflow design", "Storytelling through menus (layout, format, copy)"],
-    "Service & Culture": ["Guest journey mapping", "In-service rituals and team language", "Service training and floor flow testing", "Feedback systems and team retention"],
-}
-
-
-def accordion():
-    items = "".join(
-        f"<details><summary>{k}</summary><ul>{''.join(f'<li>{i}</li>' for i in v)}</ul></details>"
-        for k, v in WHAT_WE_DO.items()
-    )
-    return f'<div class="accordion">{items}</div>'
-
-
-page("/", "Basho Projects | Hospitality Group Behind BEBOP, BRIQ & The Bluebell, Jakarta",
-     "Basho Projects is the Jakarta hospitality group behind BEBOP Bar + Kitchen, BRIQ Bistro, Brock Butchery and The Bluebell Public House in Senopati. Operators first, available to founders and brands.",
-     f"""
-<section class="hero">
-  {img("briq-hero.jpg", "The open kitchen at BRIQ Bistro, Senopati", lazy=False)}
-  <div class="wrap">
-    <span class="eyebrow">Basho Projects · Senopati, Jakarta</span>
-    <h1>We build hospitality brands in Jakarta. Some are ours. <span class="serif">Some are yours.</span></h1>
-    <p>Owner operators behind BEBOP, BRIQ, Brock and The Bluebell. Available to founders and brands who want the same team on their project.</p>
-    <div class="btn-row" style="justify-content:center"><a class="btn btn--light" href="/contact/">Start a project</a><a class="btn btn--ghost" href="#projects">Find a table</a></div>
-  </div>
-</section>
-
-<section class="section dark">
-  <div class="wrap split">
-    <div class="reveal">
-      <span class="eyebrow">Who we are</span>
-      <h2>A collective of builders, operators, and creatives behind some of Jakarta’s most <span class="serif">distinct</span> hospitality concepts.</h2>
-    </div>
-    <div class="reveal">
-      <p>Basho Projects is a hospitality incubator, operator and consultancy based in Jakarta. We help founders, operators and brands bring concepts to market with clarity, speed and commercial discipline.</p>
-      <p>We run our own venues, which means every recommendation we make has already been tested against a roster, a rent cheque and a Saturday night service. We bring that same team to a small number of partner projects each year.</p>
-      <p>Some partners want the whole build. Others want us on marketing alone, or on one problem they cannot solve internally. Both work.</p>
-      <a class="btn btn--light" href="/about/">Learn more</a>
-    </div>
-  </div>
-</section>
-
-<section class="section">
-  <div class="wrap">
-    <span class="eyebrow">Our services</span>
-    <h2 class="reveal">What we bring to <span class="serif">your</span> project</h2>
-    <div class="grid-3" style="margin-top:48px">
-      <article class="card reveal">{img("svc-gtm.jpg", "Team planning a restaurant launch")}<h3 class="h4">Go-to-Market Strategy</h3>
-        <p>We define how a concept enters the market and how it wins once it is live. Positioning, audience definition, pricing strategy, launch planning, and channel selection — shaped by real operational insight in Jakarta and Southeast Asia. <em>The playbook we used to open BRIQ.</em></p></article>
-      <article class="card reveal">{img("svc-brand.jpg", "Brand identity sketches")}<h3 class="h4">Brand, Advertising and PR</h3>
-        <p>Brands designed to perform in the real world, not just online. Brand strategy, identity, messaging, content direction, advertising, and public relations — built for launch, growth, and consistency. <em>Run in-house by Bubble + Squeak Media.</em></p></article>
-      <article class="card reveal">{img("svc-concept.jpg", "Chef in a restaurant dining room")}<h3 class="h4">Hospitality Concept Development</h3>
-        <p>Restaurants, bars, cafés, and food-led retail developed from the ground up: concept definition, menu direction, service experience, layout logic, and supplier integration. <em>BEBOP went from idea to open under this process.</em></p></article>
-    </div>
-  </div>
-</section>
-
-<section class="section dark" id="projects">
-  {marquee("Our Projects *")}
-  <div class="wrap">
-    <h2 class="skip">Our projects: bars, restaurants and a butcher in Senopati</h2>
-    <p class="lede reveal" style="max-width:44ch;margin-bottom:48px">Four venues within walking distance in Senopati. A jazz bar, a French bistro, a British pub and a butcher that supplies our own kitchens.</p>
-    {venue_cards()}
-  </div>
-</section>
-
-<section class="section">
-  <div class="wrap split">
-    <div class="reveal">
-      <h2 style="font-weight:700">What We Do</h2>
-      <p class="lede">We help hospitality businesses at every stage, from napkin sketch to full rollout — or reimagining something that’s already live.</p>
-      <a class="btn" href="/services/">Learn more</a>
-    </div>
-    <div class="reveal">{accordion()}</div>
-  </div>
-</section>
-""", schema=[ORG])
-
-# ---------------------------------------------------------------- about
-
-page("/about/", "About Basho Projects | Jakarta Hospitality Group & Operators",
-     "Operators first. Meet the Jakarta hospitality group behind BEBOP, BRIQ Bistro, Brock Butchery and The Bluebell Public House in Senopati.",
-     f"""
-<section class="section">
-  <div class="wrap split">
-    <div class="reveal">
-      <span class="eyebrow">About us</span>
-      <h1>Who We <span class="serif">Are</span></h1>
-      <p class="lede">A collective of builders, operators, and creatives behind some of Jakarta’s most distinct hospitality concepts.</p>
-    </div>
-    <div class="reveal">
-      <p>We specialise in crafting brands that feel lived-in and loved — from naming and storytelling to service rituals, marketing plans, and operational systems. Every member of the team has been in the trenches, launching and running venues from the ground up.</p>
-      <p>We are operators first. We run our own venues, and we take on a small number of partner projects each year, from full incubation to marketing alone.</p>
-      <p>Our team is behind <a href="/bebop/">BEBOP</a>, a Japanese-American cocktail and music bar in Senopati; <a href="/briq-bistro/">BRIQ</a>, a bistro in South Jakarta crafted between fine and casual; <a href="/brock-butchery/">Brock Butchery</a>; and <a href="/the-bluebell/">The Bluebell Public House</a>.</p>
-      <p>Together, we turn big ideas into grounded realities that work — emotionally and commercially.</p>
-    </div>
-  </div>
-</section>
-<section class="section--tight">
-  <div class="wrap grid-3">
-    <a class="media media--tall reveal" href="/bebop/">{img("bebop-room.jpg", "Inside BEBOP Bar + Kitchen, Senopati")}</a>
-    <a class="media media--tall reveal" href="/briq-bistro/">{img("briq-room.jpg", "BRIQ Bistro dining room")}</a>
-    <a class="media media--tall reveal" href="/the-bluebell/">{img("bluebell-1.jpg", "The bar at The Bluebell Public House")}</a>
-  </div>
-</section>
-<section class="section dark">
-  <div class="wrap grid-3">
-    <div class="reveal"><h2 class="h3">Operators first</h2><p class="muted">Every recommendation has been tested on our own floors before it reaches yours.</p></div>
-    <div class="reveal"><h2 class="h3">Small roster</h2><p class="muted">A handful of partner projects each year, so the senior team stays on yours.</p></div>
-    <div class="reveal"><h2 class="h3">Whole build or one problem</h2><p class="muted">Full incubation, marketing alone, or the one thing you can’t solve internally.</p></div>
-  </div>
-</section>
-""", image="/assets/img/bebop-room.jpg", schema=[ORG])
-
-# ---------------------------------------------------------------- services
-
-page("/services/", "Hospitality Consulting Services in Jakarta | Basho Projects",
-     "Restaurant and bar consulting in Jakarta: concept development, brand, launch marketing, operations, menus and performance advertising, from a team that runs its own venues.",
-     f"""
-<section class="section">
-  <div class="wrap split split--center">
-    <div class="reveal">
-      <span class="eyebrow">Services</span>
-      <h1>What We <span class="serif">Do</span></h1>
-      <p class="lede">Hands-on support from people who run venues of their own.</p>
-      <a class="btn" href="/contact/">Contact us</a>
-    </div>
-    <div class="reveal">{accordion()}</div>
-  </div>
-</section>
-
-<section class="section dark">
-  <div class="wrap">
-    <h2 class="reveal">Our Services</h2>
-    <div class="grid-3" style="margin-top:48px">
-      <article class="card reveal">{img("svc-creative.jpg", "Creative workshop")}<h3 class="h4">Creative & Brand Development</h3>
-        <p class="muted">Powerful brands come from clarity, creativity, and connection. We study your vision, audience, and market, then craft positioning, messaging, visuals, and creative direction — so every touchpoint, voice to visuals, reflects your values and resonates with the people who matter.</p></article>
-      <article class="card reveal">{img("svc-marketing.jpg", "Launch event")}<h3 class="h4">Marketing & Launch</h3>
-        <p class="muted">We make launches memorable. Pre-opening buzz through timed content, partnerships, and creators; scroll-stopping reels and storytelling; then performance campaigns and retention tactics that turn first-time visitors into regulars.</p></article>
-      <article class="card reveal">{img("svc-project.jpg", "Project planning")}<h3 class="h4">Project Development & Strategy</h3>
-        <p class="muted">Ideas turned into scalable ventures. We validate concepts for market fit, give strategic clarity from feasibility to creative direction, build budgets, forecasts, and P&amp;L models, and help source the right location at the right time.</p></article>
-    </div>
-  </div>
-</section>
-
-<section class="section">
-  <div class="wrap">
-    <div class="split split--center">
-      <div class="reveal">
-        <span class="eyebrow">Advertising & PR</span>
-        <h2>We don’t chase clout. We engineer <span class="serif">cultural distribution.</span></h2>
-        <p>From identifying the right creators to structuring content for paid amplification, we turn influencer attention into scalable growth. Run in-house by <a href="/bubbleandsqueakmedia/">Bubble + Squeak Media</a>.</p>
-        <a class="btn" href="/contact/">Contact us</a>
-      </div>
-      <div class="media media--wide reveal">{img("adv-performance.jpg", "Campaign content on a phone")}</div>
-    </div>
-    <div class="grid-3" style="margin-top:72px">
-      <article class="card reveal">{img("adv-influencer.jpg", "Creator filming content")}<h3 class="h4">Performance-Led. Brand-Driven.</h3><p>Together, we outline a path forward that’s realistic, strategic, and tailored to your specific needs.</p></article>
-      <article class="card reveal">{img("adv-meta.jpg", "Social media advertising")}<h3 class="h4">Influencer & PR Strategy</h3><p>Creator selection, narrative development, content structuring and amplification — influencer frameworks that convert attention into measurable revenue.</p></article>
-      <article class="card reveal">{img("svc-gtm.jpg", "Team reviewing campaign results")}<h3 class="h4">Meta Advertising</h3><p>Paid social that books tables, not just likes. You’re part of the process: communication stays open and decisions are shared — no black boxes, no surprises.</p></article>
-    </div>
-  </div>
-</section>
-
-<section class="section dark">
-  <div class="wrap">
-    <h2 class="reveal">Ways to work with us</h2>
-    <div class="grid-2" style="margin-top:40px">
-      <div class="price reveal"><div class="big">20JT+</div><h3 class="h4">Monthly Retainers</h3><p class="muted">Structured monthly retainers, from IDR 20 million, for continuous, accountable support across brand, marketing and operations.</p></div>
-      <div class="price reveal"><div class="big">%</div><h3 class="h4">Revenue Partners</h3><p class="muted">A revenue-partner model aligned to growth and performance, embedded with your team for long-term commercial alignment.</p></div>
-    </div>
-    <p style="margin-top:40px"><a class="btn btn--light" href="/contact/">Partner today</a></p>
-  </div>
-</section>
-""", image="/assets/img/svc-creative.jpg", with_collab=False)
-
-# ---------------------------------------------------------------- contact
-
-page("/contact/", "Contact Basho Projects | Jakarta Hospitality Group",
-     "Launching a concept, reimagining a space, or need hands-on support? Talk to Basho Projects in Senopati, Jakarta — coffee, cocktails, or call.",
-     f"""
-<section class="section">
-  <div class="wrap split">
-    <div class="reveal">
-      <span class="eyebrow">Contact</span>
-      <h1>Let’s talk — coffee, cocktails, <span class="serif">or call.</span></h1>
-      <p>Whether you’re launching your first concept, reimagining an existing space, or looking for hands-on support across branding, operations, or experience design — we’d love to hear what you’re building.</p>
-      <p>We tailor each collaboration to fit the needs of the project and the people behind it.</p>
-      <p><a class="btn" href="{WA_GROUP}" target="_blank" rel="noopener">Message us on WhatsApp</a></p>
-      <h2 class="h4" style="margin-top:40px">Looking for a table?</h2>
-      <ul class="facts">
-        {"".join(f'<li><span>{VENUES[k]["short"]}</span><span><a href="{VENUES[k]["path"]}">{VENUES[k]["tag"]} →</a></span></li>' for k in VENUE_ORDER)}
-      </ul>
-    </div>
-    <div class="reveal">{contact_form()}</div>
-  </div>
-</section>
-<section>
-  <div class="media" style="max-height:70vh">{img("bebop-bar.jpg", "The bar at BEBOP Bar + Kitchen")}</div>
-</section>
-""", image="/assets/img/bebop-bar.jpg", with_collab=False, schema=[ORG])
-
-# ---------------------------------------------------------------- our projects
-
-page("/our-projects/", "Our Venues | BEBOP, BRIQ, Brock & The Bluebell | Basho Projects",
-     "The bars, restaurants and businesses Basho Projects owns and operates in Senopati, Jakarta: BEBOP Bar + Kitchen, BRIQ Bistro, Brock Butchery, The Bluebell Public House and Bubble + Squeak Media.",
-     f"""
-<section class="section dark">
-  {marquee("Our Projects *")}
-  <div class="wrap">
-    <h1 class="skip">Our projects</h1>
-    <p class="lede reveal" style="max-width:44ch;margin-bottom:56px">Everything we recommend, we run ourselves. These are the venues and businesses we own and operate in Jakarta.</p>
-    {venue_cards()}
-    <a class="vcard reveal" href="/bubbleandsqueakmedia/" style="margin-top:40px;text-decoration:none;flex-direction:row;align-items:center">
-      <div class="vcard__img vcard__logo" style="aspect-ratio:auto;width:40%;align-self:stretch;padding:24px">{img("bubble-squeak-logo.png", "Bubble + Squeak Media")}</div>
-      <div class="vcard__body"><span class="vcard__tag">Performance marketing & PR</span><h3>Bubble + Squeak Media</h3><p>The agency behind our own launches, available to yours.</p></div>
-    </a>
-  </div>
-</section>
-""", image="/assets/img/bebop-bar.jpg")
-
 # ---------------------------------------------------------------- venues
 
 
@@ -633,6 +382,8 @@ bebop_faq = [
     ("What time does BEBOP open?", "Every day from 18:00 until late."),
     ("Do I need to book a table?", "Booking is the safest bet, especially for jazz nights and weekends. Message us on WhatsApp and we’ll hold a table."),
     ("Is there food, or just drinks?", "Both. The bar leads with cocktails, Mega Highballs and teapot cocktails, and the kitchen serves modern Japanese plates built for sharing."),
+    ("Can I book BEBOP for a private event?", "Yes. We host birthdays, launches, company nights and takeovers, with weekday and weekend free-flow packages for groups of 50 and up and minimum-spend options for smaller groups. Message us on WhatsApp for the 2026 packages."),
+    ("Who are the DJs at BEBOP?", "The Bebop Music Collective: 14 resident DJs who formed at BEBOP, playing house, future beats, jazz, soul, UK garage, disco and more."),
 ]
 venue_page = f"""
 {vhero(v, "bebop-hero.jpg", "The bar at BEBOP Bar + Kitchen, Senopati, at night",
@@ -673,6 +424,69 @@ venue_page = f"""
       <div><em>Weekly</em><b>Booty Groove</b><span>Late, loud and very much a dance floor.</span></div>
     </div>
     <p style="margin-top:28px"><a class="btn" href="/blog/jazz-at-bebop/">Read: Jazz at BEBOP</a></p>
+  </div>
+</section>
+
+<section class="section" id="menu" style="border-top:1px solid var(--vline)">
+  <div class="wrap">
+    <span class="eyebrow">The menu</span>
+    <h2>A bar first. <span class="serif">Cocktails lead the way.</span></h2>
+    <p class="muted" style="max-width:60ch">Whether you’re in for a quick drink, a full night out or something in between, the drinks come first and the kitchen keeps pace with modern Japanese plates.</p>
+    <div class="lineup">
+      <div><em>Cocktails</em><b>Classics with a twist</b><span>With a kick, and a few that shouldn’t work — but do.</span></div>
+      <div><em>Mega Highballs</em><b>Made for after work</b><span>Proper Japanese whisky, good soda, zero pretension.</span></div>
+      <div><em>Teapot cocktails</em><b>Strong. Shareable.</b><span>Simply good value. They pack a punch and pour like a dream.</span></div>
+      <div><em>B-Strongs</em><b>House hard seltzer</b><span>BEBOP-style, made in-house and served by the can.</span></div>
+      <div><em>Plates to match</em><b>Modern Japanese kitchen</b><span>Bold snacks, smoky plates and comforting bites built to keep pace with your drink.</span></div>
+    </div>
+    <p style="margin-top:28px"><a class="btn" href="{v['menu']}" target="_blank" rel="noopener">See the full menu</a></p>
+  </div>
+</section>
+
+<section class="section" id="bmc" style="border-top:1px solid var(--vline)">
+  <div class="wrap split">
+    <div class="reveal">
+      <span class="eyebrow">Bebop Music Collective</span>
+      <h2>Local sounds. <span class="serif">Worldwide presence.</span></h2>
+      <p>In January 2022 a group of DJs found a home at BEBOP, and launched the Bebop Music Collective the following year. Fourteen residents strong, BMC covers house, future beats, jazz and soul, and plenty in between. Think of it as the bridge to Jakarta’s underground, with a cocktail in hand.</p>
+      <p class="muted">BEBOP never plays the same note twice.</p>
+    </div>
+    <div class="reveal">
+      <ul class="facts">
+        <li><span>Monty Hasan</span><span>Jazzy, soulful, Latin, Brazilian, house</span></li>
+        <li><span>Greybox</span><span>Jazz, electronic</span></li>
+        <li><span>NAJ</span><span>Bass, house, UK garage, future beats, breaks</span></li>
+        <li><span>Decemberkid</span><span>Future beats, bass, UK garage, house</span></li>
+        <li><span>Erik Soto</span><span>Afrobeats, UK garage</span></li>
+        <li><span>Reemo</span><span>Jazz, breakbeats, funk & soul</span></li>
+        <li><span>Laskar</span><span>Disco, house, Brazilian house</span></li>
+        <li><span>Kara</span><span>Soulful</span></li>
+        <li><span>LL</span><span>Jazzy house, UK garage, future beats, Afrobeats</span></li>
+        <li><span>Kenny Gabriel</span><span>Deep house, disco</span></li>
+        <li><span>Faktta</span><span>UK garage, house, future beats</span></li>
+        <li><span>Erin Sab.</span><span>Jazz, electronic</span></li>
+        <li><span>Bania</span><span>House, breaks, techno</span></li>
+        <li><span>Adelia</span><span>UK garage, house, Latin-infused techno</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="private" style="border-top:1px solid var(--vline)">
+  <div class="wrap split">
+    <div class="media media--wide reveal">{img("bebop-room.jpg", "Private event at BEBOP Bar + Kitchen")}</div>
+    <div class="reveal">
+      <span class="eyebrow">Private events & group bookings</span>
+      <h2>Your space. Your people. <span class="serif">Your kind of night.</span></h2>
+      <p>From intimate gatherings to full-house celebrations, we set the mood with the right mix of music, drinks and atmosphere. Birthdays, launches, company nights and takeovers — it’s throwing a party with BEBOP’s signature.</p>
+      <ul class="ticks">
+        <li>Free-flow BEBOP signature spirits: tequila, gin or whisky, with mixers</li>
+        <li>Sharing platters for every table</li>
+        <li>DJ entertainment from the Bebop Music Collective</li>
+        <li>Weekday and weekend packages for groups of 50 and up, with smaller bookings on a minimum spend</li>
+      </ul>
+      <p><a class="btn" href="{v['book']}" target="_blank" rel="noopener">Ask for the 2026 packages</a></p>
+    </div>
   </div>
 </section>
 
@@ -735,6 +549,51 @@ venue_page = f"""
   </div>
 </section>
 
+<section class="section" style="border-top:1px solid var(--vline)">
+  <div class="wrap split">
+    <div class="reveal">
+      <span class="eyebrow">The space</span>
+      <h2>Casual, but <span class="serif">never careless.</span></h2>
+      <p>An intimate, sunlit room by day and a cosy, low-lit bistro by night. Open shelves, textured walls, standing tables that invite you to linger and an outdoor terrace for a quick drink or a cigarette between courses.</p>
+      <p>We don’t chase trends. We build lasting tables for good conversations — lunch, dinner, drinks, or just a place to catch your breath in Senopati.</p>
+    </div>
+    <div class="reveal">
+      <span class="eyebrow">The menu</span>
+      <h2>Soulful French food, <span class="serif">generous portions.</span></h2>
+      <div class="lineup" style="grid-template-columns:1fr">
+        <div><em>Lunch · from 10:00</em><b>Laid-back, full of flavour</b><span>Made for midday breaks and long catch-ups.</span></div>
+        <div><em>Dinner · from 17:00</em><b>A little slower, a little warmer</b><span>Dinner packages make sharing easy, so you can sit back.</span></div>
+        <div><em>Every month</em><b>Specials</b><span>Seasonal plates, creative one-offs and festive menus.</span></div>
+        <div><em>The cellar</em><b>Wines that are easy to love</b><span>A thoughtful, approachable list, whether you’re new to wine or a seasoned sipper.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="border-top:1px solid var(--vline)">
+  <div class="wrap">
+    <span class="eyebrow">From the carte</span>
+    <h2>French bistro classics <span class="serif">in Senopati</span></h2>
+    <ul class="facts" style="margin-top:24px;max-width:860px">
+      <li><span>Escargots à la Bourguignonne</span><span>Snails in garlic-herb butter with sliced baguette</span></li>
+      <li><span>Shiitake au crème parmesan</span><span>Grilled mushrooms, parmesan cream, salmon roe, tarragon oil</span></li>
+      <li><span>Saumon au citron et aneth</span><span>Herb-crusted salmon, creamy lemon and dill sauce</span></li>
+      <li><span>Magret de canard</span><span>Duck breast, blackberry balsamic, mashed potatoes</span></li>
+      <li><span>Steak au poivre</span><span>Tenderloin with a traditional black peppercorn sauce</span></li>
+      <li><span>Crème brûlée</span><span>French custard, caramelised sugar crust</span></li>
+    </ul>
+    <p class="muted" style="margin-top:14px;font-size:14px">The menu changes with the seasons. <a href="{v['menu']}" target="_blank" rel="noopener">See today’s menu</a>.</p>
+  </div>
+</section>
+
+<section class="section" style="border-top:1px solid var(--vline)">
+  <div class="wrap split split--center">
+    <div class="reveal"><span class="eyebrow">Community</span><h2>Your friendly <span class="serif">neighbourhood bistro.</span></h2></div>
+    <div class="reveal"><p>We love the little moments that make a place feel alive: live drawing, flower arranging, suave jazz nights. We’re always open to intimate events, collaborations and gatherings that fit the easy spirit of the bistro.</p>
+      <p><a class="btn" href="{v['book']}" target="_blank" rel="noopener">Plan an event at BRIQ</a></p></div>
+  </div>
+</section>
+
 <section class="section--tight"><div class="wrap">{gallery(v, [("briq-hero.jpg", "BRIQ open kitchen"), ("briq-room.jpg", "BRIQ dining room"), ("briq-case-study.webp", "BRIQ Bistro, Jakarta Selatan")])}</div></section>
 
 <section class="section">
@@ -786,6 +645,24 @@ venue_page = f"""
     <div class="media media--tall reveal">{img("brock-cuts.jpg", "Premium steak cuts from Brock Butchery")}</div>
   </div>
 </section>
+<section class="section" style="border-top:1px solid var(--vline)">
+  <div class="wrap split">
+    <div class="reveal">
+      <span class="eyebrow">Why Brock</span>
+      <h2>Great meat shouldn’t be <span class="serif">a luxury.</span></h2>
+      <p>Brock Butchery kicked off in 2026 on one idea: premium cuts should be available to every table in Jakarta, from the family kitchen to the professional pass. Quality is our baseline, not our pitch.</p>
+      <p>No fuss. No mark-up for the sake of it. Just honest product, done right.</p>
+    </div>
+    <div class="reveal">
+      <span class="eyebrow">What we carry</span>
+      <div class="lineup" style="grid-template-columns:1fr">
+        <div><em>Beef</em><b>Steaks and everyday cuts</b><span>Sourced for quality, portioned for convenience.</span></div>
+        <div><em>Poultry & more</em><b>A curated range</b><span>Priced to keep you coming back.</span></div>
+        <div><em>Trade</em><b>For restaurants and hotels</b><span>Consistent spec and reliable delivery for full kitchen service.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
 <section class="section">
   <div class="wrap split">
     <div class="reveal"><span class="eyebrow">Good to know</span><h2>Ordering <span class="serif">meat</span> in Jakarta</h2>
@@ -811,7 +688,7 @@ bluebell_faq = [
     ("Can I book the private dining room?", "Yes. The private dining room seats ten. Call or message us to book."),
 ]
 venue_page = f"""
-{vhero(v, "bluebell-2.jpg", "The dining hall at The Bluebell Public House, Senopati",
+{vhero(v, "bluebell-facade.jpg", "The Bluebell Public House on Jl. Tulodong Atas, Senopati, at night",
        'The Bluebell <span class="serif">Public House</span>',
        "A modern British pub and chophouse in Senopati, South Jakarta. Draught beer, ale and whisky, poured across six lines.")}
 {hub(v, "On tap", "Six lines · pour one", '<span class="beermat" aria-hidden="true">B</span>', [
@@ -825,7 +702,7 @@ venue_page = f"""
 
 <section class="section">
   <div class="wrap split">
-    <div class="media media--tall reveal">{img("bluebell-1.jpg", "The bar at The Bluebell Public House")}</div>
+    <div class="media media--tall reveal">{img("bluebell-door.jpg", "The front door of The Bluebell Public House")}</div>
     <div class="reveal">
       <span class="eyebrow">The pub</span>
       <h2>Draught beer. Ale. <span class="serif">Whisky.</span></h2>
@@ -836,7 +713,24 @@ venue_page = f"""
   </div>
 </section>
 
-<section class="section--tight"><div class="wrap">{gallery(v, [("bluebell-painting.jpg", "Bluebell wildflower painting in the pub"), ("bluebell-2.jpg", "The Bluebell dining hall"), ("bluebell-painting-2.jpg", "Artwork at The Bluebell")])}</div></section>
+<section class="section" style="border-top:1px solid var(--vline)">
+  <div class="wrap split">
+    <div class="reveal">
+      <span class="eyebrow">The rooms</span>
+      <h2>Pick your <span class="serif">corner.</span></h2>
+      <ul class="facts">
+        <li><span>Bar lounge</span><span>High stools, the long bar and six draught lines</span></li>
+        <li><span>Dining hall</span><span>Banquettes, pendant lights and the chophouse menu</span></li>
+        <li><span>The snug</span><span>A small room for a quiet pint</span></li>
+        <li><span>Private dining room</span><span>Seats ten, for dinners and celebrations</span></li>
+      </ul>
+      <p class="muted" style="margin-top:18px">Room for about 95 seated and 140 standing for a full-pub booking.</p>
+    </div>
+    <div class="media media--wide reveal">{img("bluebell-hall-night.jpg", "The dining hall at The Bluebell in the evening")}</div>
+  </div>
+</section>
+
+<section class="section--tight"><div class="wrap">{gallery(v, [("bluebell-bar.jpg", "The bar at The Bluebell, Senopati"), ("bluebell-lounge.jpg", "The bar lounge at The Bluebell"), ("bluebell-piano.jpg", "The piano at The Bluebell")])}</div></section>
 
 <section class="section">
   <div class="wrap split">
@@ -850,78 +744,10 @@ venue_page = f"""
 </section>
 {sisters("the-bluebell")}
 """
-page("/the-bluebell/", "The Bluebell Public House | British Pub in Senopati, South Jakarta",
+page("/the-bluebell/", "The Bluebell Public House | British Pub & Chophouse in Senopati, South Jakarta",
      "The Bluebell Public House is a modern British pub and chophouse in Senopati, South Jakarta. Draught beer, ale and whisky across six lines, British classics, private dining. Open daily from 10:00.",
-     venue_page, image="/assets/img/bluebell-2.jpg", with_collab=False, body_class="venue v-bluebell",
-     schema=[venue_schema(v, "bluebell-2.jpg"), faq_schema(bluebell_faq)])
-
-# ---------------------------------------------------------------- bubble + squeak
-
-BS_SERVICES = [
-    ("bs-icon-strategy.png", "Marketing Strategy", "Plan what to run, when, and where — with clarity. We build your full funnel from awareness to retention and guide key growth decisions alongside founders. Everything is data-led: pricing, offers and contribution, tracked against ROAS, CAC, LTV and payback. Scalable systems, not one-off campaigns."),
-    ("bs-icon-creative.png", "Creative Direction", "Brand identities that feel true and connect. Campaign ideas built to convert, not just look good — clear direction for ads, socials and shoots, with the right hooks, angles and messaging."),
-    ("bs-icon-ads.png", "Advertising Management", "Full-funnel management across Meta, Google and TikTok, TOF to BOF with clear KPI roles. Optimised for ROAS, CAC and CPA, with ongoing testing, smart budget allocation and retargeting that grows LTV."),
-    ("bs-icon-pr.png", "PR & KOL Management", "A curated network of vetted KOLs and creators across TikTok and Instagram, selected for reach, engagement and proven conversions. Campaigns built to scale and drive measurable awareness."),
-]
-bs_cards = "".join(
-    f'<article class="bs-service reveal">{img(i, "")}<h3>{t}</h3><p class="muted">{d}</p></article>'
-    for i, t, d in BS_SERVICES)
-
-page("/bubbleandsqueakmedia/", "Bubble + Squeak Media | F&B Marketing & PR Agency, Jakarta",
-     "Bubble + Squeak Media is Basho Projects' performance marketing and PR agency for F&B brands in Jakarta: Meta, Google and TikTok ads, KOLs, creative direction and strategy. From $950/month.",
-     f"""
-<section class="section">
-  <div class="wrap split split--center">
-    <div class="reveal">
-      <span class="eyebrow">Performance · PR</span>
-      <h1>From ideas into <span class="serif">performance.</span></h1>
-      <p class="lede">We create, launch, and optimise campaigns that actually work. No fluff — just smart marketing with results you can see.</p>
-      <a class="btn" href="/contact/">Work with us</a>
-    </div>
-    <div class="reveal">{img("bubble-squeak-logo.png", "Bubble + Squeak Media")}</div>
-  </div>
-</section>
-<section class="bs-strip">{marquee("Performance marketing · Influencer marketing · Social media production · Creative strategy & campaign ·")}</section>
-<section class="section">
-  <div class="wrap">
-    <div class="split">
-      <div class="reveal"><span class="eyebrow">About</span><h2>A media agency by Basho Projects.</h2></div>
-      <p class="reveal lede">We drive growth through performance marketing and strategic collaborations, combining data-led strategy with creative execution to deliver campaigns that are relevant, measurable, and built to convert.</p>
-    </div>
-    <div class="grid-2" style="margin-top:72px">{bs_cards}</div>
-  </div>
-</section>
-<section class="section dark">
-  <div class="wrap split split--center">
-    <div class="media media--wide reveal">{img("briq-case-study.webp", "BRIQ Bistro, Jakarta Selatan")}</div>
-    <div class="reveal">
-      <span class="eyebrow">Case study</span>
-      <h2>BEBOP & BRIQ</h2>
-      <h3 class="h4">What we did</h3>
-      <ul class="ticks">
-        <li>Ran Meta and Google Ads to drive awareness, traffic and bookings</li>
-        <li>Optimised Google Business for strong local discovery</li>
-        <li>Activated KOLs to reach relevant audiences and build cultural relevance</li>
-        <li>Rebranded BEBOP to align with its evolving crowd and energy</li>
-        <li>Built campaigns and events that turned guests into regulars</li>
-      </ul>
-    </div>
-  </div>
-</section>
-<section class="section">
-  <div class="wrap">
-    <span class="eyebrow">Add-ons</span>
-    <ul class="chips reveal"><li>SEO + Google Business</li><li>Branding & Graphic Design</li><li>Web Development</li><li>Social Media Marketing</li><li>Photo & Video Production</li></ul>
-    <h2 style="margin-top:72px" class="reveal">Starting from $950 USD / month</h2>
-    <div class="grid-3" style="margin-top:32px">
-      <div class="tier reveal"><h3>Starter</h3><p class="muted">Advertising or PR. Best for brands starting with performance marketing.</p></div>
-      <div class="tier reveal"><h3>Growth</h3><p class="muted">Advertising and PR. For brands ready to scale.</p></div>
-      <div class="tier reveal"><h3>Enterprise</h3><p class="muted">The full service. For brands that want full support.</p></div>
-    </div>
-    <p style="margin-top:40px"><a class="btn" href="/contact/">Book an appointment</a></p>
-  </div>
-</section>
-""", image="/assets/img/briq-case-study.webp", body_class="bs")
+     venue_page, image="/assets/img/bluebell-facade.jpg", with_collab=False, body_class="venue v-bluebell",
+     schema=[venue_schema(v, "bluebell-facade.jpg"), faq_schema(bluebell_faq)])
 
 # ---------------------------------------------------------------- blog
 
@@ -1011,6 +837,533 @@ for i, p in enumerate(POSTS):
 </article></section>""", image="/assets/img/" + p["cover"], with_collab=False, schema=[article_ld])
     redirect(p["old"], f"/blog/{p['slug']}/")
 
+# ---------------------------------------------------------------- group pages (spliced into build.py)
+
+def marquee(text):
+    item = f"<span>{text}</span>" * 4
+    return f'<div class="marquee" aria-hidden="true"><div class="marquee__track">{item}{item}</div></div>'
+
+
+VENUE_PHOTOS = {"bebop": "bebop-bar.jpg", "briq-bistro": "briq-hero.jpg", "brock-butchery": "brock-hero.jpg", "the-bluebell": "bluebell-bar.jpg"}
+VENUE_COLOURS = {"bebop": "#ef4a2e", "briq-bistro": "#a3452c", "brock-butchery": "#6a6a2a", "the-bluebell": "#5b7fa6"}
+
+
+def venue_rows(heading_tag="h3"):
+    rows = []
+    for i, key in enumerate(VENUE_ORDER, 1):
+        v = VENUES[key]
+        acts = [f'<a class="pill" href="{v["path"]}">View</a>']
+        if v.get("book"):
+            acts.append(f'<a class="pill" href="{v["book"]}" target="_blank" rel="noopener">Book</a>')
+        elif v.get("tel"):
+            acts.append(f'<a class="pill" href="tel:{v["tel"]}">Call to book</a>')
+        if v.get("menu"):
+            acts.append(f'<a class="pill" href="{v["menu"]}" target="_blank" rel="noopener">Menu</a>')
+        if v.get("tokopedia"):
+            acts.append(f'<a class="pill" href="{v["tokopedia"]}" target="_blank" rel="noopener">Order</a>')
+        if v.get("maps"):
+            acts.append(f'<a class="pill" href="{v["maps"]}" target="_blank" rel="noopener">Map</a>')
+        status = ""
+        if v.get("hours"):
+            late = ' data-late="1"' if v.get("late") else ""
+            status = f'<span class="status" data-hours=\'{json.dumps(v["hours"])}\'{late}>{v["hours_text"]}</span>'
+        photo = VENUE_PHOTOS[key]
+        rows.append(f"""<div class="vrow reveal" style="--vc:{VENUE_COLOURS[key]}">
+  <span class="vrow__no">0{i}</span>
+  <{heading_tag}><a href="{v['path']}">{v['short']}</a></{heading_tag}>
+  <div class="vrow__meta"><span class="tag">{v['tag']}</span>{v['blurb']}{status}</div>
+  <div class="vrow__acts">{''.join(acts)}</div>
+  <div class="vrow__thumb">{img(photo, v['name'])}</div>
+  <div class="vrow__peek" aria-hidden="true">{img(photo, '')}</div>
+</div>""")
+    return f'<div class="vrows">{"".join(rows)}</div>'
+
+
+STAMP = """<svg class="stamp" viewBox="0 0 200 200" aria-hidden="true"><defs><path id="c" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0"/></defs>
+<text><textPath href="#c">Operators first · Made in Senopati · Est. by underdogs ·</textPath></text>
+<circle cx="100" cy="100" r="34" fill="#e0482a"/><text x="100" y="106" text-anchor="middle" style="font-size:18px;letter-spacing:1px">BASHO</text></svg>"""
+
+WHAT_WE_DO = {
+    "Concept & Development": ["Concept validation and refinement", "Location sourcing and market fit", "Budgeting, forecasting and P&L modelling", "Timeline management and roll-out planning"],
+    "Brand & Creative": ["Naming and brand story", "Visual identity, voice and narrative systems", "Spatial storytelling: uniforms, menus, playlists, sensory cues"],
+    "Menu & Bar": ["Signature cocktails and dish development", "Menu costing, engineering and workflow design", "Storytelling through menus: layout, format, copy"],
+    "Operations & Systems": ["SOPs for FOH, bar and kitchen", "Team structure, hiring and onboarding", "POS, inventory, reservations and rota set-up", "Cost control and reporting systems"],
+    "Launch & Marketing": ["Go-to-market strategy and pre-opening buzz", "Soft launch, events and programming", "Content, reels and visual direction", "Meta, Google and TikTok ads, KOLs and PR (via Bubble + Squeak)"],
+    "Service & Culture": ["Guest journey mapping", "In-service rituals and team language", "Service training and floor-flow testing", "Feedback systems and team retention"],
+}
+
+
+def accordion():
+    items = "".join(
+        f"<details><summary>{k}</summary><ul>{''.join(f'<li>{i}</li>' for i in v)}</ul></details>"
+        for k, v in WHAT_WE_DO.items())
+    return f'<div class="accordion">{items}</div>'
+
+
+def posts_teaser():
+    return "".join(f"""<a class="post-card reveal" href="/blog/{p['slug']}/">{img(p['cover'], '')}<div class="meta">{p['date']}</div><h3 class="h4">{p['title']}</h3></a>""" for p in POSTS)
+
+
+# ---------------------------------------------------------------- home
+
+home_faq = [
+    ("What is Basho Projects?", "Basho Projects is an independent hospitality group in Senopati, South Jakarta. We own and run BEBOP Bar + Kitchen, BRIQ Bistro, The Bluebell Public House and Brock Butchery, and we help other founders and investors build bars and restaurants of their own."),
+    ("Where are your venues?", "All within a few minutes’ walk of each other in Senopati, Kebayoran Baru, South Jakarta: BEBOP on Jl. Senopati, BRIQ on Jl. Prof. Joko Sutono and The Bluebell on Jl. Tulodong Atas."),
+    ("Can Basho Projects help with my restaurant or bar?", "Yes. We take on a small number of partner projects each year, from full incubation to a single problem like a menu, a launch or a team that isn’t clicking. See our services or get in touch."),
+    ("Can I invest in a Basho Projects venue?", "We bring in partners on new concepts. Tell us a little about yourself on the invest page and we’ll set up a conversation."),
+]
+
+page("/", "Basho Projects | Jakarta Hospitality Group — BEBOP, BRIQ, The Bluebell & Brock",
+     "Basho Projects is the independent hospitality group behind BEBOP Bar + Kitchen, BRIQ Bistro, The Bluebell Public House and Brock Butchery in Senopati, Jakarta. Find a table, work with us, or invest in what we build next.",
+     f"""
+<section class="ghero">
+  <div class="wrap">
+    <div class="ghero__grid">
+      <div>
+        <span class="eyebrow">Basho Projects · Senopati, South Jakarta</span>
+        <h1>Small group. <span class="serif">Big nights.</span></h1>
+        <p class="lede">We’re the independent hospitality group behind BEBOP, BRIQ, The Bluebell and Brock — four rooms within walking distance in Senopati. We build our own places, run them ourselves, and help a few others build theirs.</p>
+        <div class="btn-row" style="margin-top:28px"><a class="btn btn--hot" href="#venues">Find a table</a><a class="btn btn--line" href="/services/">Work with us</a><a class="btn btn--line" href="/invest/">Invest</a></div>
+      </div>
+      {STAMP}
+    </div>
+  </div>
+  <div class="reel">
+    <a href="/bebop/">{img("bebop-bar.jpg", "BEBOP Bar + Kitchen", lazy=False)}<span>BEBOP</span></a>
+    <a href="/briq-bistro/">{img("briq-hero.jpg", "BRIQ Bistro", lazy=False)}<span>BRIQ</span></a>
+    <a href="/the-bluebell/">{img("bluebell-bar.jpg", "The Bluebell Public House", lazy=False)}<span>The Bluebell</span></a>
+    <a href="/brock-butchery/">{img("brock-hero.jpg", "Brock Butchery")}<span>Brock</span></a>
+    <a href="/bebop/#whats-on">{img("jazz-1.jpg", "Live jazz at BEBOP")}<span>Jazz nights</span></a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="sec-head"><span class="no"><b>01</b> / Pick your door</span></div>
+    <div class="doors">
+      <a class="door reveal" href="#venues"><span class="k">Eat & drink</span><h3>Find a table in Senopati</h3><p>A jazz and cocktail bar, a French bistro, a British pub and a butcher that delivers. Book, see the menu, get directions.</p><span class="go">Our venues</span></a>
+      <a class="door reveal" href="/services/"><span class="k">Build with us</span><h3>Open something that lasts</h3><p>Concept, brand, menu, team, launch and marketing, from operators who run their own rooms every night.</p><span class="go">Services</span></a>
+      <a class="door reveal" href="/invest/"><span class="k">Invest with us</span><h3>Back the next one</h3><p>We bring partners in on new concepts. Operator-led, built in a neighbourhood we know street by street.</p><span class="go">Investors</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="section ink" id="venues">
+  <div class="wrap">
+    <div class="sec-head"><span class="no"><b>02</b> / Our venues</span><a href="/our-projects/">All venues →</a></div>
+    <h2 class="reveal" style="font-size:clamp(40px,6vw,92px);max-width:14ch;margin-bottom:48px">Four rooms. <span class="serif" style="font-family:var(--serif);font-weight:400;color:var(--hot)">One street’s walk.</span></h2>
+    {venue_rows()}
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap split">
+    <div class="reveal">
+      <div class="sec-head" style="border:0;padding:0"><span class="no"><b>03</b> / Why we’re different</span></div>
+      <p class="manifesto">We’re not the biggest group in Jakarta. <em>That’s the point.</em></p>
+    </div>
+    <div class="reveal">
+      <p class="lede">Basho Projects is a hospitality incubator, operator and consultancy. Every recommendation we make has already been tested against a roster, a rent cheque and a Saturday night service — on our own floors, with our own money.</p>
+      <p>That keeps us honest. It also keeps us small on purpose: a handful of venues we run properly, and a few partner projects a year where the senior team actually shows up.</p>
+      <a class="btn" href="/about/">Our story</a>
+    </div>
+  </div>
+  <div class="wrap" style="margin-top:64px">
+    <div class="nums">
+      <div class="reveal"><b>4</b><span>venues in Senopati, all walking distance</span></div>
+      <div class="reveal"><b>14</b><span>resident DJs in the Bebop Music Collective</span></div>
+      <div class="reveal"><b>2</b><span>live jazz nights a week at BEBOP</span></div>
+      <div class="reveal"><b>6</b><span>draught lines pouring at The Bluebell</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section ink">
+  <div class="wrap">
+    <div class="sec-head"><span class="no"><b>04</b> / What’s on</span><a href="/bebop/#whats-on">Full line-up →</a></div>
+    <h2 class="reveal" style="font-size:clamp(36px,5vw,72px);margin-bottom:40px">Live music, quiz nights and <span class="serif" style="font-family:var(--serif);font-weight:400;color:var(--hot)">long lunches.</span></h2>
+    <div class="week">
+      <div><em>Monday & Friday · BEBOP</em><b>Jazz Nights</b><span>Live jazz curated by Bass G, from standards to funk and groove.</span><a href="/bebop/">BEBOP →</a></div>
+      <div><em>Tuesday · BEBOP</em><b>Trivia Tuesdays</b><span>Hosted by Kara Chenoa. Brains, banter and a little buzz.</span><a href="/bebop/">BEBOP →</a></div>
+      <div><em>Weekly · BEBOP</em><b>BMC Nights & Booty Groove</b><span>The Bebop Music Collective on the decks, then the dance floor.</span><a href="/bebop/#bmc">The collective →</a></div>
+      <div><em>Every month · BRIQ</em><b>Bistro specials</b><span>Seasonal plates and one-offs alongside the French classics.</span><a href="/briq-bistro/">BRIQ →</a></div>
+      <div><em>Every day · The Bluebell</em><b>The pub is open</b><span>From 10:00. Draught beer, ale, whisky and a proper chophouse menu.</span><a href="/the-bluebell/">The Bluebell →</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="sec-head"><span class="no"><b>05</b> / For founders & brands</span><a href="/services/">Services →</a></div>
+    <div class="split split--center">
+      <h2 class="reveal" style="font-size:clamp(36px,5vw,76px)">Your concept, run by people who <span class="serif" style="font-family:var(--serif);font-weight:400;color:var(--hot)">close up at 2am.</span></h2>
+      <div class="reveal">
+        <p class="lede">We help hospitality businesses at every stage, from napkin sketch to full roll-out, or reimagining something that’s already live.</p>
+        <ul class="ticks"><li>Concept, location and the numbers</li><li>Brand, menu, bar programme and team</li><li>Launch, ads, KOLs and PR through our own agency, Bubble + Squeak Media</li></ul>
+        <div class="btn-row"><a class="btn" href="/services/">See services</a><a class="btn btn--line" href="/contact/">Start a conversation</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section cta-band">
+  <div class="wrap split split--center">
+    <div class="reveal"><span class="eyebrow">For investors</span><h2>Back the next one.</h2></div>
+    <div class="reveal">
+      <p class="lede">We open a small number of new concepts and bring in partners for each. Operator-led, Senopati-tested, built to last more than one season.</p>
+      <div class="btn-row"><a class="btn" href="/invest/">How we work with investors</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="sec-head"><span class="no"><b>06</b> / Journal</span><a href="/blog/">All stories →</a></div>
+    <div class="posts">{posts_teaser()}</div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="wrap split">
+    <div><div class="sec-head" style="border:0;padding:0"><span class="no"><b>07</b> / Good to know</span></div><h2 style="font-size:clamp(32px,4vw,56px)">Questions people ask us</h2></div>
+    <div>{faq_html(home_faq)}</div>
+  </div>
+</section>
+""", schema=[ORG, faq_schema(home_faq)])
+
+# ---------------------------------------------------------------- about
+
+page("/about/", "About Basho Projects | Independent Hospitality Group in Senopati, Jakarta",
+     "Operators first. The story of Basho Projects, the independent Jakarta hospitality group behind BEBOP, BRIQ Bistro, The Bluebell Public House and Brock Butchery.",
+     f"""
+<section class="section">
+  <div class="wrap">
+    <span class="eyebrow">About Basho Projects</span>
+    <h1 style="font-size:clamp(52px,9vw,140px);max-width:12ch">Operators <span class="serif" style="font-family:var(--serif);font-weight:400;color:var(--hot)">first.</span> Everything else second.</h1>
+  </div>
+  <div class="wrap split" style="margin-top:56px">
+    <div class="media media--tall reveal">{img("bebop-room.jpg", "Inside BEBOP Bar + Kitchen, Senopati")}</div>
+    <div class="reveal">
+      <p class="lede">We’re a collective of builders, operators and creatives behind some of Jakarta’s most distinct hospitality concepts.</p>
+      <p>We specialise in brands that feel lived-in and loved: naming and storytelling, service rituals, marketing plans and the operating systems underneath. Every member of the team has been in the trenches, launching and running venues from the ground up.</p>
+      <p>We run our own venues, and we take on a small number of partner projects each year, from full incubation to marketing alone. Together we turn big ideas into grounded realities that work — emotionally and commercially.</p>
+      <p>We’re not the biggest group in the city, and we’re fine with that. Small means the people who build a place are the same people you’ll find behind the bar on a Friday.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section ink">
+  <div class="wrap split">
+    <div><div class="sec-head" style="border:0;padding:0"><span class="no"><b>01</b> / How we got here</span></div>
+      <h2 style="font-size:clamp(36px,5vw,72px)">One bar, then <span class="serif" style="font-family:var(--serif);font-weight:400;color:var(--hot)">a neighbourhood.</span></h2></div>
+    <ol class="tl" style="border-color:var(--paper2)">
+      <li><b>BEBOP opens on Jl. Senopati</b><span class="muted">A bar first: cocktails, Mega Highballs and modern Japanese plates, with music at the centre of the room.</span></li>
+      <li><b>2022 · The DJs move in</b><span class="muted">A group of DJs find a home at BEBOP and, the following year, launch the Bebop Music Collective — 14 residents strong today.</span></li>
+      <li><b>BRIQ Bistro</b><span class="muted">A neighbourhood French bistro crafted between fine and casual, a few minutes’ walk away.</span></li>
+      <li><b>2026 · Brock Butchery</b><span class="muted">A problem in our own kitchens becomes a business: premium meat, priced honestly, delivered across Jakarta.</span></li>
+      <li><b>September 2026 · The Bluebell</b><span class="muted">A modern British public house and chophouse on Jl. Tulodong Atas, pouring across six draught lines.</span></li>
+      <li><b>Bubble + Squeak Media</b><span class="muted">Our in-house agency for performance marketing, KOLs and PR, now open to other brands.</span></li>
+    </ol>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="sec-head"><span class="no"><b>02</b> / What we believe</span></div>
+    <div class="svc">
+      <article class="reveal"><span class="ix">01</span><h3>Test it on our own floor</h3><p class="muted">Nothing we recommend is theory. If it hasn’t survived a full Saturday at one of our venues, we don’t sell it to you.</p></article>
+      <article class="reveal"><span class="ix">02</span><h3>Sincerity over spectacle</h3><p class="muted">Real food, real drinks, real conversations. Rooms people come back to on a Tuesday, not just photograph once.</p></article>
+      <article class="reveal"><span class="ix">03</span><h3>Small roster, senior team</h3><p class="muted">We take on a few partner projects a year so the people who pitched are the people who deliver.</p></article>
+      <article class="reveal"><span class="ix">04</span><h3>Commercial, not corporate</h3><p class="muted">We care about the numbers because we pay the rent too. We just don’t think a good night out should feel like a spreadsheet.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head"><span class="no"><b>03</b> / Our venues</span></div>
+    {venue_rows()}
+  </div>
+</section>
+""", image="/assets/img/bebop-room.jpg", schema=[ORG])
+
+# ---------------------------------------------------------------- services
+
+services_faq = [
+    ("What does a hospitality consultant in Jakarta actually do?", "We help you decide what to open, where, and for whom; then we build the brand, menu, bar programme, team and systems, and launch it. You can hire us for all of it or one piece."),
+    ("Do you only work on new openings?", "No. Some of our best work is on venues that are already open: a menu that isn’t selling, a launch that didn’t land, a team that keeps turning over, or marketing that isn’t filling tables."),
+    ("How much does it cost?", "Monthly retainers start from IDR 20 million. For the right project we also work on a revenue-partner model, so our fee moves with your results. Bubble + Squeak marketing packages start from USD 950 a month."),
+    ("Do you work outside Jakarta?", "Our home is Senopati, but we work with brands across Indonesia and Southeast Asia where the project is a good fit."),
+    ("Who will actually work on my project?", "The same senior team that runs BEBOP, BRIQ, The Bluebell and Brock. That’s why we only take on a few projects a year."),
+]
+
+page("/services/", "Restaurant & Bar Consultants in Jakarta | F&B Concept, Launch & Marketing | Basho Projects",
+     "Hospitality and F&B consultants in Jakarta. Concept development, brand, menu and bar programmes, operations, launch and performance marketing, from the operators behind BEBOP, BRIQ and The Bluebell.",
+     f"""
+<section class="section">
+  <div class="wrap">
+    <span class="eyebrow">Services · F&B consultancy, Jakarta</span>
+    <h1 style="font-size:clamp(52px,9vw,140px);max-width:13ch">We’ve made the mistakes <span class="serif" style="font-family:var(--serif);font-weight:400;color:var(--hot)">so you don’t have to.</span></h1>
+    <div class="split" style="margin-top:40px">
+      <p class="lede reveal">Restaurant, bar and hospitality consultancy from a team that runs its own venues in Senopati every night. Hire us for the whole build, or for the one problem you can’t solve internally.</p>
+      <div class="btn-row reveal"><a class="btn btn--hot" href="#start">Start a project</a><a class="btn btn--line" href="#how">How it works</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="section ink">
+  <div class="wrap">
+    <div class="sec-head"><span class="no"><b>01</b> / Three ways in</span></div>
+    <div class="offer">
+      <div class="reveal"><span class="eyebrow">Full build</span><h3>Incubation</h3><p>From idea to opening night: concept, site, numbers, brand, menu, team, systems and launch. The playbook we used to open BRIQ and BEBOP.</p></div>
+      <div class="reveal feat" style="background:var(--hot);border-color:var(--hot);color:#fff"><span class="eyebrow">Get noticed</span><h3>Launch & marketing</h3><p style="color:#fff">Pre-opening buzz, content, ads, KOLs and PR, run in-house by Bubble + Squeak Media. Built to fill tables, not just feeds.</p></div>
+      <div class="reveal"><span class="eyebrow">Fix one thing</span><h3>Targeted help</h3><p>A menu that isn’t selling, a bar programme that needs a rethink, a team that keeps turning over. We come in, fix it, hand it back.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap split">
+    <div><div class="sec-head" style="border:0;padding:0"><span class="no"><b>02</b> / What we do</span></div>
+      <h2 style="font-size:clamp(36px,5vw,72px)">Everything a room needs to <span class="serif" style="font-family:var(--serif);font-weight:400;color:var(--hot)">work.</span></h2>
+      <p class="muted">Tap a discipline to see what’s included.</p></div>
+    <div class="reveal">{accordion()}</div>
+  </div>
+</section>
+
+<section class="section ink" id="how">
+  <div class="wrap">
+    <div class="sec-head"><span class="no"><b>03</b> / How it works</span></div>
+    <ol class="steps">
+      <li><b>Listen</b><p>A coffee, a cocktail or a call. We learn the concept, the site, the budget and what you actually want out of it.</p></li>
+      <li><b>Test</b><p>We pressure-test the idea against what we see on our own floors every night, and tell you straight if it won’t work.</p></li>
+      <li><b>Build</b><p>Brand, menu, bar, team, systems and numbers, built alongside you with no black boxes or surprises.</p></li>
+      <li><b>Launch & run</b><p>Opening, marketing and the first months of trading, until it runs without us.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="sec-head"><span class="no"><b>04</b> / Proof, not a portfolio</span></div>
+    <h2 class="reveal" style="font-size:clamp(32px,4vw,60px);max-width:20ch;margin-bottom:40px">Our case studies have <span class="serif" style="font-family:var(--serif);font-weight:400;color:var(--hot)">opening hours.</span></h2>
+    <div class="proof">
+      <a class="reveal" href="/bebop/"><div class="ph">{img("bebop-hero.jpg", "BEBOP Bar + Kitchen")}</div><b>BEBOP Bar + Kitchen</b><span>Idea to open under our concept process, then a rebrand to match its crowd. Now a Senopati jazz and cocktail bar with 14 resident DJs.</span></a>
+      <a class="reveal" href="/briq-bistro/"><div class="ph">{img("briq-room.jpg", "BRIQ Bistro")}</div><b>BRIQ Bistro</b><span>Positioned between fine and casual using our go-to-market playbook, with Meta, Google and KOL campaigns that turned first visits into regulars.</span></a>
+      <a class="reveal" href="/the-bluebell/"><div class="ph">{img("bluebell-hall-night.jpg", "The Bluebell Public House")}</div><b>The Bluebell Public House</b><span>A modern British pub and chophouse, from site and bar design to a six-line draught programme and launch.</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="section ink">
+  <div class="wrap">
+    <div class="sec-head"><span class="no"><b>05</b> / Ways to pay</span></div>
+    <div class="offer">
+      <div class="reveal feat" style="background:#221f1a;border-color:#221f1a"><span class="eyebrow">Monthly retainer</span><div class="price">IDR 20jt+</div><p>Continuous, accountable support across brand, marketing and operations, from IDR 20 million a month.</p></div>
+      <div class="reveal feat" style="background:#221f1a;border-color:#221f1a"><span class="eyebrow">Revenue partner</span><div class="price">% share</div><p>Our fee moves with your growth. Embedded with your team for long-term commercial alignment.</p></div>
+      <div class="reveal feat" style="background:#221f1a;border-color:#221f1a"><span class="eyebrow">Marketing only</span><div class="price">USD 950+</div><p>Performance marketing and PR through <a href="/bubbleandsqueakmedia/">Bubble + Squeak Media</a>, per month.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap split">
+    <div><div class="sec-head" style="border:0;padding:0"><span class="no"><b>06</b> / FAQ</span></div><h2 style="font-size:clamp(32px,4vw,56px)">Before you ask</h2></div>
+    <div>{faq_html(services_faq)}</div>
+  </div>
+</section>
+<div id="start"></div>
+""", image="/assets/img/bebop-hero.jpg", schema=[ORG, faq_schema(services_faq),
+     {"@context": "https://schema.org", "@type": "ProfessionalService", "name": "Basho Projects — Hospitality Consulting",
+      "url": f"{DOMAIN}/services/", "areaServed": ["Jakarta", "Indonesia", "Southeast Asia"],
+      "serviceType": ["Restaurant consulting", "Bar consulting", "F&B concept development", "Hospitality marketing"],
+      "parentOrganization": {"@type": "Organization", "name": "Basho Projects", "url": DOMAIN}}],
+     enquiry="Work with us (services)")
+
+# ---------------------------------------------------------------- invest
+
+invest_faq = [
+    ("Can I invest in a Basho Projects venue?", "We bring partners in on new concepts rather than selling stakes in existing venues by default. Tell us what you’re looking for and we’ll tell you honestly whether there’s a fit."),
+    ("What kind of projects do you open?", "Bars, restaurants and food-led concepts with a clear point of view, mostly in and around Senopati and South Jakarta, where we know the streets, the landlords and the crowd."),
+    ("Who runs the venue day to day?", "We do. Every project is operated by the Basho team, with the same systems, suppliers and marketing engine behind BEBOP, BRIQ and The Bluebell."),
+    ("Where can I see the numbers?", "Projections, structure and terms are shared privately, project by project, once we’ve had a first conversation."),
+]
+
+page("/invest/", "Invest in Restaurants & Bars in Jakarta | Hospitality Investment | Basho Projects",
+     "Looking to invest in hospitality in Jakarta? Basho Projects brings partners in on new bar and restaurant concepts in Senopati, operator-led by the team behind BEBOP, BRIQ and The Bluebell.",
+     f"""
+<section class="ghero" style="padding-bottom:clamp(56px,8vw,110px)">
+  <div class="wrap">
+    <span class="eyebrow">Invest · Hospitality in Jakarta</span>
+    <h1 style="max-width:12ch">Back operators, <span class="serif">not just concepts.</span></h1>
+    <div class="split" style="margin-top:28px">
+      <p class="lede">Basho Projects opens a small number of new bars and restaurants and brings in partners for each one. You get a concept built and run by the people who already run four venues in Senopati, every night.</p>
+      <div class="btn-row"><a class="btn btn--hot" href="#collaborate">Start a conversation</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="sec-head"><span class="no"><b>01</b> / Why partner with us</span></div>
+    <div class="svc">
+      <article class="reveal"><span class="ix">01</span><h3>We operate what we open</h3><p class="muted">No hand-off after launch. The team that designs the concept runs the floor, the bar, the kitchen and the marketing.</p></article>
+      <article class="reveal"><span class="ix">02</span><h3>A neighbourhood we know</h3><p class="muted">Four venues within walking distance in Senopati: we know the streets, the landlords, the suppliers and the crowd that actually turns up.</p></article>
+      <article class="reveal"><span class="ix">03</span><h3>Shared engine</h3><p class="muted">Group buying, our own butcher in Brock, a 14-strong DJ collective, an in-house marketing agency and proven programming formats from day one.</p></article>
+      <article class="reveal"><span class="ix">04</span><h3>Built to last a decade</h3><p class="muted">We design rooms for regulars, not for one viral season. Concepts are made to be adaptable, scalable and repeatable.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="section ink">
+  <div class="wrap">
+    <div class="sec-head"><span class="no"><b>02</b> / How it works</span></div>
+    <ol class="steps">
+      <li><b>Intro</b><p>A first conversation about what you’re looking for: involvement, timeline and the kind of concept that excites you.</p></li>
+      <li><b>The project</b><p>We share the concept, site and plan for an upcoming opening, privately and in detail.</p></li>
+      <li><b>Structure</b><p>Terms are agreed project by project, with clear reporting and the operating team named up front.</p></li>
+      <li><b>Open & run</b><p>We build, launch and operate. You get regular updates and a standing table.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="sec-head"><span class="no"><b>03</b> / The track record</span><a href="/our-projects/">All venues →</a></div>
+    {venue_rows()}
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="wrap split">
+    <div><div class="sec-head" style="border:0;padding:0"><span class="no"><b>04</b> / FAQ</span></div><h2 style="font-size:clamp(32px,4vw,56px)">Investor questions</h2>
+      <p class="muted">Projections and terms are only shared privately. Nothing on this page is an offer of investment.</p></div>
+    <div>{faq_html(invest_faq)}</div>
+  </div>
+</section>
+""", image="/assets/img/bluebell-hall-night.jpg", schema=[ORG, faq_schema(invest_faq)], enquiry="Invest or partner on a project")
+
+# ---------------------------------------------------------------- contact
+
+page("/contact/", "Contact Basho Projects | Jakarta Hospitality Group",
+     "Get in touch with Basho Projects in Senopati, Jakarta: table bookings and private events, F&B consulting, investment and partnerships, press.",
+     f"""
+<section class="section">
+  <div class="wrap split">
+    <div class="reveal">
+      <span class="eyebrow">Contact</span>
+      <h1 style="font-size:clamp(48px,7vw,104px)">Coffee, cocktails <span class="serif" style="font-family:var(--serif);font-weight:400;color:var(--hot)">or call.</span></h1>
+      <p class="lede">Launching your first concept, reimagining a space, looking to invest, or just after a table? Tell us what you’re after and the right person will reply.</p>
+      <p><a class="btn" href="{WA_GROUP}" target="_blank" rel="noopener">Message us on WhatsApp</a></p>
+      <h2 class="h4" style="margin-top:40px">Booking a table?</h2>
+      <ul class="facts">
+        {"".join(f'<li><span>{VENUES[k]["short"]}</span><span><a href="{VENUES[k]["path"]}">{VENUES[k]["tag"]} →</a></span></li>' for k in VENUE_ORDER)}
+      </ul>
+      <p class="muted" style="margin-top:24px">PT Basho Projects Capital · Senopati, South Jakarta</p>
+    </div>
+    <div class="reveal">{contact_form()}</div>
+  </div>
+</section>
+""", image="/assets/img/bebop-bar.jpg", with_collab=False, schema=[ORG])
+
+# ---------------------------------------------------------------- venues index
+
+page("/our-projects/", "Bars & Restaurants in Senopati, Jakarta | BEBOP, BRIQ, The Bluebell & Brock",
+     "The bars, restaurants and food businesses Basho Projects runs in Senopati, South Jakarta: BEBOP Bar + Kitchen, BRIQ Bistro, The Bluebell Public House and Brock Butchery.",
+     f"""
+<section class="section ink">
+  {marquee("Our venues *")}
+  <div class="wrap">
+    <h1 class="skip">Our bars and restaurants in Senopati</h1>
+    <p class="lede reveal" style="max-width:44ch;margin-bottom:48px">Everything we recommend, we run ourselves. Four places within a few minutes’ walk of each other in Senopati, South Jakarta.</p>
+    {venue_rows("h2")}
+    <a class="vrow reveal" href="/bubbleandsqueakmedia/" style="text-decoration:none;--vc:#72a9d8">
+      <span class="vrow__no">05</span><h2 style="font-size:clamp(28px,4vw,56px);margin:0">Bubble + Squeak</h2>
+      <div class="vrow__meta"><span class="tag">Media agency</span>Performance marketing, KOLs and PR. The agency behind our own launches.</div>
+      <div class="vrow__acts"><span class="pill">Visit</span></div>
+    </a>
+  </div>
+</section>
+""", image="/assets/img/bebop-bar.jpg")
+
+
+# ---------------------------------------------------------------- bubble + squeak (blue)
+
+BS_SERVICES = [
+    ("bs-icon-strategy.png", "Marketing strategy", "Plan what to run, when and where — with clarity. We build your full funnel from awareness to retention and guide key growth decisions alongside founders. Everything is data-led: pricing, offers and contribution, tracked against ROAS, CAC, LTV and payback. Scalable systems, not one-off campaigns."),
+    ("bs-icon-creative.png", "Creative direction", "Brand identities that feel true and connect. Campaign ideas built to convert, not just look good — clear direction for ads, socials and shoots, with the right hooks, angles and messaging."),
+    ("bs-icon-ads.png", "Advertising management", "Full-funnel management across Meta, Google and TikTok, top to bottom of funnel with clear KPI roles. Optimised for ROAS, CAC and CPA, with ongoing testing, smart budget allocation and retargeting that grows LTV."),
+    ("bs-icon-pr.png", "PR & KOL management", "A curated network of vetted KOLs and creators across TikTok and Instagram, selected for reach, engagement and proven conversions. Campaigns built to scale and drive measurable awareness."),
+]
+bs_cards = "".join(f'<article class="reveal">{img(i, "")}<h3>{t}</h3><p class="muted">{d}</p></article>' for i, t, d in BS_SERVICES)
+BS_CROSS = '<svg class="bs-cross" viewBox="0 0 100 100" aria-hidden="true"><path fill="#72a9d8" d="M50 4c9 0 14 8 14 18v14h14c10 0 18 5 18 14s-8 14-18 14H64v14c0 10-5 18-14 18s-14-8-14-18V64H22C12 64 4 59 4 50s8-14 18-14h14V22C36 12 41 4 50 4z"/></svg>'
+bs_faq = [
+    ("What does Bubble + Squeak Media do?", "Performance marketing and PR for F&B and lifestyle brands: Meta, Google and TikTok ads, KOL and creator campaigns, social content and creative direction."),
+    ("Who is behind Bubble + Squeak?", "It’s the media agency of Basho Projects, the Jakarta hospitality group behind BEBOP, BRIQ and The Bluebell. We built it to market our own venues first."),
+    ("How much does it cost?", "Packages start from USD 950 a month. Starter covers advertising or PR, Growth covers both, Enterprise is the full service."),
+]
+
+page("/bubbleandsqueakmedia/", "Bubble + Squeak Media | F&B Marketing, Ads & KOL Agency in Jakarta",
+     "Bubble + Squeak Media is a Jakarta performance marketing and PR agency for F&B and lifestyle brands: Meta, Google and TikTok ads, KOLs, social content and creative strategy. From USD 950 a month.",
+     f"""
+<section class="section">
+  <div class="wrap split split--center">
+    <div class="reveal">
+      <span class="mono">FROM IDEAS INTO PERFORMANCE!</span>
+      <h1 style="margin-top:14px">Bubble<br>+Squeak<br>Media</h1>
+      <p class="lede">We create, launch and optimise campaigns that actually work. No fluff — just smart marketing with results you can see.</p>
+      <div class="btn-row"><a class="btn" href="#collaborate">Work with us</a><a class="btn btn--blue" href="https://www.instagram.com/bubblesqueakmedia/" target="_blank" rel="noopener">@bubblesqueakmedia</a></div>
+    </div>
+    <div class="reveal" style="display:grid;place-items:center">{BS_CROSS}</div>
+  </div>
+</section>
+<section class="bs-strip">{marquee("Performance marketing + Influencer marketing + Social media production + Creative strategy & campaigns +")}</section>
+<section class="section">
+  <div class="wrap">
+    <div class="split" style="margin-bottom:56px">
+      <div class="reveal"><span class="mono">ABOUT</span><h2 style="margin-top:12px">A media agency by Basho Projects.</h2></div>
+      <p class="reveal lede">We drive growth through performance marketing and strategic collaborations, combining data-led strategy with creative execution to deliver campaigns that are relevant, measurable and built to convert. We built it for our own venues first — now it’s open to yours.</p>
+    </div>
+    <span class="mono">WHAT WE DO</span>
+    <div class="bs-grid" style="margin-top:16px">{bs_cards}</div>
+  </div>
+</section>
+<section class="section dark">
+  <div class="wrap split split--center">
+    <div class="media media--wide reveal">{img("briq-case-study.webp", "BRIQ Bistro, Jakarta Selatan")}</div>
+    <div class="reveal">
+      <span class="mono" style="color:#72a9d8">CASE STUDY</span>
+      <h2 style="margin-top:12px">BEBOP & BRIQ</h2>
+      <h3 class="h4">What we did</h3>
+      <ul class="ticks">
+        <li>Ran Meta and Google Ads to drive awareness, traffic and bookings</li>
+        <li>Optimised Google Business for strong local discovery</li>
+        <li>Activated KOLs to reach relevant audiences and build cultural relevance</li>
+        <li>Rebranded BEBOP to align with its evolving crowd and energy</li>
+        <li>Built campaigns and events that turned guests into regulars</li>
+      </ul>
+    </div>
+  </div>
+</section>
+<section class="section">
+  <div class="wrap">
+    <span class="mono">ADD-ONS</span>
+    <ul class="chips reveal" style="margin-top:14px"><li>SEO + Google Business</li><li>Branding & graphic design</li><li>Web development</li><li>Social media marketing</li><li>Photo & video production</li></ul>
+    <h2 style="margin-top:72px" class="reveal">From $950 USD / month</h2>
+    <div class="grid-3" style="margin-top:32px">
+      <div class="tier reveal"><h3>Starter</h3><p class="muted">Advertising or PR. Best for brands starting with performance marketing.</p></div>
+      <div class="tier feat reveal"><h3>Growth</h3><p class="muted">Advertising and PR. For brands ready to scale.</p></div>
+      <div class="tier reveal"><h3>Enterprise</h3><p class="muted">The full service. For brands that want full support.</p></div>
+    </div>
+    <div class="split" style="margin-top:72px">
+      <div><span class="mono">FAQ</span><h2 style="margin-top:12px;font-size:clamp(28px,3.4vw,48px)">Good questions</h2></div>
+      <div>{faq_html(bs_faq)}</div>
+    </div>
+  </div>
+</section>
+""", image="/assets/img/briq-case-study.webp", body_class="bs", schema=[faq_schema(bs_faq)], enquiry="Bubble + Squeak Media")
+
+
 # ---------------------------------------------------------------- redirects & extras
 
 for old, new in [("/home/", "/"), ("/about-us/", "/about/"), ("/bebop-1/", "/bebop/"),
@@ -1028,7 +1381,7 @@ main_inner = home.split('<main id="main">')[1].split("</main>")[0]
 """).replace(home.split("<title>")[1].split("</title>")[0], "Page not found | Basho Projects")
     .replace('<meta name="viewport"', '<meta name="robots" content="noindex">\n<meta name="viewport"'))
 
-pages = ["/", "/about/", "/services/", "/contact/", "/our-projects/", "/bebop/", "/briq-bistro/",
+pages = ["/", "/about/", "/services/", "/invest/", "/contact/", "/our-projects/", "/bebop/", "/briq-bistro/",
          "/brock-butchery/", "/the-bluebell/", "/bubbleandsqueakmedia/", "/blog/"] + [f"/blog/{p['slug']}/" for p in POSTS]
 (ROOT / "sitemap.xml").write_text(
     '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'

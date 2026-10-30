@@ -74,24 +74,31 @@ document.addEventListener("DOMContentLoaded", () => {
     const status = form.querySelector(".form-status");
     form.addEventListener("submit", async (ev) => {
       ev.preventDefault();
+      if (!form.reportValidity()) return;
       const data = new FormData(form);
+      const kind = data.get("enquiry_type") || "Enquiry";
+      const toWhatsApp = () => {
+        const text =
+          `Hello Basho Projects — ${kind}\n\n${data.get("message")}\n\n` +
+          `${data.get("first_name")} ${data.get("last_name")}\n${data.get("email")}`;
+        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`, "_blank", "noopener");
+      };
       if (FORM_ENDPOINT) {
         status.textContent = "Sending…";
         try {
           const fields = Object.fromEntries(data.entries());
           fields.name = `${fields.first_name || ""} ${fields.last_name || ""}`.trim();
-          await sendForm(fields, `New enquiry from ${fields.name} — bashoprojects.com`);
+          await sendForm(fields, `${kind}: ${fields.name} — bashoprojects.com`);
           form.reset();
           status.textContent = "Thank you. We'll be in touch shortly.";
         } catch (err) {
-          status.textContent = "Something went wrong. Please message us on WhatsApp instead.";
+          // Never lose an enquiry: fall back to WhatsApp with the message filled in
+          status.textContent = "Our inbox didn't answer, so we've opened WhatsApp with your message.";
+          toWhatsApp();
         }
         return;
       }
-      const text =
-        `Hello Basho Projects,\n\n${data.get("message")}\n\n` +
-        `${data.get("first_name")} ${data.get("last_name")}\n${data.get("email")}`;
-      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`, "_blank", "noopener");
+      toWhatsApp();
       status.textContent = "Opening WhatsApp…";
     });
   });
@@ -155,7 +162,9 @@ document.addEventListener("DOMContentLoaded", () => {
           form.reset();
           if (note) note.textContent = "You're on the list. See you at the bar.";
         } catch (err) {
-          if (note) note.textContent = "That didn't go through. Try again in a moment.";
+          const text = `Hi Basho, please add me to the guest list: ${email}`;
+          window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`, "_blank", "noopener");
+          if (note) note.textContent = "Our inbox didn't answer, so we've opened WhatsApp to confirm.";
         }
       } else {
         const text = `Hi Basho, please add me to the guest list: ${email}`;
