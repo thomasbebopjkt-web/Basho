@@ -92,6 +92,7 @@ VENUES = {
         "hours_text": "Mon–Thu 10:00–01:00 · Fri–Sun 10:00–02:00",
         "hours": {0: [[10, 26]], 1: [[10, 25]], 2: [[10, 25]], 3: [[10, 25]], 4: [[10, 25]], 5: [[10, 26]], 6: [[10, 26]]},
         "phone": "0821-4401-216", "tel": "+628214401216",
+        "book": WA_GROUP,
         "maps": "https://share.google/se4JQBoWzcS53Zwa8",
         "instagram": "https://www.instagram.com/atthebluebell/",
         "ig_handle": "@atthebluebell",
@@ -122,6 +123,7 @@ def header():
       <a href="/services/">Services</a>
       <a href="/invest/">Invest</a>
       <a href="/about/">About</a>
+      <a href="/team/">Team</a>
       <a href="/blog/">Journal</a>
       <a class="btn" href="/contact/">Contact</a>
     </nav>
@@ -187,7 +189,7 @@ def footer():
         <p class="nl__note muted" role="status" aria-live="polite" style="font-size:13px;margin-top:8px"></p>
       </div>
       <div><p class="foot-h">Projects</p><ul>{venues}</ul></div>
-      <div><p class="foot-h">Company</p><ul><li><a href="/services/">Services</a></li><li><a href="/about/">About us</a></li><li><a href="/blog/">Blog</a></li><li><a href="/contact/">Contact</a></li></ul></div>
+      <div><p class="foot-h">Company</p><ul><li><a href="/services/">Services</a></li><li><a href="/about/">About us</a></li><li><a href="/team/">Team</a></li><li><a href="/blog/">Blog</a></li><li><a href="/contact/">Contact</a></li></ul></div>
       <div><p class="foot-h">Follow</p><ul><li><a href="{VENUES['bebop']['instagram']}" target="_blank" rel="noopener">BEBOP on Instagram</a></li><li><a href="{VENUES['briq-bistro']['instagram']}" target="_blank" rel="noopener">BRIQ on Instagram</a></li><li><a href="{VENUES['the-bluebell']['instagram']}" target="_blank" rel="noopener">The Bluebell on Instagram</a></li><li><a href="{VENUES['brock-butchery']['instagram']}" target="_blank" rel="noopener">Brock on Instagram</a></li><li><a href="{WA_GROUP}" target="_blank" rel="noopener">WhatsApp us</a></li></ul></div>
     </div>
     <div class="legal"><span>© <span data-year>2026</span> PT Basho Projects Capital</span><span>Made in Senopati, Jakarta</span></div>
@@ -206,7 +208,7 @@ SEO_META = {
     "/brock-butchery/": ("Brock Butchery | Premium Meat Delivered in Jakarta",
                          "Premium meat delivered across Jakarta. Order on Tokopedia or Shopee with no minimum, or set up trade supply."),
     "/the-bluebell/": ("The Bluebell Public House | British Pub, Senopati",
-                       "Modern British public house in Senopati: six draught lines, ale, whisky, pub classics, private dining. Open daily."),
+                       "British pub in Senopati: pints, G&Ts, pitchers and cocktails, fish & chips, pies and Guinness. Open daily from 10:00."),
     "/blog/": ("Journal | Stories from Senopati | Basho Projects",
                "Stories from Basho Projects in Senopati, Jakarta: openings, live jazz at BEBOP, The Bluebell and more."),
     "/blog/the-bluebell-public-house-opens-in-south-jakarta/": ("The Bluebell Public House Opens in Senopati, Jakarta",
@@ -348,6 +350,51 @@ def logo_src():
     return _optimise("basho-logo.png")[0][0][0]
 
 
+TEAM = [
+    {"key": "shawn", "name": "Shawn Andrew", "role": "Chief Executive Officer", "initials": "SA",
+     "linkedin": "https://www.linkedin.com/in/shawn-andrew-621117306/",
+     "bio": "Shawn leads Basho Projects — in his words, “a small grass-roots F&B group” — and sets the direction across BEBOP, BRIQ, The Bluebell and Brock, and the partner projects we take on."},
+    {"key": "dony", "name": "Dony Renato S. Naibaho", "role": "Chief Financial Officer", "initials": "DN",
+     "linkedin": "https://www.linkedin.com/in/dony-renato-s-naibaho-b5b324192/",
+     "bio": "Dony drives the group’s financial and legal strategy: the numbers, structures and agreements behind every venue and every new project."},
+    {"key": "sam", "name": "Samuel Joesoep", "role": "Founder, Brock Butchery · Operations Manager, Basho Projects", "initials": "SJ",
+     "linkedin": "https://www.linkedin.com/in/samueljoesoep/",
+     "bio": "Sam founded Brock Butchery and runs operations across Basho Projects, with a focus on strategy, business development and growth."},
+]
+
+
+def team_photo(key):
+    for ext in ("jpg", "jpeg", "png", "webp"):
+        if (IMG_DIR / f"team-{key}.{ext}").exists():
+            return f"team-{key}.{ext}"
+    return None
+
+
+LINKEDIN_ICON = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.75h4v11H3v-11zm6.5 0h3.8v1.5h.06c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.77 2.65 4.77 6.1v5.45h-4v-4.83c0-1.15-.02-2.63-1.6-2.63-1.6 0-1.85 1.25-1.85 2.55v4.91h-4v-11z"/></svg>'
+
+
+def team_cards(heading="h3"):
+    out = []
+    for i, p in enumerate(TEAM, 1):
+        photo = team_photo(p["key"])
+        face = img(photo, p["name"], sizes="(max-width: 760px) 70vw, 30vw") if photo else f'<span class="mono" aria-hidden="true">{p["initials"]}</span>'
+        out.append(f"""<article class="person reveal">
+  <div class="person__face{' has-photo' if photo else ''}">{face}<span class="person__no">0{i}</span></div>
+  <div class="person__body">
+    <span class="person__role">{p['role']}</span>
+    <{heading}>{p['name']}</{heading}>
+    <p>{p['bio']}</p>
+    <a class="pill" href="{p['linkedin']}" target="_blank" rel="noopener">{LINKEDIN_ICON} LinkedIn<span class="skip"> — {p['name']}</span></a>
+  </div>
+</article>""")
+    return f'<div class="people">{"".join(out)}</div>'
+
+
+team_ld = [{"@context": "https://schema.org", "@type": "Person", "name": p["name"], "jobTitle": p["role"],
+            "sameAs": [p["linkedin"]], "worksFor": {"@type": "Organization", "name": "Basho Projects", "url": DOMAIN}} for p in TEAM]
+
+
+
 # ---------------------------------------------------------------- schema helpers
 
 ORG = {
@@ -420,7 +467,7 @@ VENUE_EXTRAS = {
     "brock-butchery": {"values": ["Honest", "Elevated", "Accessible", "Straightforward", "Grounded"],
                        "quote": "Great meat shouldn’t be <em>a luxury.</em>", "by": "Brock Butchery",
                        "more": [("brock-hero.jpg", "Steak on the grill"), ("brock-cuts.jpg", "Premium cuts from Brock"), ("briq-detail.jpg", "Brock beef at BRIQ Bistro")]},
-    "the-bluebell": {"values": ["Draught beer", "Ale", "Whisky", "Public house", "Six lines", "Cheers"],
+    "the-bluebell": {"values": ["Pints", "G&Ts", "Pitchers", "Cocktails", "Fish & chips", "Pies", "Guinness", "Cheers"],
                      "quote": "A proper pint, a warm room and <em>nowhere to be.</em>", "by": "The Bluebell Public House",
                      "more": [("bluebell-hall.jpg", "The dining hall at The Bluebell"), ("bluebell-bar-2.jpg", "Behind the bar"), ("bluebell-facade.jpg", "The Bluebell at night")]},
 }
@@ -516,7 +563,7 @@ def facts(v):
     if v.get("hours_text"):
         rows.append(("Hours", v["hours_text"]))
     if v.get("phone"):
-        rows.append(("Phone", f'<a href="tel:{v["tel"]}">{v["phone"]}</a>'))
+        rows.append(("WhatsApp", f'<a href="{v.get("book", WA_GROUP)}" target="_blank" rel="noopener">Message us to book</a>'))
     if v.get("instagram"):
         rows.append(("Instagram", f'<a href="{v["instagram"]}" target="_blank" rel="noopener">{v["ig_handle"]}</a>'))
     return '<ul class="facts">' + "".join(f"<li><span>{k}</span><span>{val}</span></li>" for k, val in rows) + "</ul>"
@@ -831,21 +878,21 @@ v = VENUES["the-bluebell"]
 bluebell_faq = [
     ("Where is The Bluebell Public House?", "Jl. Tulodong Atas No. 10 A-B, Senopati, South Jakarta 12190 — between Senopati and SCBD, a short walk from BEBOP and BRIQ."),
     ("What are The Bluebell’s opening hours?", "Monday to Thursday 10:00–01:00; Friday to Sunday 10:00–02:00."),
-    ("What’s on tap?", "Draught beer, ale and whisky lead the bar, poured across six draught lines, alongside fine spirits and signature cocktails."),
-    ("Is it a proper British pub?", "A modern one. The Bluebell is a modern British public house: elevated British classics from the kitchen, a bar lounge, a dining hall, a snug and a private dining room."),
-    ("Can I book the private dining room?", "Yes. The private dining room seats ten. Call or message us to book."),
+    ("What’s to drink and eat?", "Beers and pitchers, gin and tonics and cocktails at the bar, plus Guinness. From the kitchen, the pub classics: fish and chips, proper pies and more."),
+    ("Is it a proper British pub?", "A modern one. The Bluebell is a modern British public house: elevated British classics from the kitchen, a bar lounge, a dining hall, the Chess Room (our snug) and a private dining room."),
+    ("Can I book the private dining room?", "Yes. The private dining room seats ten. Message us on WhatsApp to book."),
 ]
 venue_page = f"""
 {vhero(v, "bluebell-facade.jpg", "The Bluebell Public House on Jl. Tulodong Atas, Senopati, at night",
        'The Bluebell <span class="serif">Public House</span>',
-       "A modern British public house in Senopati, South Jakarta. Draught beer, ale and whisky, poured across six lines.")}
-{hub(v, "On tap", "Six lines · pour one", '<span class="beermat" aria-hidden="true">B</span>', [
-    ("Line 1", "Book a table", f"Call {v['phone']}", f"tel:{v['tel']}"),
-    ("Line 2", "Find the pub", "Jl. Tulodong Atas No. 10 A-B", v["maps"]),
-    ("Line 3", "Instagram", v["ig_handle"], v["instagram"]),
-    ("Line 4", "Private dining", "A room for ten", f"tel:{v['tel']}"),
-    ("Line 5", "Our opening story", "From the Basho blog", "/blog/the-bluebell-public-house-opens-in-south-jakarta/"),
-    ("Line 6", "Message the team", "WhatsApp", WA_GROUP),
+       "A modern British public house in Senopati, South Jakarta. Pints, G&Ts and pitchers, fish & chips and a proper pie.")}
+{hub(v, "Your round", "Pints · G&Ts · pitchers", '<span class="beermat" aria-hidden="true">B</span>', [
+    ("Round 1", "Book a table", "WhatsApp us, we’ll hold it", v["book"]),
+    ("Round 2", "Find the pub", "Jl. Tulodong Atas No. 10 A-B", v["maps"]),
+    ("Round 3", "Instagram", v["ig_handle"], v["instagram"]),
+    ("Round 4", "Private dining", "A room for ten", v["book"]),
+    ("Round 5", "Our opening story", "From the Basho blog", "/blog/the-bluebell-public-house-opens-in-south-jakarta/"),
+    ("Round 6", "Message the team", "WhatsApp", WA_GROUP),
 ], f'<span>{v["hours_text"]}</span><span>Cheers</span>')}
 
 <section class="section">
@@ -853,8 +900,8 @@ venue_page = f"""
     <div class="media media--tall reveal">{img("bluebell-door.jpg", "The front door of The Bluebell Public House")}</div>
     <div class="reveal">
       <span class="eyebrow">The pub</span>
-      <h2>Draught beer. Ale. <span class="serif">Whisky.</span></h2>
-      <p>The Bluebell brings the social soul of the British pub to Senopati: a dimly lit, warm room where post-work drinks stretch into long, relaxed evenings. Thoughtfully elevated British classics from the kitchen; draught beer, ale and whisky at the bar, poured across six lines.</p>
+      <h2>Pints. G&Ts. <span class="serif">Pitchers.</span></h2>
+      <p>The Bluebell brings the social soul of the British pub to Senopati: a dimly lit, warm room where post-work drinks stretch into long, relaxed evenings. Beers and pitchers for the table, gin and tonics, cocktails and a proper Guinness at the bar; fish and chips, pies and British pub classics from the kitchen.</p>
       <p>Cosy nooks, a proper bar lounge, a dining hall and a private dining room — approachably premium and easy to enjoy, whether you’re in for a quick bite after work or settling in for a nightcap.</p>
       <p><a class="btn" href="/blog/the-bluebell-public-house-opens-in-south-jakarta/">Read the opening story</a></p>
     </div>
@@ -867,9 +914,9 @@ venue_page = f"""
       <span class="eyebrow">The rooms</span>
       <h2>Pick your <span class="serif">corner.</span></h2>
       <ul class="facts">
-        <li><span>Bar lounge</span><span>High stools, the long bar and six draught lines</span></li>
+        <li><span>Bar lounge</span><span>High stools, the long bar and pitchers for the table</span></li>
         <li><span>Dining hall</span><span>Banquettes, pendant lights and the full pub menu</span></li>
-        <li><span>The snug</span><span>A small room for a quiet pint</span></li>
+        <li><span>The Chess Room</span><span>Our snug: a quiet pint and a game of chess</span></li>
         <li><span>Private dining room</span><span>Seats ten, for dinners and celebrations</span></li>
       </ul>
       <p class="muted" style="margin-top:18px">Room for about 95 seated and 140 standing for a full-pub booking.</p>
@@ -893,7 +940,7 @@ venue_page = f"""
 {sisters("the-bluebell")}
 """
 page("/the-bluebell/", "The Bluebell Public House | British Pub in Senopati, South Jakarta",
-     "The Bluebell Public House is a modern British public house in Senopati, South Jakarta. Draught beer, ale and whisky across six lines, British classics, private dining. Open daily from 10:00.",
+     "The Bluebell Public House is a modern British pub in Senopati, South Jakarta: pints, G&Ts, pitchers, fish & chips and pies.",
      venue_page, image="/assets/img/bluebell-facade.jpg", with_collab=False, body_class="venue v-bluebell",
      schema=[venue_schema(v, "bluebell-facade.jpg"), faq_schema(bluebell_faq)])
 
@@ -912,7 +959,7 @@ POSTS = [
         "body": f"""<figure>{img("bluebell-2.jpg", "Inside The Bluebell Public House, Senopati")}</figure>
 <p><strong>Jakarta, 3 October 2026</strong> — The Bluebell Public House introduces a refined yet deeply welcoming slice of British pub culture to the heart of Senopati. Designed as a dimly lit, warm abode, the space pairs an elevated-casual dining experience with a curated drinks programme, making it the perfect setting for post-work unwinding and intimate catch-ups.</p>
 <p>The concept captures the social soul of the traditional public house, offering cosy nooks where daytime conversations naturally stretch into long, relaxed evenings.</p>
-<h2>British classics, draught beer and whisky</h2>
+<h2>Fish & chips, pies and a proper pint</h2>
 <p>The menu strikes a balance between comfort and sophistication, featuring thoughtfully elevated British classics alongside draught beers, fine spirits, and signature cocktails. Approachably premium and easy to enjoy, the food and drinks are crafted for any occasion — whether you are stopping by for a quick bite after office hours or settling in for a nightcap.</p>
 <h2>A different kind of night out in Senopati</h2>
 <p>Tucked into Senopati’s vibrant landscape, The Bluebell Public House offers a distinct alternative to the neighbourhood’s bustling dining scene, blending the timeless familiarity of pub culture into a contemporary Jakarta setting.</p>
@@ -921,7 +968,7 @@ POSTS = [
 <h3 class="h4">About The Bluebell Public House</h3>
 <p>The Bluebell Public House is a British-inspired pub in Senopati, South Jakarta. The concept brings together food, drinks, and a relaxed social atmosphere, drawing on the character of the British pub while making it its own in Jakarta.</p>
 <h3 class="h4">Address + contact</h3>
-<p>{BB["address"]}<br>Open {BB["hours_text"]}<br>Instagram: <a href="{BB["instagram"]}" target="_blank" rel="noopener">{BB["ig_handle"]}</a><br>Phone: <a href="tel:{BB["tel"]}">{BB["phone"]}</a></p>
+<p>{BB["address"]}<br>Open {BB["hours_text"]}<br>Instagram: <a href="{BB["instagram"]}" target="_blank" rel="noopener">{BB["ig_handle"]}</a><br>Bookings: <a href="{WA_GROUP}" target="_blank" rel="noopener">WhatsApp us</a></p>
 </div>
 <p><a class="btn" href="/the-bluebell/">Visit The Bluebell</a></p>""",
     },
@@ -1010,7 +1057,7 @@ def venue_rows(heading_tag="h3"):
         if v.get("book"):
             acts.append(f'<a class="pill" href="{v["book"]}" target="_blank" rel="noopener">Book</a>')
         elif v.get("tel"):
-            acts.append(f'<a class="pill" href="tel:{v["tel"]}">Call to book</a>')
+            acts.append(f'<a class="pill" href="{WA_GROUP}" target="_blank" rel="noopener">Book</a>')
         if v.get("menu"):
             acts.append(f'<a class="pill" href="{v["menu"]}" target="_blank" rel="noopener">Menu</a>')
         if v.get("tokopedia"):
@@ -1128,7 +1175,7 @@ page("/", "Basho Projects | Jakarta Hospitality Group — BEBOP, BRIQ, The Blueb
       <div class="reveal"><b>4</b><span>venues in Senopati, all walking distance</span></div>
       <div class="reveal"><b>14</b><span>resident DJs in the Bebop Music Collective</span></div>
       <div class="reveal"><b>2</b><span>live jazz nights a week at BEBOP</span></div>
-      <div class="reveal"><b>6</b><span>draught lines pouring at The Bluebell</span></div>
+      <div class="reveal"><b>7</b><span>days a week The Bluebell pulls pints, from 10:00</span></div>
     </div>
   </div>
 </section>
@@ -1142,7 +1189,7 @@ page("/", "Basho Projects | Jakarta Hospitality Group — BEBOP, BRIQ, The Blueb
       <div><em>Tuesday · BEBOP</em><b>Trivia Tuesdays</b><span>Hosted by Kara Chenoa. Brains, banter and a little buzz.</span><a href="/bebop/">BEBOP →</a></div>
       <div><em>Weekly · BEBOP</em><b>BMC Nights & Booty Groove</b><span>The Bebop Music Collective on the decks, then the dance floor.</span><a href="/bebop/#bmc">The collective →</a></div>
       <div><em>Every day · BRIQ</em><b>Steak frites & pasta promos</b><span>Home of the steak frites, plus a new pasta deal most weeks.</span><a href="/briq-bistro/#now-on">BRIQ →</a></div>
-      <div><em>Every day · The Bluebell</em><b>The pub is open</b><span>From 10:00. Draught beer, ale, whisky and proper pub food.</span><a href="/the-bluebell/">The Bluebell →</a></div>
+      <div><em>Every day · The Bluebell</em><b>The pub is open</b><span>From 10:00. Pints, G&Ts, pitchers, fish & chips and pies.</span><a href="/the-bluebell/">The Bluebell →</a></div>
     </div>
   </div>
 </section>
@@ -1216,7 +1263,7 @@ page("/about/", "About Basho Projects | Independent Hospitality Group in Senopat
       <li><b>2022 · The DJs move in</b><span class="muted">A group of DJs find a home at BEBOP and, the following year, launch the Bebop Music Collective — 14 residents strong today.</span></li>
       <li><b>BRIQ Bistro</b><span class="muted">A neighbourhood French bistro crafted between fine and casual, a few minutes’ walk away.</span></li>
       <li><b>2026 · Brock Butchery</b><span class="muted">A problem in our own kitchens becomes a business: premium meat, priced honestly, delivered across Jakarta.</span></li>
-      <li><b>September 2026 · The Bluebell</b><span class="muted">A modern British public house on Jl. Tulodong Atas, pouring across six draught lines.</span></li>
+      <li><b>September 2026 · The Bluebell</b><span class="muted">A modern British public house on Jl. Tulodong Atas: pints, G&Ts, fish & chips and the Chess Room.</span></li>
       <li><b>Bubble + Squeak Media</b><span class="muted">Our in-house agency for performance marketing, KOLs and PR, now open to other brands.</span></li>
     </ol>
   </div>
@@ -1236,7 +1283,15 @@ page("/about/", "About Basho Projects | Independent Hospitality Group in Senopat
 
 <section class="section" style="padding-top:0">
   <div class="wrap">
-    <div class="sec-head"><span class="no"><b>03</b> / Our venues</span></div>
+    <div class="sec-head"><span class="no"><b>03</b> / The team</span><a href="/team/">Meet the team →</a></div>
+    <h2 class="skip">The team behind Basho Projects</h2>
+    {team_cards()}
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head"><span class="no"><b>04</b> / Our venues</span></div>
     {venue_rows()}
   </div>
 </section>
@@ -1306,7 +1361,7 @@ page("/services/", "Restaurant & Bar Consultants in Jakarta | F&B Concept, Launc
     <div class="proof">
       <a class="reveal" href="/bebop/"><div class="ph">{img("bebop-hero.jpg", "BEBOP Bar + Kitchen")}</div><b>BEBOP Bar + Kitchen</b><span>Idea to open under our concept process, then a rebrand to match its crowd. Now a Senopati jazz and cocktail bar with 14 resident DJs.</span></a>
       <a class="reveal" href="/briq-bistro/"><div class="ph">{img("briq-room.jpg", "BRIQ Bistro")}</div><b>BRIQ Bistro</b><span>Positioned between fine and casual using our go-to-market playbook, with Meta, Google and KOL campaigns that turned first visits into regulars.</span></a>
-      <a class="reveal" href="/the-bluebell/"><div class="ph">{img("bluebell-hall-night.jpg", "The Bluebell Public House")}</div><b>The Bluebell Public House</b><span>A modern British public house, from site and bar design to a six-line draught programme and launch.</span></a>
+      <a class="reveal" href="/the-bluebell/"><div class="ph">{img("bluebell-hall-night.jpg", "The Bluebell Public House")}</div><b>The Bluebell Public House</b><span>A modern British public house, from site and bar design to the drinks programme and launch.</span></a>
     </div>
   </div>
 </section>
@@ -1447,6 +1502,33 @@ page("/our-projects/", "Bars & Restaurants in Senopati, Jakarta | BEBOP, BRIQ, T
 """, image="/assets/img/bebop-bar.jpg")
 
 
+# ---------------------------------------------------------------- team
+
+page("/team/", "Our Team | The People Behind Basho Projects, Jakarta",
+     "Meet the team behind Basho Projects in Senopati: Shawn Andrew (CEO), Dony Naibaho (CFO) and Samuel Joesoep (Brock).",
+     f"""
+<section class="section">
+  <div class="wrap">
+    <span class="eyebrow">The team</span>
+    <h1 style="font-size:clamp(52px,9vw,140px);max-width:12ch">The people <span class="serif" style="font-family:var(--serif);font-weight:400">behind the rooms.</span></h1>
+    <p class="lede" style="max-width:44ch;margin-top:20px">A small senior team that builds the venues, runs them every night, and shows up for the partner projects we take on.</p>
+  </div>
+</section>
+<section class="section" style="padding-top:0">
+  <div class="wrap">
+    <h2 class="skip">Leadership</h2>
+    {team_cards()}
+  </div>
+</section>
+<section class="section ink">
+  <div class="wrap split split--center">
+    <div class="reveal"><h2 style="font-size:clamp(34px,4.6vw,68px)">Behind every bar, <span class="serif" style="font-family:var(--serif);font-weight:400;color:var(--hot)">a bigger crew.</span></h2></div>
+    <div class="reveal"><p class="lede">Bartenders, chefs, floor teams, our 14 resident DJs in the Bebop Music Collective and the Bubble + Squeak Media team make the nights happen.</p>
+      <div class="btn-row"><a class="btn" href="/about/">Our story</a><a class="btn btn--line" href="https://www.linkedin.com/company/basho-projects/" target="_blank" rel="noopener">Basho on LinkedIn</a></div></div>
+  </div>
+</section>
+""", image="/assets/img/bebop-room.jpg", schema=[ORG] + team_ld)
+
 # ---------------------------------------------------------------- bubble + squeak (blue)
 
 BS_SERVICES = [
@@ -1527,7 +1609,7 @@ page("/bubbleandsqueakmedia/", "Bubble + Squeak Media | F&B Marketing, Ads & KOL
 # ---------------------------------------------------------------- redirects & extras
 
 for old, new in [("/home/", "/"), ("/about-us/", "/about/"), ("/bebop-1/", "/bebop/"),
-                 ("/bebop-111/", "/bebop/"), ("/the-bluebell-x/", "/the-bluebell/"), ("/meet-the-team/", "/about/")]:
+                 ("/bebop-111/", "/bebop/"), ("/the-bluebell-x/", "/the-bluebell/"), ("/meet-the-team/", "/team/")]:
     redirect(old, new)
 
 home = (ROOT / "index.html").read_text()
@@ -1541,7 +1623,7 @@ main_inner = home.split('<main id="main">')[1].split("</main>")[0]
 """).replace(home.split("<title>")[1].split("</title>")[0], "Page not found | Basho Projects")
     .replace('<meta name="viewport"', '<meta name="robots" content="noindex">\n<meta name="viewport"'))
 
-pages = ["/", "/about/", "/services/", "/invest/", "/contact/", "/our-projects/", "/bebop/", "/briq-bistro/",
+pages = ["/", "/about/", "/team/", "/services/", "/invest/", "/contact/", "/our-projects/", "/bebop/", "/briq-bistro/",
          "/brock-butchery/", "/the-bluebell/", "/bubbleandsqueakmedia/", "/blog/"] + [f"/blog/{p['slug']}/" for p in POSTS]
 (ROOT / "sitemap.xml").write_text(
     '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'

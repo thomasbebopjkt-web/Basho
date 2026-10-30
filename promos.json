@@ -52,10 +52,10 @@
   "the-bluebell": [
     {
       "kicker": "Every day from 10:00",
-      "title": "Pints, pub classics and a warm room",
-      "text": "Six draught lines, whisky and elevated British pub classics. Bring the team after work or settle in for the evening.",
-      "cta": "Call to book",
-      "url": "tel:+628214401216",
+      "title": "Fish & chips, pies and a pint",
+      "text": "Pints, pitchers, G&Ts and Guinness, with fish & chips and proper pies from the kitchen. Bring the team after work or settle in for the evening.",
+      "cta": "Book on WhatsApp",
+      "url": "https://api.whatsapp.com/send/?phone=6285921219087",
       "image": "bluebell-bar.jpg",
       "feature": true
     },
