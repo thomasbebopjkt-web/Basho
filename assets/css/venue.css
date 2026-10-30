@@ -1,0 +1,124 @@
+/* Basho Projects — venue pages, journal and contact: the graphic layer.
+   Venue colours come from site.css (.v-bebop, .v-briq, .v-brock, .v-bluebell). */
+
+/* ---------- Homepage reel fix ---------- */
+.ghero { padding-bottom: 36px; }
+.reel a { aspect-ratio: 4 / 5; max-height: 52vh; }
+.reel span { top: 12px; bottom: auto; }
+
+/* ---------- Venue typography ---------- */
+.venue h1, .venue h2 { font-family: var(--display); font-weight: 700; letter-spacing: -0.035em; line-height: .96; }
+.venue h2 { font-size: clamp(34px, 4.6vw, 72px); }
+.venue h2 .serif, .venue h1 .serif { font-family: var(--serif); font-weight: 400; font-style: italic; letter-spacing: -0.01em; color: var(--accent); }
+.venue .eyebrow { color: var(--accent); font-weight: 600; }
+.venue .eyebrow::before { background: var(--accent); width: 34px; height: 2px; }
+
+/* ---------- Hero: giant name over full-bleed photo ---------- */
+.vx-top { position: relative; }
+.venue .vhero { min-height: 82svh; }
+.venue .vhero::after { background: linear-gradient(180deg, rgba(0,0,0,.2) 0%, rgba(0,0,0,.25) 35%, rgba(0,0,0,.86) 100%); }
+.venue .vhero > img { animation: kenburns 24s ease-out both; }
+@keyframes kenburns { from { transform: scale(1.08); } to { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .venue .vhero > img { animation: none; } }
+.vx-meta { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-bottom: 14px; }
+.vx-meta .status { margin: 0; }
+.vx-meta .eyebrow { margin: 0; color: #fff; }
+.vx-meta .eyebrow::before { background: #fff; }
+.venue .vx-name { font-size: clamp(64px, 12vw, 210px); line-height: .84; letter-spacing: -0.055em; margin: 0 0 .18em; max-width: none; text-wrap: balance; }
+.venue .vx-name .serif { color: #fff; opacity: .92; display: inline-block; }
+.venue .vhero .sub { max-width: 32em; }
+
+@media (min-width: 1100px) {
+  .venue .vhero { min-height: max(90svh, 760px); }
+  .venue .vhero .wrap { padding-right: calc(min(470px, 36vw) + 6vw); padding-bottom: 72px; }
+  .vx-top .hub-wrap { position: absolute; right: var(--pad); bottom: 48px; width: min(470px, 36vw); margin: 0; padding: 0; z-index: 3; }
+  .vx-top .hub { max-width: none; }
+  .vx-top .hub a { padding-top: 14px; padding-bottom: 14px; }
+}
+
+/* ---------- Values strip ---------- */
+.vx-strip { background: var(--accent); color: #fff; border-block: 1px solid rgba(0,0,0,.15); }
+.vx-strip .marquee { padding: 14px 0; }
+.vx-strip .marquee__track { animation-duration: 40s; }
+.vx-strip .marquee__track span { font-family: var(--display); font-weight: 700; font-size: clamp(26px, 3.4vw, 50px); letter-spacing: -0.02em; text-transform: uppercase; }
+.v-briq .vx-strip, .v-brock .vx-strip { color: var(--vbg); }
+.v-bluebell .vx-strip { color: var(--vbg); }
+
+/* ---------- Big quote + collage ---------- */
+.vx-quote { padding: clamp(40px, 7vw, 100px) 0 clamp(30px, 4vw, 56px); max-width: 1100px; }
+.vx-quote blockquote { margin: 0; font-family: var(--display); font-weight: 700; font-size: clamp(40px, 6.4vw, 104px); line-height: .95; letter-spacing: -0.045em; }
+.vx-quote blockquote em { font-family: var(--serif); font-weight: 400; color: var(--accent); letter-spacing: -0.01em; }
+.vx-quote cite { display: block; margin-top: 18px; font-style: normal; color: var(--vmuted); }
+
+.collage { position: relative; display: grid; grid-template-columns: repeat(12, 1fr); grid-auto-rows: clamp(70px, 7vw, 110px); gap: 14px; margin-bottom: clamp(40px, 6vw, 90px); }
+.collage figure { margin: 0; position: relative; overflow: hidden; border-radius: 6px; box-shadow: 0 18px 50px rgba(0,0,0,.28); transition: transform .5s cubic-bezier(.2,.8,.2,1), box-shadow .5s; background: #000; }
+.collage figure img { width: 100%; height: 100%; object-fit: cover; }
+.collage figcaption { position: absolute; left: 10px; bottom: 10px; right: 10px; color: #fff; font-size: 13px; text-shadow: 0 1px 10px rgba(0,0,0,.7); opacity: 0; transform: translateY(6px); transition: all .3s; }
+.collage figure:hover { transform: rotate(0) scale(1.02); z-index: 3; box-shadow: 0 26px 70px rgba(0,0,0,.4); }
+.collage figure:hover figcaption { opacity: 1; transform: none; }
+.collage figure:nth-child(1) { grid-column: 1 / span 5; grid-row: span 4; transform: rotate(-2deg); }
+.collage figure:nth-child(2) { grid-column: 6 / span 4; grid-row: span 3; transform: rotate(1.5deg); margin-top: 30px; }
+.collage figure:nth-child(3) { grid-column: 10 / span 3; grid-row: span 4; transform: rotate(-1deg); }
+.collage figure:nth-child(4) { grid-column: 2 / span 4; grid-row: span 3; transform: rotate(1.5deg); }
+.collage figure:nth-child(5) { grid-column: 6 / span 3; grid-row: span 3; transform: rotate(-2.5deg); margin-top: -20px; }
+.collage figure:nth-child(6) { grid-column: 9 / span 4; grid-row: span 3; transform: rotate(1deg); }
+.sticker { position: absolute; left: 50%; top: 46%; transform: translate(-50%, -50%) rotate(-8deg); z-index: 4; width: clamp(130px, 13vw, 180px); aspect-ratio: 1; border-radius: 50%; background: var(--accent); color: #fff; display: grid; place-content: center; text-align: center; text-decoration: none; box-shadow: 0 14px 40px rgba(0,0,0,.35); transition: transform .35s; }
+.sticker:hover { transform: translate(-50%, -50%) rotate(4deg) scale(1.06); }
+.sticker span { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; }
+.sticker b { font-family: var(--display); font-size: clamp(15px, 1.4vw, 19px); }
+@media (max-width: 760px) {
+  .collage { grid-template-columns: 1fr 1fr; grid-auto-rows: 130px; gap: 10px; }
+  .collage figure:nth-child(n) { grid-column: auto; grid-row: span 2; margin: 0; }
+  .collage figure:nth-child(1) { grid-column: 1 / -1; }
+  .sticker { position: relative; left: auto; top: auto; transform: rotate(-6deg); grid-column: 1 / -1; justify-self: center; margin: 10px 0; }
+  .sticker:hover { transform: rotate(4deg) scale(1.04); }
+}
+
+/* ---------- Bigger, more graphic info cards ---------- */
+.venue .lineup { background: none; border: 0; gap: 12px; }
+.venue .lineup div { border: 1px solid var(--vline); border-radius: 6px; padding: 24px; position: relative; overflow: hidden; transition: transform .3s, border-color .3s; }
+.venue .lineup div:hover { transform: translateY(-4px); border-color: var(--accent); }
+.venue .lineup b { font-family: var(--display); font-weight: 700; font-size: 24px; letter-spacing: -0.02em; }
+.venue .media img { border-radius: 6px; }
+.venue .media--tall, .venue .media--wide { border-radius: 6px; transform: rotate(-1deg); box-shadow: 0 20px 60px rgba(0,0,0,.25); }
+.venue .facts li span:first-child { font-family: var(--display); font-weight: 600; color: var(--vfg); }
+.venue .faq summary { font-family: var(--display); font-weight: 600; }
+.venue .sister strong { font-family: var(--display); font-weight: 700; font-size: clamp(24px, 2.6vw, 36px); letter-spacing: -0.02em; }
+.venue .sister a { transition: background .3s; }
+.venue .sister a:hover { background: var(--accent); color: #fff; }
+.venue .sister a:hover small { color: #fff; }
+.venue .hub__title { font-size: 34px; }
+
+/* ---------- Journal ---------- */
+.g .posts .post-card h2, .g .posts .post-card h3 { font-family: var(--display); font-weight: 700; letter-spacing: -0.03em; line-height: 1; }
+.journal-feature { display: grid; grid-template-columns: 1.3fr 1fr; gap: clamp(24px, 4vw, 56px); align-items: end; text-decoration: none; margin-bottom: clamp(40px, 6vw, 80px); }
+.journal-feature .ph { aspect-ratio: 4 / 3; overflow: hidden; border-radius: 6px; transform: rotate(-1.2deg); box-shadow: 0 20px 60px rgba(0,0,0,.2); }
+.journal-feature img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s; }
+.journal-feature:hover img { transform: scale(1.04); }
+.journal-feature h2 { font-size: clamp(34px, 4.4vw, 68px); margin: 10px 0 14px; }
+.journal-feature .meta { color: var(--soft); font-size: 14px; }
+@media (max-width: 860px) { .journal-feature { grid-template-columns: 1fr; } }
+.g .article h1 { font-family: var(--display); font-weight: 700; font-size: clamp(40px, 6vw, 88px); line-height: .95; letter-spacing: -0.04em; }
+.g .article { max-width: 820px; }
+.g .article .standfirst { font-family: var(--serif); font-style: italic; font-size: clamp(24px, 2.6vw, 34px); color: var(--hot); }
+.g .article figure:first-of-type { margin-left: calc(-1 * min(12vw, 160px)); margin-right: calc(-1 * min(12vw, 160px)); }
+.g .article figure img { border-radius: 6px; }
+.g .article > p:first-of-type::first-letter, .g .article .standfirst + figure + p::first-letter { font-family: var(--display); font-weight: 800; float: left; font-size: 4.2em; line-height: .85; padding: 6px 10px 0 0; color: var(--hot); }
+.g .article h2 { font-family: var(--display); font-weight: 700; letter-spacing: -0.02em; }
+.g .article blockquote { border-left: 4px solid var(--hot); }
+.g .article .box { background: var(--ink2); color: var(--paper2); border-radius: 6px; }
+.g .article .box a { color: var(--paper2); }
+@media (max-width: 860px) { .g .article figure:first-of-type { margin-left: 0; margin-right: 0; } }
+
+/* ---------- Contact doorways ---------- */
+.contact-doors { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 36px; }
+.contact-doors a { display: flex; flex-direction: column; justify-content: space-between; min-height: 150px; padding: 18px; border-radius: 6px; color: #fff; text-decoration: none; position: relative; overflow: hidden; }
+.contact-doors a img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; transition: transform .6s; }
+.contact-doors a::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.1), rgba(0,0,0,.75)); z-index: 1; }
+.contact-doors a > span { position: relative; z-index: 2; }
+.contact-doors a:hover img { transform: scale(1.06); }
+.contact-doors .k { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; }
+.contact-doors b { font-family: var(--display); font-size: 24px; letter-spacing: -0.02em; display: block; }
+@media (max-width: 860px) { .contact-doors { grid-template-columns: 1fr 1fr; } }
+.v-bluebell .vx-name { font-size: clamp(54px, 8vw, 136px); }
+.v-bluebell .vx-name .serif { display: inline; }
