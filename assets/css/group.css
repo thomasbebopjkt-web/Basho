@@ -214,3 +214,23 @@ body.g .cta-band { background: #d8cfbf; color: #15130f; }
 body.g .cta-band .btn { background: #15130f; border-color: #15130f; color: #f2ede4; }
 body.g .cta-band .eyebrow::before { background: #15130f; }
 body.g .sec-head .no b { color: inherit; text-decoration: underline; text-underline-offset: 4px; }
+
+/* ---------- Team ---------- */
+.people { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(20px, 3vw, 36px); }
+.person { display: flex; flex-direction: column; gap: 18px; }
+.person__face { position: relative; aspect-ratio: 4 / 5; border-radius: 8px; overflow: hidden; background: var(--ink2); display: grid; place-items: center; transition: transform .5s cubic-bezier(.2,.8,.2,1); }
+.person:nth-child(1) .person__face { transform: rotate(-1.5deg); background: #15130f; }
+.person:nth-child(2) .person__face { transform: rotate(1deg); background: #2a2620; }
+.person:nth-child(3) .person__face { transform: rotate(-.6deg); background: #d8cfbf; }
+.person:hover .person__face { transform: rotate(0) scale(1.02); }
+.person__face img { width: 100%; height: 100%; object-fit: cover; }
+.person__face .mono { font-family: var(--display); font-weight: 800; font-size: clamp(90px, 11vw, 170px); letter-spacing: -0.06em; color: #f2ede4; line-height: 1; }
+.person:nth-child(3) .person__face .mono { color: #15130f; }
+.person__no { position: absolute; top: 14px; left: 16px; font-family: var(--display); font-size: 13px; letter-spacing: .1em; color: #f2ede4; opacity: .7; }
+.person:nth-child(3) .person__no { color: #15130f; }
+.person__face.has-photo .person__no { color: #fff; text-shadow: 0 1px 8px rgba(0,0,0,.5); }
+.person__role { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--soft); }
+.person h3 { font-family: var(--display); font-weight: 700; font-size: clamp(28px, 2.8vw, 40px); letter-spacing: -0.03em; line-height: 1; margin: 6px 0 10px; }
+.person p { color: var(--soft); margin: 0 0 14px; }
+.person .pill svg { flex: none; }
+@media (max-width: 900px) { .people { grid-template-columns: 1fr; } .person__face { aspect-ratio: 16 / 10; } }
