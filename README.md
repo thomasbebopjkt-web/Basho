@@ -19,7 +19,7 @@ Then open http://localhost:8080. To publish, run `./deploy.sh`: it rebuilds, pus
 
 ## Contact form
 
-GitHub Pages can't receive form posts. By default the form opens WhatsApp with the message filled in.
+Contact-form enquiries and guest-list sign-ups are emailed through FormSubmit (formsubmit.co) to laskarbebop@gmail.com, copied to thomasbebopjakarta@gmail.com. Change `FORM_TO` / `FORM_CC` at the top of `site/assets/js/site.js`.
 To receive enquiries by email instead, create a free form at https://formspree.io and paste its endpoint into
 `FORM_ENDPOINT` at the top of `site/assets/js/site.js`.
 

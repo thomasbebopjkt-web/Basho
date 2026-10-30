@@ -1,9 +1,28 @@
 // Basho Projects — small site behaviours
 
-// Where contact-form enquiries go. Paste a Formspree (or similar) endpoint here,
-// e.g. "https://formspree.io/f/abcdwxyz". Left empty, the form opens WhatsApp instead.
-const FORM_ENDPOINT = "";
+// Contact-form enquiries and guest-list sign-ups are emailed via FormSubmit
+// (formsubmit.co) to FORM_TO, with a copy to FORM_CC. Left empty, forms open WhatsApp instead.
+const FORM_TO = "laskarbebop@gmail.com";
+const FORM_CC = "thomasbebopjakarta@gmail.com";
+const FORM_ENDPOINT = FORM_TO ? `https://formsubmit.co/ajax/${FORM_TO}` : "";
 const WHATSAPP_NUMBER = "6285921219087";
+
+async function sendForm(fields, subject) {
+  const res = await fetch(FORM_ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify({
+      ...fields,
+      _subject: subject,
+      _cc: FORM_CC,
+      _template: "table",
+      _captcha: "false",
+      page: location.href,
+    }),
+  });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok || String(json.success) !== "true") throw new Error(json.message || res.statusText);
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   const body = document.body;
@@ -59,12 +78,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (FORM_ENDPOINT) {
         status.textContent = "Sending…";
         try {
-          const res = await fetch(FORM_ENDPOINT, {
-            method: "POST",
-            body: data,
-            headers: { Accept: "application/json" },
-          });
-          if (!res.ok) throw new Error(res.statusText);
+          const fields = Object.fromEntries(data.entries());
+          fields.name = `${fields.first_name || ""} ${fields.last_name || ""}`.trim();
+          await sendForm(fields, `New enquiry from ${fields.name} — bashoprojects.com`);
           form.reset();
           status.textContent = "Thank you. We'll be in touch shortly.";
         } catch (err) {
@@ -135,12 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const note = form.parentElement.querySelector(".nl__note") || form.nextElementSibling;
       if (FORM_ENDPOINT) {
         try {
-          const res = await fetch(FORM_ENDPOINT, {
-            method: "POST",
-            body: new URLSearchParams({ email, _subject: "Newsletter sign-up", list: "guest-list" }),
-            headers: { Accept: "application/json" },
-          });
-          if (!res.ok) throw new Error(res.statusText);
+          await sendForm({ email, list: "Guest list (newsletter)" }, `New guest-list sign-up: ${email}`);
           form.reset();
           if (note) note.textContent = "You're on the list. See you at the bar.";
         } catch (err) {
