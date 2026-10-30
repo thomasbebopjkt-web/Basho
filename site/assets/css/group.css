@@ -205,3 +205,12 @@ body.bs main { font-family: var(--body); }
 .ink .offer > div { border-color: rgba(242,237,228,.22); }
 .ink .offer p { color: #b9b2a6; }
 .vrow__meta .status { display: flex; width: fit-content; }
+
+/* Basho is neutral: orange-red belongs to BEBOP. Accents are ink on cream, stone on ink. */
+body.g { --hot: #15130f; }
+body.g .ink, body.g .ghero, body.g .dark { --hot: #d8cfbf; }
+body.g .ink .btn--hot, body.g .ghero .btn--hot { color: #15130f; }
+body.g .cta-band { background: #d8cfbf; color: #15130f; }
+body.g .cta-band .btn { background: #15130f; border-color: #15130f; color: #f2ede4; }
+body.g .cta-band .eyebrow::before { background: #15130f; }
+body.g .sec-head .no b { color: inherit; text-decoration: underline; text-underline-offset: 4px; }

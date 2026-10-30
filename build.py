@@ -81,8 +81,8 @@ VENUES = {
         "name": "The Bluebell Public House",
         "short": "The Bluebell",
         "path": "/the-bluebell/",
-        "tag": "British pub & chophouse · Senopati",
-        "blurb": "Modern British public house and chophouse, Senopati. Owned and operated.",
+        "tag": "British public house · Senopati",
+        "blurb": "Modern British public house, Senopati. Owned and operated.",
         "card_img": "bluebell-bar.jpg",
         "address": "Jl. Tulodong Atas No. 10 A-B, Senopati, South Jakarta 12190",
         "street": "Jl. Tulodong Atas No. 10 A-B", "locality": "Senopati, South Jakarta",
@@ -333,7 +333,7 @@ VENUE_EXTRAS = {
     "brock-butchery": {"values": ["Honest", "Elevated", "Accessible", "Straightforward", "Grounded"],
                        "quote": "Great meat shouldn’t be <em>a luxury.</em>", "by": "Brock Butchery",
                        "more": [("brock-hero.jpg", "Steak on the grill"), ("brock-cuts.jpg", "Premium cuts from Brock"), ("briq-detail.jpg", "Brock beef at BRIQ Bistro")]},
-    "the-bluebell": {"values": ["Draught beer", "Ale", "Whisky", "Chophouse", "Six lines", "Cheers"],
+    "the-bluebell": {"values": ["Draught beer", "Ale", "Whisky", "Public house", "Six lines", "Cheers"],
                      "quote": "A proper pint, a warm room and <em>nowhere to be.</em>", "by": "The Bluebell Public House",
                      "more": [("bluebell-hall.jpg", "The dining hall at The Bluebell"), ("bluebell-bar-2.jpg", "Behind the bar"), ("bluebell-facade.jpg", "The Bluebell at night")]},
 }
@@ -743,13 +743,13 @@ bluebell_faq = [
     ("Where is The Bluebell Public House?", "Jl. Tulodong Atas No. 10 A-B, Senopati, South Jakarta 12190 — between Senopati and SCBD, a short walk from BEBOP and BRIQ."),
     ("What are The Bluebell’s opening hours?", "Monday to Thursday 10:00–01:00; Friday to Sunday 10:00–02:00."),
     ("What’s on tap?", "Draught beer, ale and whisky lead the bar, poured across six draught lines, alongside fine spirits and signature cocktails."),
-    ("Is it a proper British pub?", "A modern one. The Bluebell is a British public house and chophouse: elevated British classics from the kitchen, a bar lounge, a dining hall, a snug and a private dining room."),
+    ("Is it a proper British pub?", "A modern one. The Bluebell is a modern British public house: elevated British classics from the kitchen, a bar lounge, a dining hall, a snug and a private dining room."),
     ("Can I book the private dining room?", "Yes. The private dining room seats ten. Call or message us to book."),
 ]
 venue_page = f"""
 {vhero(v, "bluebell-facade.jpg", "The Bluebell Public House on Jl. Tulodong Atas, Senopati, at night",
        'The Bluebell <span class="serif">Public House</span>',
-       "A modern British pub and chophouse in Senopati, South Jakarta. Draught beer, ale and whisky, poured across six lines.")}
+       "A modern British public house in Senopati, South Jakarta. Draught beer, ale and whisky, poured across six lines.")}
 {hub(v, "On tap", "Six lines · pour one", '<span class="beermat" aria-hidden="true">B</span>', [
     ("Line 1", "Book a table", f"Call {v['phone']}", f"tel:{v['tel']}"),
     ("Line 2", "Find the pub", "Jl. Tulodong Atas No. 10 A-B", v["maps"]),
@@ -779,7 +779,7 @@ venue_page = f"""
       <h2>Pick your <span class="serif">corner.</span></h2>
       <ul class="facts">
         <li><span>Bar lounge</span><span>High stools, the long bar and six draught lines</span></li>
-        <li><span>Dining hall</span><span>Banquettes, pendant lights and the chophouse menu</span></li>
+        <li><span>Dining hall</span><span>Banquettes, pendant lights and the full pub menu</span></li>
         <li><span>The snug</span><span>A small room for a quiet pint</span></li>
         <li><span>Private dining room</span><span>Seats ten, for dinners and celebrations</span></li>
       </ul>
@@ -803,8 +803,8 @@ venue_page = f"""
 </section>
 {sisters("the-bluebell")}
 """
-page("/the-bluebell/", "The Bluebell Public House | British Pub & Chophouse in Senopati, South Jakarta",
-     "The Bluebell Public House is a modern British pub and chophouse in Senopati, South Jakarta. Draught beer, ale and whisky across six lines, British classics, private dining. Open daily from 10:00.",
+page("/the-bluebell/", "The Bluebell Public House | British Pub in Senopati, South Jakarta",
+     "The Bluebell Public House is a modern British public house in Senopati, South Jakarta. Draught beer, ale and whisky across six lines, British classics, private dining. Open daily from 10:00.",
      venue_page, image="/assets/img/bluebell-facade.jpg", with_collab=False, body_class="venue v-bluebell",
      schema=[venue_schema(v, "bluebell-facade.jpg"), faq_schema(bluebell_faq)])
 
@@ -946,7 +946,7 @@ def venue_rows(heading_tag="h3"):
 
 STAMP = """<svg class="stamp" viewBox="0 0 200 200" aria-hidden="true"><defs><path id="c" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0"/></defs>
 <text><textPath href="#c">Operators first · Made in Senopati · Since BEBOP ·</textPath></text>
-<circle cx="100" cy="100" r="34" fill="#e0482a"/><text x="100" y="106" text-anchor="middle" style="font-size:18px;letter-spacing:1px">BASHO</text></svg>"""
+<circle cx="100" cy="100" r="34" fill="#f2ede4"/><text x="100" y="106" text-anchor="middle" style="font-size:18px;letter-spacing:1px;fill:#15130f">BASHO</text></svg>"""
 
 WHAT_WE_DO = {
     "Concept & Development": ["Concept validation and refinement", "Location sourcing and market fit", "Budgeting, forecasting and P&L modelling", "Timeline management and roll-out planning"],
@@ -1052,7 +1052,7 @@ page("/", "Basho Projects | Jakarta Hospitality Group — BEBOP, BRIQ, The Blueb
       <div><em>Tuesday · BEBOP</em><b>Trivia Tuesdays</b><span>Hosted by Kara Chenoa. Brains, banter and a little buzz.</span><a href="/bebop/">BEBOP →</a></div>
       <div><em>Weekly · BEBOP</em><b>BMC Nights & Booty Groove</b><span>The Bebop Music Collective on the decks, then the dance floor.</span><a href="/bebop/#bmc">The collective →</a></div>
       <div><em>Every day · BRIQ</em><b>Steak frites & pasta promos</b><span>Home of the steak frites, plus a new pasta deal most weeks.</span><a href="/briq-bistro/#now-on">BRIQ →</a></div>
-      <div><em>Every day · The Bluebell</em><b>The pub is open</b><span>From 10:00. Draught beer, ale, whisky and a proper chophouse menu.</span><a href="/the-bluebell/">The Bluebell →</a></div>
+      <div><em>Every day · The Bluebell</em><b>The pub is open</b><span>From 10:00. Draught beer, ale, whisky and proper pub food.</span><a href="/the-bluebell/">The Bluebell →</a></div>
     </div>
   </div>
 </section>
@@ -1126,7 +1126,7 @@ page("/about/", "About Basho Projects | Independent Hospitality Group in Senopat
       <li><b>2022 · The DJs move in</b><span class="muted">A group of DJs find a home at BEBOP and, the following year, launch the Bebop Music Collective — 14 residents strong today.</span></li>
       <li><b>BRIQ Bistro</b><span class="muted">A neighbourhood French bistro crafted between fine and casual, a few minutes’ walk away.</span></li>
       <li><b>2026 · Brock Butchery</b><span class="muted">A problem in our own kitchens becomes a business: premium meat, priced honestly, delivered across Jakarta.</span></li>
-      <li><b>September 2026 · The Bluebell</b><span class="muted">A modern British public house and chophouse on Jl. Tulodong Atas, pouring across six draught lines.</span></li>
+      <li><b>September 2026 · The Bluebell</b><span class="muted">A modern British public house on Jl. Tulodong Atas, pouring across six draught lines.</span></li>
       <li><b>Bubble + Squeak Media</b><span class="muted">Our in-house agency for performance marketing, KOLs and PR, now open to other brands.</span></li>
     </ol>
   </div>
@@ -1181,7 +1181,7 @@ page("/services/", "Restaurant & Bar Consultants in Jakarta | F&B Concept, Launc
     <div class="sec-head"><span class="no"><b>01</b> / Three ways in</span></div>
     <div class="offer">
       <div class="reveal"><span class="eyebrow">Full build</span><h3>Incubation</h3><p>From idea to opening night: concept, site, numbers, brand, menu, team, systems and launch. The playbook we used to open BRIQ and BEBOP.</p></div>
-      <div class="reveal feat" style="background:var(--hot);border-color:var(--hot);color:#fff"><span class="eyebrow">Get noticed</span><h3>Launch & marketing</h3><p style="color:#fff">Pre-opening buzz, content, ads, KOLs and PR, run in-house by Bubble + Squeak Media. Built to fill tables, not just feeds.</p></div>
+      <div class="reveal feat" style="background:#f2ede4;border-color:#f2ede4;color:#15130f"><span class="eyebrow">Get noticed</span><h3>Launch & marketing</h3><p style="color:#15130f">Pre-opening buzz, content, ads, KOLs and PR, run in-house by Bubble + Squeak Media. Built to fill tables, not just feeds.</p></div>
       <div class="reveal"><span class="eyebrow">Fix one thing</span><h3>Targeted help</h3><p>A menu that isn’t selling, a bar programme that needs a rethink, a team that keeps turning over. We come in, fix it, hand it back.</p></div>
     </div>
   </div>
@@ -1215,7 +1215,7 @@ page("/services/", "Restaurant & Bar Consultants in Jakarta | F&B Concept, Launc
     <div class="proof">
       <a class="reveal" href="/bebop/"><div class="ph">{img("bebop-hero.jpg", "BEBOP Bar + Kitchen")}</div><b>BEBOP Bar + Kitchen</b><span>Idea to open under our concept process, then a rebrand to match its crowd. Now a Senopati jazz and cocktail bar with 14 resident DJs.</span></a>
       <a class="reveal" href="/briq-bistro/"><div class="ph">{img("briq-room.jpg", "BRIQ Bistro")}</div><b>BRIQ Bistro</b><span>Positioned between fine and casual using our go-to-market playbook, with Meta, Google and KOL campaigns that turned first visits into regulars.</span></a>
-      <a class="reveal" href="/the-bluebell/"><div class="ph">{img("bluebell-hall-night.jpg", "The Bluebell Public House")}</div><b>The Bluebell Public House</b><span>A modern British pub and chophouse, from site and bar design to a six-line draught programme and launch.</span></a>
+      <a class="reveal" href="/the-bluebell/"><div class="ph">{img("bluebell-hall-night.jpg", "The Bluebell Public House")}</div><b>The Bluebell Public House</b><span>A modern British public house, from site and bar design to a six-line draught programme and launch.</span></a>
     </div>
   </div>
 </section>
