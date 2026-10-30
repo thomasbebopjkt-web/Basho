@@ -248,7 +248,7 @@ p { margin: 0 0 1em; }
 .post-nav small { display: block; color: var(--muted); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
 
 /* Bubble + Squeak */
-.bs { --bs: #ff5a36; }
+.bs { --bs: #72a9d8; }
 .bs .hero::before { background: rgba(0, 0, 0, .55); }
 .bs-strip { background: var(--bs); color: var(--black); }
 .bs-strip .marquee__track span { font-size: clamp(28px, 4vw, 56px); text-transform: uppercase; }
