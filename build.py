@@ -112,7 +112,7 @@ def header():
     return f"""<a class="skip" href="#main">Skip to content</a>
 <header class="site-header">
   <div class="wrap">
-    <a class="logo" href="/" aria-label="Basho Projects home"><img src="/assets/img/basho-logo.png" alt="Basho Projects" width="160" height="46"></a>
+    <a class="logo" href="/" aria-label="Basho Projects home"><img src="{logo_src()}" alt="Basho Projects" width="160" height="46"></a>
     <button class="menu-toggle" aria-label="Menu" aria-expanded="false" aria-controls="nav"><span></span></button>
     <nav class="nav" id="nav" aria-label="Main">
       <div class="nav-drop">
@@ -181,23 +181,59 @@ def footer():
   <div class="wrap">
     <div class="cols">
       <div>
-        <a class="logo" href="/"><img src="/assets/img/basho-logo.png" alt="Basho Projects" width="140" height="40" loading="lazy"></a>
+        <a class="logo" href="/"><img src="{logo_src()}" alt="Basho Projects" width="140" height="40" loading="lazy"></a>
         <p class="muted">Hospitality incubator, operator and consultancy.<br>Senopati, South Jakarta.</p>
         <form class="nl-inline" data-newsletter style="margin-top:18px"><label class="skip" for="ft-email">Email</label><input id="ft-email" type="email" name="email" placeholder="Join the guest list" required><button class="btn btn--light" type="submit">Join</button></form>
         <p class="nl__note muted" role="status" aria-live="polite" style="font-size:13px;margin-top:8px"></p>
       </div>
-      <div><h5>Projects</h5><ul>{venues}</ul></div>
-      <div><h5>Company</h5><ul><li><a href="/services/">Services</a></li><li><a href="/about/">About us</a></li><li><a href="/blog/">Blog</a></li><li><a href="/contact/">Contact</a></li></ul></div>
-      <div><h5>Follow</h5><ul><li><a href="{VENUES['bebop']['instagram']}" target="_blank" rel="noopener">BEBOP on Instagram</a></li><li><a href="{VENUES['briq-bistro']['instagram']}" target="_blank" rel="noopener">BRIQ on Instagram</a></li><li><a href="{VENUES['the-bluebell']['instagram']}" target="_blank" rel="noopener">The Bluebell on Instagram</a></li><li><a href="{VENUES['brock-butchery']['instagram']}" target="_blank" rel="noopener">Brock on Instagram</a></li><li><a href="{WA_GROUP}" target="_blank" rel="noopener">WhatsApp us</a></li></ul></div>
+      <div><p class="foot-h">Projects</p><ul>{venues}</ul></div>
+      <div><p class="foot-h">Company</p><ul><li><a href="/services/">Services</a></li><li><a href="/about/">About us</a></li><li><a href="/blog/">Blog</a></li><li><a href="/contact/">Contact</a></li></ul></div>
+      <div><p class="foot-h">Follow</p><ul><li><a href="{VENUES['bebop']['instagram']}" target="_blank" rel="noopener">BEBOP on Instagram</a></li><li><a href="{VENUES['briq-bistro']['instagram']}" target="_blank" rel="noopener">BRIQ on Instagram</a></li><li><a href="{VENUES['the-bluebell']['instagram']}" target="_blank" rel="noopener">The Bluebell on Instagram</a></li><li><a href="{VENUES['brock-butchery']['instagram']}" target="_blank" rel="noopener">Brock on Instagram</a></li><li><a href="{WA_GROUP}" target="_blank" rel="noopener">WhatsApp us</a></li></ul></div>
     </div>
     <div class="legal"><span>© <span data-year>2026</span> PT Basho Projects Capital</span><span>Made in Senopati, Jakarta</span></div>
   </div>
 </footer>"""
 
 
+# Search titles (≤58 chars) and descriptions (≤125 chars), sized to Google's and Seobility's limits
+SEO_META = {
+    "/": ("Basho Projects | Jakarta Hospitality Group, Senopati",
+          "Jakarta hospitality group behind BEBOP, BRIQ, The Bluebell & Brock in Senopati. Book a table, work with us or invest."),
+    "/bebop/": ("BEBOP Bar + Kitchen | Jazz & Cocktail Bar, Senopati",
+                "Jazz & cocktail bar on Jl. Senopati 61. Live jazz Mon & Fri, DJs, highballs, Japanese plates. Open 18:00 till late."),
+    "/briq-bistro/": ("BRIQ Bistro | Steak Frites & French Bistro, Senopati",
+                      "French bistro in Senopati, home of the steak frites. Pasta promos, wine, terrace. Dinner nightly, all day weekends."),
+    "/brock-butchery/": ("Brock Butchery | Premium Meat Delivered in Jakarta",
+                         "Premium meat delivered across Jakarta. Order on Tokopedia or Shopee with no minimum, or set up trade supply."),
+    "/the-bluebell/": ("The Bluebell Public House | British Pub, Senopati",
+                       "Modern British public house in Senopati: six draught lines, ale, whisky, pub classics, private dining. Open daily."),
+    "/blog/": ("Journal | Stories from Senopati | Basho Projects",
+               "Stories from Basho Projects in Senopati, Jakarta: openings, live jazz at BEBOP, The Bluebell and more."),
+    "/blog/the-bluebell-public-house-opens-in-south-jakarta/": ("The Bluebell Public House Opens in Senopati, Jakarta",
+               "Raise a pint, British-style: The Bluebell Public House is open in Senopati, South Jakarta."),
+    "/blog/jazz-at-bebop/": ("Jazz at BEBOP: Live Jazz in Senopati, Mon & Fri",
+                             "Live jazz every Monday and Friday at BEBOP Bar + Kitchen, Senopati, curated by Bass G."),
+    "/about/": ("About Basho Projects | Independent Jakarta F&B Group",
+                "Operators first. The independent Jakarta group behind BEBOP, BRIQ Bistro, The Bluebell and Brock Butchery."),
+    "/services/": ("Restaurant & Bar Consultants Jakarta | Basho Projects",
+                   "Restaurant & bar consultants in Jakarta: concept, brand, menu, operations, launch and marketing, from working operators."),
+    "/invest/": ("Invest in Jakarta Restaurants & Bars | Basho Projects",
+                 "Invest in new bar and restaurant concepts in Senopati, Jakarta, built and run by the team behind BEBOP and BRIQ."),
+    "/contact/": ("Contact Basho Projects | Jakarta Hospitality Group",
+                  "Contact Basho Projects, Senopati: table bookings, private events, F&B consulting, investment and press."),
+    "/our-projects/": ("Bars & Restaurants in Senopati | Basho Projects",
+                       "BEBOP, BRIQ Bistro, The Bluebell Public House and Brock Butchery: bars and restaurants in Senopati, South Jakarta."),
+    "/bubbleandsqueakmedia/": ("Bubble + Squeak Media | F&B Marketing Agency Jakarta",
+                               "Jakarta performance marketing & PR agency for F&B: Meta, Google & TikTok ads, KOLs and content. From USD 950/month."),
+}
+
+
 def page(path, title, description, main, image="/assets/img/briq-hero.jpg", with_collab=True,
          body_class="g", schema=None, enquiry=None):
     url = DOMAIN + path
+    title, description = SEO_META.get(path, (title, description))
+    if len(title) > 58 or len(description) > 125:
+        print(f"  SEO length warning {path}: title {len(title)}/58, description {len(description)}/125")
     ld = ""
     for s in (schema or []):
         ld += f'<script type="application/ld+json">{json.dumps(s, ensure_ascii=False)}</script>\n'
@@ -259,10 +295,57 @@ def marquee(text):
     return f'<div class="marquee" aria-hidden="true"><div class="marquee__track">{item}{item}</div></div>'
 
 
-def img(src, alt, cls="", lazy=True):
-    load = ' loading="lazy" decoding="async"' if lazy else ' fetchpriority="high"'
+IMG_DIR = ROOT / "assets" / "img"
+OPT_DIR = IMG_DIR / "opt"
+WIDTHS = (480, 960, 1600)
+_img_meta = {}
+
+
+def _optimise(src):
+    """Make WebP copies of an image at a few widths (cached on disk). Returns (variants, w, h)."""
+    if src in _img_meta:
+        return _img_meta[src]
+    from PIL import Image
+    path = IMG_DIR / src
+    OPT_DIR.mkdir(exist_ok=True)
+    stem = Path(src).stem
+    with Image.open(path) as im:
+        im = im.convert("RGBA") if im.mode in ("RGBA", "LA", "P") else im.convert("RGB")
+        w, h = im.size
+        variants = []
+        for tw in WIDTHS:
+            if tw > w and variants:
+                break
+            tw = min(tw, w)
+            out = OPT_DIR / f"{stem}-{tw}.webp"
+            if not out.exists() or out.stat().st_mtime < path.stat().st_mtime:
+                im.resize((tw, round(h * tw / w)), Image.LANCZOS).save(out, "WEBP", quality=74, method=5)
+            variants.append((f"/assets/img/opt/{out.name}", tw))
+    _img_meta[src] = (variants, w, h)
+    return _img_meta[src]
+
+
+def alt_from_name(src):
+    words = Path(src).stem.replace("-", " ").replace("_", " ")
+    for a, b in (("bebop", "BEBOP"), ("briq", "BRIQ"), ("bluebell", "The Bluebell"), ("brock", "Brock"),
+                 ("svc", "Service"), ("adv", "Advertising"), ("bs icon", "Bubble + Squeak icon")):
+        words = words.replace(a, b)
+    return words[:1].upper() + words[1:]
+
+
+def img(src, alt, cls="", lazy=True, sizes="(max-width: 760px) 100vw, 50vw"):
+    alt = alt or alt_from_name(src)
+    load = ' loading="lazy" decoding="async"' if lazy else ' fetchpriority="high" decoding="async"'
     c = f' class="{cls}"' if cls else ""
-    return f'<img src="/assets/img/{src}" alt="{escape(alt)}"{c}{load}>'
+    variants, w, h = _optimise(src)
+    srcset = ", ".join(f"{u} {tw}w" for u, tw in variants)
+    fallback = variants[min(1, len(variants) - 1)][0]
+    return (f'<img src="{fallback}" srcset="{srcset}" sizes="{sizes}" width="{w}" height="{h}" '
+            f'alt="{escape(alt)}"{c}{load}>')
+
+
+def logo_src():
+    return _optimise("basho-logo.png")[0][0][0]
 
 
 # ---------------------------------------------------------------- schema helpers
@@ -363,6 +446,7 @@ def promos_html(key):
   {f'<a class="btn" href="{p["url"]}"{ext}>{p["cta"]}</a>' if p.get('cta') else ''}</div>
 </article>""")
     return f"""<section class="vx-now" id="now-on"><div class="wrap">
+  <h2 class="skip">What’s on now</h2>
   <div class="vx-now__head"><span class="eyebrow">Now on</span><span class="vx-now__live">Live this week</span></div>
   <div class="promos">{''.join(cards)}</div>
 </div></section>"""
@@ -397,7 +481,7 @@ def vhero(v, image, alt, h1, sub):
         hours = f'<span class="status" data-hours=\'{json.dumps(v["hours"])}\'{late}>{v["hours_text"]}</span>'
     return f"""<div class="vx-top">
 <section class="vhero">
-  {img(image, alt, lazy=False)}
+  {img(image, alt, lazy=False, sizes="100vw")}
   <div class="wrap">
     <div class="vx-meta">{hours}<span class="eyebrow">A Basho Projects venue · Senopati</span></div>
     <h1 class="vx-name">{h1}</h1>
@@ -409,7 +493,7 @@ def vhero(v, image, alt, h1, sub):
 def gallery(v, images):
     ex = VENUE_EXTRAS[VENUE_KEY_BY_SHORT[v["short"]]]
     pics = (list(images) + ex["more"])[:6]
-    tiles = "".join(f'<figure class="reveal">{img(src, alt)}<figcaption>{alt}</figcaption></figure>' for src, alt in pics)
+    tiles = "".join(f'<figure class="reveal">{img(src, alt, sizes="(max-width: 760px) 50vw, 33vw")}<figcaption>{alt}</figcaption></figure>' for src, alt in pics)
     if v.get("instagram"):
         sticker = f'<a class="sticker" href="{v["instagram"]}" target="_blank" rel="noopener"><span>Follow along</span><b>{v["ig_handle"]}</b></a>'
     else:
@@ -922,7 +1006,7 @@ def venue_rows(heading_tag="h3"):
     rows = []
     for i, key in enumerate(VENUE_ORDER, 1):
         v = VENUES[key]
-        acts = [f'<a class="pill" href="{v["path"]}">View</a>']
+        acts = [f'<a class="pill" href="{v["path"]}">View<span class="skip"> {v["name"]}</span></a>']
         if v.get("book"):
             acts.append(f'<a class="pill" href="{v["book"]}" target="_blank" rel="noopener">Book</a>')
         elif v.get("tel"):
@@ -944,7 +1028,7 @@ def venue_rows(heading_tag="h3"):
   <div class="vrow__meta"><span class="tag">{v['tag']}</span>{v['blurb']}{status}</div>
   <div class="vrow__acts">{''.join(acts)}</div>
   <div class="vrow__thumb">{img(photo, v['name'])}</div>
-  <div class="vrow__peek" aria-hidden="true">{img(photo, '')}</div>
+  <div class="vrow__peek" aria-hidden="true">{img(photo, v["name"], sizes="220px")}</div>
 </div>""")
     return f'<div class="vrows">{"".join(rows)}</div>'
 
@@ -998,18 +1082,19 @@ page("/", "Basho Projects | Jakarta Hospitality Group — BEBOP, BRIQ, The Blueb
       {STAMP}
     </div>
   </div>
-  <div class="reel">
-    <a href="/bebop/">{img("bebop-bar.jpg", "BEBOP Bar + Kitchen", lazy=False)}<span>BEBOP</span></a>
-    <a href="/briq-bistro/">{img("briq-hero.jpg", "BRIQ Bistro", lazy=False)}<span>BRIQ</span></a>
-    <a href="/the-bluebell/">{img("bluebell-bar.jpg", "The Bluebell Public House", lazy=False)}<span>The Bluebell</span></a>
-    <a href="/brock-butchery/">{img("brock-hero.jpg", "Brock Butchery")}<span>Brock</span></a>
-    <a href="/bebop/#whats-on">{img("jazz-1.jpg", "Live jazz at BEBOP")}<span>Jazz nights</span></a>
+  <div class="reel" aria-label="Our venues">
+    <a href="/bebop/">{img("bebop-bar.jpg", "BEBOP Bar + Kitchen", lazy=False, sizes="(max-width: 760px) 62vw, 20vw")}<span>BEBOP</span></a>
+    <a href="/briq-bistro/">{img("briq-hero.jpg", "BRIQ Bistro", lazy=False, sizes="(max-width: 760px) 62vw, 20vw")}<span>BRIQ</span></a>
+    <a href="/the-bluebell/">{img("bluebell-bar.jpg", "The Bluebell Public House", lazy=False, sizes="(max-width: 760px) 62vw, 20vw")}<span>The Bluebell</span></a>
+    <a href="/brock-butchery/">{img("brock-hero.jpg", "Brock Butchery", sizes="(max-width: 760px) 62vw, 20vw")}<span>Brock</span></a>
+    <a href="/bebop/#whats-on">{img("jazz-1.jpg", "Live jazz at BEBOP", sizes="(max-width: 760px) 62vw, 20vw")}<span>Jazz nights</span></a>
   </div>
 </section>
 
 <section class="section">
   <div class="wrap">
     <div class="sec-head"><span class="no"><b>01</b> / Pick your door</span></div>
+    <h2 class="skip">Eat and drink, build with us, or invest</h2>
     <div class="doors">
       <a class="door reveal" href="#venues"><span class="k">Eat & drink</span><h3>Find a table in Senopati</h3><p>A jazz and cocktail bar, a French bistro, a British pub and a butcher that delivers. Book, see the menu, get directions.</p><span class="go">Our venues</span></a>
       <a class="door reveal" href="/services/"><span class="k">Build with us</span><h3>Open something that lasts</h3><p>Concept, brand, menu, team, launch and marketing, from operators who run their own rooms every night.</p><span class="go">Services</span></a>
@@ -1184,6 +1269,7 @@ page("/services/", "Restaurant & Bar Consultants in Jakarta | F&B Concept, Launc
 <section class="section ink">
   <div class="wrap">
     <div class="sec-head"><span class="no"><b>01</b> / Three ways in</span></div>
+    <h2 class="skip">Three ways to work with us</h2>
     <div class="offer">
       <div class="reveal"><span class="eyebrow">Full build</span><h3>Incubation</h3><p>From idea to opening night: concept, site, numbers, brand, menu, team, systems and launch. The playbook we used to open BRIQ and BEBOP.</p></div>
       <div class="reveal feat" style="background:#f2ede4;border-color:#f2ede4;color:#15130f"><span class="eyebrow">Get noticed</span><h3>Launch & marketing</h3><p style="color:#15130f">Pre-opening buzz, content, ads, KOLs and PR, run in-house by Bubble + Squeak Media. Built to fill tables, not just feeds.</p></div>
@@ -1277,6 +1363,7 @@ page("/invest/", "Invest in Restaurants & Bars in Jakarta | Hospitality Investme
 <section class="section">
   <div class="wrap">
     <div class="sec-head"><span class="no"><b>01</b> / Why partner with us</span></div>
+    <h2 class="skip">Why partner with Basho Projects</h2>
     <div class="svc">
       <article class="reveal"><span class="ix">01</span><h3>We operate what we open</h3><p class="muted">No hand-off after launch. The team that designs the concept runs the floor, the bar, the kitchen and the marketing.</p></article>
       <article class="reveal"><span class="ix">02</span><h3>A neighbourhood we know</h3><p class="muted">Four venues within walking distance in Senopati: we know the streets, the landlords, the suppliers and the crowd that actually turns up.</p></article>
@@ -1333,7 +1420,7 @@ page("/contact/", "Contact Basho Projects | Jakarta Hospitality Group",
   <div class="wrap">
     <div class="sec-head" style="margin-top:72px"><span class="no"><b>Or</b> / book straight with a venue</span></div>
     <div class="contact-doors">
-      {"".join(f'<a href="{VENUES[k]["path"]}">{img(VENUE_PHOTOS[k], VENUES[k]["name"])}<span class="k">{VENUES[k]["tag"]}</span><span><b>{VENUES[k]["short"]} →</b></span></a>' for k in VENUE_ORDER)}
+      {"".join(f'<a href="{VENUES[k]["path"]}">{img(VENUE_PHOTOS[k], VENUES[k]["name"], sizes="(max-width: 860px) 50vw, 25vw")}<span class="k">{VENUES[k]["tag"]}</span><span><b>{VENUES[k]["short"]} →</b></span></a>' for k in VENUE_ORDER)}
     </div>
   </div>
 </section>

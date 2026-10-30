@@ -161,3 +161,17 @@
 .wifi-hello b { font-family: var(--display); }
 .wifi-hello a { color: inherit; font-weight: 600; margin-left: 8px; }
 .v-briq .wifi-hello, .v-brock .wifi-hello, .v-bluebell .wifi-hello { color: var(--vbg); }
+
+/* Images carry width/height for layout stability; let CSS control the rendered size */
+img { height: auto; }
+
+/* Homepage reel: whole photos, inside the page, no tilt */
+.reel { transform: none; width: auto; max-width: var(--max); margin: clamp(36px, 5vw, 64px) auto 0; padding: 0 var(--pad) 12px; gap: 12px; }
+.reel a { aspect-ratio: 3 / 4; max-height: none; flex: 1 1 0; min-width: 0; }
+.reel span { top: auto; bottom: 12px; left: 14px; right: 14px; }
+.reel a::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, rgba(0,0,0,.6)); pointer-events: none; }
+.reel span { z-index: 1; }
+@media (max-width: 760px) {
+  .reel { padding: 0 var(--pad) 12px; overflow-x: auto; scroll-snap-type: x mandatory; }
+  .reel a { flex: 0 0 62%; }
+}
