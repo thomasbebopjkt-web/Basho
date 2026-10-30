@@ -1,0 +1,71 @@
+{
+  "_how_to": "Promos shown at the top of each venue page (where the WiFi lands). Add, edit or remove entries, then run ./deploy.sh. Fields: kicker (small label), title, text, cta (button text), url (button link), image (file in site/assets/img/), until (optional YYYY-MM-DD: hidden after this date), feature (true = big card).",
+  "bebop": [
+    {
+      "kicker": "Every Monday & Friday",
+      "title": "Jazz Nights",
+      "text": "Live jazz curated by Bass G, from standards to funk and groove. Grab a Mega Highball and a table near the stage.",
+      "cta": "Book for jazz night",
+      "url": "https://api.whatsapp.com/send/?phone=628131847056",
+      "image": "jazz-1.jpg",
+      "feature": true
+    },
+    {
+      "kicker": "Every Tuesday",
+      "title": "Trivia Tuesdays",
+      "text": "Hosted by Kara Chenoa. Brains, banter and a little buzz.",
+      "cta": "See what's on",
+      "url": "https://www.instagram.com/bebop.wav/",
+      "image": "bebop-room.jpg"
+    }
+  ],
+  "briq-bistro": [
+    {
+      "kicker": "House favourite",
+      "title": "Home of the steak frites",
+      "text": "Our signature: a properly seared steak, crisp frites and a sauce worth mopping up. The dish BRIQ is known for in Senopati.",
+      "cta": "Book a table",
+      "url": "https://api.whatsapp.com/send/?phone=6285921219087",
+      "image": "brock-hero.jpg",
+      "feature": true
+    },
+    {
+      "kicker": "This week",
+      "title": "Pasta promos",
+      "text": "New pasta deals running now. See this week's offer on our Instagram.",
+      "cta": "This week's promo",
+      "url": "https://www.instagram.com/briqbistro/",
+      "image": "briq-detail.jpg"
+    }
+  ],
+  "brock-butchery": [
+    {
+      "kicker": "Steak night at home",
+      "title": "The cut behind BRIQ's steak frites",
+      "text": "The same beef we serve at BRIQ, portioned for your kitchen and delivered across Jakarta.",
+      "cta": "Order on Tokopedia",
+      "url": "https://www.tokopedia.com/brock-butchery",
+      "image": "brock-cuts.jpg",
+      "feature": true
+    }
+  ],
+  "the-bluebell": [
+    {
+      "kicker": "Every day from 10:00",
+      "title": "Pints, chophouse plates and a warm room",
+      "text": "Six draught lines, whisky and a British chophouse menu. Bring the team after work or settle in for the evening.",
+      "cta": "Call to book",
+      "url": "tel:+628214401216",
+      "image": "bluebell-bar.jpg",
+      "feature": true
+    },
+    {
+      "kicker": "Groups & celebrations",
+      "title": "Private dining room for ten",
+      "text": "Birthdays, team dinners and long lunches, with the pub on your doorstep.",
+      "cta": "Ask about dates",
+      "url": "https://api.whatsapp.com/send/?phone=6285921219087",
+      "image": "bluebell-hall-night.jpg"
+    }
+  ]
+}

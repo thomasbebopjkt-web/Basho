@@ -19,7 +19,15 @@ Then open http://localhost:8080. To publish, run `./deploy.sh`: it rebuilds, pus
 
 ## Contact form
 
-Contact-form enquiries and guest-list sign-ups are emailed through FormSubmit (formsubmit.co) to laskarbebop@gmail.com, copied to thomasbebopjakarta@gmail.com. Change `FORM_TO` / `FORM_CC` at the top of `site/assets/js/site.js`.
+Contact-form enquiries and guest-list sign-ups are emailed to laskarbebop@gmail.com and thomasbebopjakarta@gmail.com. Add Web3Forms access keys to `WEB3FORMS_KEYS` in `site/assets/js/site.js` (one per inbox); until then FormSubmit is used, with WhatsApp as the fallback.
+
+## Promos ("Now on")
+
+Each venue page shows promo cards from `promos.json` right under its link hub. Edit that file (title, text, button, image, optional `until` date) and run `./deploy.sh`. Expired promos hide themselves.
+
+## WiFi landing pages
+
+Point each venue's WiFi captive portal at its page with `?wifi`, e.g. `https://www.bashoprojects.com/bebop/?wifi`. Guests get a welcome bar and the guest-list sign-up after 4 seconds, tagged "WiFi at BEBOP" in the email.
 To receive enquiries by email instead, create a free form at https://formspree.io and paste its endpoint into
 `FORM_ENDPOINT` at the top of `site/assets/js/site.js`.
 

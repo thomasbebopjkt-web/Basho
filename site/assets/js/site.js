@@ -4,10 +4,28 @@
 // (formsubmit.co) to FORM_TO, with a copy to FORM_CC. Left empty, forms open WhatsApp instead.
 const FORM_TO = "laskarbebop@gmail.com";
 const FORM_CC = "thomasbebopjakarta@gmail.com";
-const FORM_ENDPOINT = FORM_TO ? `https://formsubmit.co/ajax/${FORM_TO}` : "";
+// Web3Forms access keys (web3forms.com), one per inbox. When set, these are used
+// instead of FormSubmit; each key delivers to the email it was created for.
+const WEB3FORMS_KEYS = [];
+const FORM_ENDPOINT = WEB3FORMS_KEYS.length || FORM_TO ? "on" : "";
 const WHATSAPP_NUMBER = "6285921219087";
 
 async function sendForm(fields, subject) {
+  if (WEB3FORMS_KEYS.length) {
+    const results = await Promise.all(WEB3FORMS_KEYS.map((access_key) =>
+      fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ ...fields, access_key, subject, from_name: "bashoprojects.com", page: location.href }),
+      }).then((r) => r.json()).catch(() => ({ success: false }))));
+    if (!results.some((r) => r.success)) throw new Error("Web3Forms failed");
+    return;
+  }
+  return sendFormSubmit(fields, subject);
+}
+
+async function sendFormSubmit(fields, subject) {
+  const FORM_ENDPOINT = `https://formsubmit.co/ajax/${FORM_TO}`;
   const res = await fetch(FORM_ENDPOINT, {
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "application/json" },
@@ -132,8 +150,29 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // Promos with an 'until' date disappear the day after it passes (Jakarta time)
+  const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Jakarta" }).format(new Date());
+  document.querySelectorAll(".promo[data-until]").forEach((p) => {
+    if (p.dataset.until < today) p.hidden = true;
+  });
+  document.querySelectorAll(".vx-now").forEach((sec) => {
+    if (!sec.querySelector(".promo:not([hidden])")) sec.hidden = true;
+  });
+
+  // WiFi landing: the venue's captive portal sends guests to e.g. /bebop/?wifi
+  const params = new URLSearchParams(location.search);
+  const fromWifi = params.has("wifi") || params.get("utm_source") === "wifi";
+  const venueName = document.querySelector(".vx-name")?.innerText.replace(/\s+/g, " ").trim();
+  if (fromWifi && venueName && header) {
+    const bar = document.createElement("div");
+    bar.className = "wifi-hello is-on";
+    bar.innerHTML = `Welcome to <b>${venueName}</b> — you’re on our WiFi.<a href="#now-on">See what’s on ↓</a>`;
+    header.insertAdjacentElement("afterend", bar);
+  }
+
   // Newsletter popup: shows once per visitor after a short delay or when they
   // scroll most of the way down. Dismissal is remembered in this browser.
+  // WiFi guests see it sooner, since they're in the room right now.
   const nl = document.querySelector(".nl");
   if (nl) {
     const KEY = "basho-nl-dismissed";
@@ -141,8 +180,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const remember = () => { try { localStorage.setItem(KEY, Date.now()); } catch (e) {} };
     const open = () => { if (!seen() && !nl.classList.contains("is-open")) nl.classList.add("is-open"); };
     const close = () => { nl.classList.remove("is-open"); remember(); };
+    if (fromWifi && venueName) {
+      const t = nl.querySelector("#nl-title");
+      if (t) t.innerHTML = `Enjoying ${venueName}? <span class="serif">Stay in the loop.</span>`;
+    }
     if (!seen()) {
-      setTimeout(open, 14000);
+      setTimeout(open, fromWifi ? 4000 : 14000);
       window.addEventListener("scroll", function onDeep() {
         if (window.scrollY > document.body.scrollHeight * 0.55) { open(); window.removeEventListener("scroll", onDeep); }
       }, { passive: true });
@@ -158,7 +201,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const note = form.parentElement.querySelector(".nl__note") || form.nextElementSibling;
       if (FORM_ENDPOINT) {
         try {
-          await sendForm({ email, list: "Guest list (newsletter)" }, `New guest-list sign-up: ${email}`);
+          const source = fromWifi && venueName ? `WiFi at ${venueName}` : location.pathname;
+          await sendForm({ email, list: "Guest list (newsletter)", source }, `New guest-list sign-up (${source}): ${email}`);
           form.reset();
           if (note) note.textContent = "You're on the list. See you at the bar.";
         } catch (err) {

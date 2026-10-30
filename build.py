@@ -49,7 +49,7 @@ VENUES = {
         "short": "BRIQ",
         "path": "/briq-bistro/",
         "tag": "French bistro · Senopati",
-        "blurb": "French bistro, Senopati. Crafted between fine and casual. Owned and operated.",
+        "blurb": "French bistro, Senopati. Home of the steak frites. Owned and operated.",
         "card_img": "briq-hero.jpg",
         "address": "Jl. Prof. Joko Sutono SH No. 7B, Kebayoran Baru, South Jakarta",
         "street": "Jl. Prof. Joko Sutono SH No. 7B", "locality": "Kebayoran Baru, South Jakarta",
@@ -340,6 +340,30 @@ VENUE_EXTRAS = {
 VENUE_KEY_BY_SHORT = {v["short"]: k for k, v in VENUES.items()}
 
 
+PROMOS = json.loads((Path(__file__).parent / "promos.json").read_text())
+
+
+def promos_html(key):
+    """'Now on' promo cards from promos.json. Expired ones (past 'until') are hidden by site.js too."""
+    items = PROMOS.get(key, [])
+    if not items:
+        return ""
+    cards = []
+    for p in items:
+        ext = ' target="_blank" rel="noopener"' if p.get("url", "").startswith("http") else ""
+        until = f' data-until="{p["until"]}"' if p.get("until") else ""
+        pic = img(p["image"], p["title"]) if p.get("image") else ""
+        cards.append(f"""<article class="promo{' promo--feat' if p.get('feature') else ''} reveal"{until}>
+  <div class="promo__ph">{pic}</div>
+  <div class="promo__body"><span class="promo__k">{p.get('kicker', '')}</span><h3>{p['title']}</h3><p>{p.get('text', '')}</p>
+  {f'<a class="btn" href="{p["url"]}"{ext}>{p["cta"]}</a>' if p.get('cta') else ''}</div>
+</article>""")
+    return f"""<section class="vx-now" id="now-on"><div class="wrap">
+  <div class="vx-now__head"><span class="eyebrow">Now on</span><span class="vx-now__live">Live this week</span></div>
+  <div class="promos">{''.join(cards)}</div>
+</div></section>"""
+
+
 def hub(v, title, meta, deco, links, foot):
     """The venue link hub. Closes the .vx-top wrapper opened by vhero(), then adds the values strip."""
     ext = ' target="_blank" rel="noopener"'
@@ -357,7 +381,8 @@ def hub(v, title, meta, deco, links, foot):
   </nav>
 </div>
 </div>
-<div class="vx-strip">{marquee(strip)}</div>"""
+<div class="vx-strip">{marquee(strip)}</div>
+{promos_html(VENUE_KEY_BY_SHORT[v["short"]])}"""
 
 
 def vhero(v, image, alt, h1, sub):
@@ -551,7 +576,7 @@ v = VENUES["briq-bistro"]
 briq_faq = [
     ("Where is BRIQ Bistro?", "Jl. Prof. Joko Sutono SH No. 7B, Kebayoran Baru, South Jakarta — in the heart of Senopati, a short walk from BEBOP and The Bluebell."),
     ("What are BRIQ’s opening hours?", "Lunch and brunch from 10:00 to 16:00, dinner from 17:00 to 22:00."),
-    ("What kind of food does BRIQ serve?", "Soulful French bistro classics — quality ingredients and classic technique, presented with clarity and restraint. Casual enough for brunch, polished enough for a proper dinner."),
+    ("What kind of food does BRIQ serve?", "Soulful French bistro cooking, and we’re best known for our steak frites. The kitchen also runs rotating pasta promos and monthly specials, so check Instagram for what’s on this week."),
     ("Is there outdoor seating?", "Yes, BRIQ has an outdoor terrace as well as the dining room."),
     ("How do I book a table at BRIQ?", "Message us on WhatsApp and we’ll confirm your table."),
 ]
@@ -607,18 +632,15 @@ venue_page = f"""
 </section>
 
 <section class="section" style="border-top:1px solid var(--vline)">
-  <div class="wrap">
-    <span class="eyebrow">From the carte</span>
-    <h2>French bistro classics <span class="serif">in Senopati</span></h2>
-    <ul class="facts" style="margin-top:24px;max-width:860px">
-      <li><span>Escargots à la Bourguignonne</span><span>Snails in garlic-herb butter with sliced baguette</span></li>
-      <li><span>Shiitake au crème parmesan</span><span>Grilled mushrooms, parmesan cream, salmon roe, tarragon oil</span></li>
-      <li><span>Saumon au citron et aneth</span><span>Herb-crusted salmon, creamy lemon and dill sauce</span></li>
-      <li><span>Magret de canard</span><span>Duck breast, blackberry balsamic, mashed potatoes</span></li>
-      <li><span>Steak au poivre</span><span>Tenderloin with a traditional black peppercorn sauce</span></li>
-      <li><span>Crème brûlée</span><span>French custard, caramelised sugar crust</span></li>
-    </ul>
-    <p class="muted" style="margin-top:14px;font-size:14px">The menu changes with the seasons. <a href="{v['menu']}" target="_blank" rel="noopener">See today’s menu</a>.</p>
+  <div class="wrap split split--center">
+    <div class="media media--tall reveal">{img("brock-hero.jpg", "Steak for BRIQ's steak frites")}</div>
+    <div class="reveal">
+      <span class="eyebrow">The signature</span>
+      <h2>Home of the <span class="serif">steak frites.</span></h2>
+      <p>If you only order one thing at BRIQ, make it this: a properly seared steak, crisp frites and a sauce worth mopping up. It’s the dish we’re known for in Senopati, made with beef from our own butcher, <a href="/brock-butchery/">Brock</a>.</p>
+      <p>Alongside it, the kitchen runs rotating pasta promos and monthly specials. Follow <a href="{v['instagram']}" target="_blank" rel="noopener">{v['ig_handle']}</a> for this week’s offer.</p>
+      <div class="btn-row"><a class="btn" href="{v['book']}" target="_blank" rel="noopener">Book for steak frites</a><a class="btn btn--ghost" href="{v['menu']}" target="_blank" rel="noopener">See the menu</a></div>
+    </div>
   </div>
 </section>
 
@@ -644,8 +666,8 @@ venue_page = f"""
 </section>
 {sisters("briq-bistro")}
 """
-page("/briq-bistro/", "BRIQ Bistro | French Bistro & Brunch in Senopati, Jakarta",
-     "BRIQ Bistro is a French bistro in Senopati, South Jakarta: brunch and lunch from 10:00, dinner from 17:00, an approachable wine list and an outdoor terrace. Book, menu & directions.",
+page("/briq-bistro/", "BRIQ Bistro | Steak Frites & French Bistro in Senopati, Jakarta",
+     "BRIQ Bistro, Senopati: home of the steak frites, with weekly pasta promos, an approachable wine list and an outdoor terrace. Lunch from 10:00, dinner from 17:00. Book, menu & directions.",
      venue_page, image="/assets/img/briq-room.jpg", with_collab=False, body_class="venue v-briq",
      schema=[venue_schema(v, "briq-room.jpg"), faq_schema(briq_faq)])
 
@@ -1029,7 +1051,7 @@ page("/", "Basho Projects | Jakarta Hospitality Group — BEBOP, BRIQ, The Blueb
       <div><em>Monday & Friday · BEBOP</em><b>Jazz Nights</b><span>Live jazz curated by Bass G, from standards to funk and groove.</span><a href="/bebop/">BEBOP →</a></div>
       <div><em>Tuesday · BEBOP</em><b>Trivia Tuesdays</b><span>Hosted by Kara Chenoa. Brains, banter and a little buzz.</span><a href="/bebop/">BEBOP →</a></div>
       <div><em>Weekly · BEBOP</em><b>BMC Nights & Booty Groove</b><span>The Bebop Music Collective on the decks, then the dance floor.</span><a href="/bebop/#bmc">The collective →</a></div>
-      <div><em>Every month · BRIQ</em><b>Bistro specials</b><span>Seasonal plates and one-offs alongside the French classics.</span><a href="/briq-bistro/">BRIQ →</a></div>
+      <div><em>Every day · BRIQ</em><b>Steak frites & pasta promos</b><span>Home of the steak frites, plus a new pasta deal most weeks.</span><a href="/briq-bistro/#now-on">BRIQ →</a></div>
       <div><em>Every day · The Bluebell</em><b>The pub is open</b><span>From 10:00. Draught beer, ale, whisky and a proper chophouse menu.</span><a href="/the-bluebell/">The Bluebell →</a></div>
     </div>
   </div>
@@ -1135,7 +1157,7 @@ page("/about/", "About Basho Projects | Independent Hospitality Group in Senopat
 services_faq = [
     ("What does a hospitality consultant in Jakarta actually do?", "We help you decide what to open, where, and for whom; then we build the brand, menu, bar programme, team and systems, and launch it. You can hire us for all of it or one piece."),
     ("Do you only work on new openings?", "No. Some of our best work is on venues that are already open: a menu that isn’t selling, a launch that didn’t land, a team that keeps turning over, or marketing that isn’t filling tables."),
-    ("How much does it cost?", "Monthly retainers start from IDR 20 million. For the right project we also work on a revenue-partner model, so our fee moves with your results. Bubble + Squeak marketing packages start from USD 950 a month."),
+    ("How much does it cost?", "Three ways: a monthly retainer from IDR 20 million, a revenue-partner model where our fee moves with your results, or a fixed project fee for one defined job. Marketing-only packages through Bubble + Squeak start from USD 950 a month."),
     ("Do you work outside Jakarta?", "Our home is Senopati, but we work with brands across Indonesia and Southeast Asia where the project is a good fit."),
     ("Who will actually work on my project?", "The same senior team that runs BEBOP, BRIQ, The Bluebell and Brock. That’s why we only take on a few projects a year."),
 ]
@@ -1204,8 +1226,9 @@ page("/services/", "Restaurant & Bar Consultants in Jakarta | F&B Concept, Launc
     <div class="offer">
       <div class="reveal feat" style="background:#221f1a;border-color:#221f1a"><span class="eyebrow">Monthly retainer</span><div class="price">IDR 20jt+</div><p>Continuous, accountable support across brand, marketing and operations, from IDR 20 million a month.</p></div>
       <div class="reveal feat" style="background:#221f1a;border-color:#221f1a"><span class="eyebrow">Revenue partner</span><div class="price">% share</div><p>Our fee moves with your growth. Embedded with your team for long-term commercial alignment.</p></div>
-      <div class="reveal feat" style="background:#221f1a;border-color:#221f1a"><span class="eyebrow">Marketing only</span><div class="price">USD 950+</div><p>Performance marketing and PR through <a href="/bubbleandsqueakmedia/">Bubble + Squeak Media</a>, per month.</p></div>
+      <div class="reveal feat" style="background:#221f1a;border-color:#221f1a"><span class="eyebrow">Project fee</span><div class="price">Fixed quote</div><p>One defined job — a concept, a menu, a bar programme or a launch — priced up front, delivered, handed back.</p></div>
     </div>
+    <p class="muted" style="margin-top:24px">Marketing only? <a href="/bubbleandsqueakmedia/" style="color:inherit">Bubble + Squeak Media</a> packages start from USD 950 a month.</p>
   </div>
 </section>
 
