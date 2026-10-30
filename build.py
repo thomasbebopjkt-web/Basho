@@ -217,7 +217,9 @@ def page(path, title, description, main, image="/assets/img/briq-hero.jpg", with
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#000000">
 <script>document.documentElement.classList.add("js")</script>
-<link rel="icon" href="/assets/favicon.ico">
+<link rel="icon" href="/assets/favicon.ico?v={ASSET_V}" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v={ASSET_V}">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png?v={ASSET_V}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Serif:ital@0;1&family=Space+Mono&family=Manrope:wght@400;500;600;700;800&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
