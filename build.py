@@ -923,7 +923,7 @@ def venue_rows(heading_tag="h3"):
 
 
 STAMP = """<svg class="stamp" viewBox="0 0 200 200" aria-hidden="true"><defs><path id="c" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0"/></defs>
-<text><textPath href="#c">Operators first · Made in Senopati · Est. by underdogs ·</textPath></text>
+<text><textPath href="#c">Operators first · Made in Senopati · Since BEBOP ·</textPath></text>
 <circle cx="100" cy="100" r="34" fill="#e0482a"/><text x="100" y="106" text-anchor="middle" style="font-size:18px;letter-spacing:1px">BASHO</text></svg>"""
 
 WHAT_WE_DO = {
