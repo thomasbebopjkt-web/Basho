@@ -880,6 +880,7 @@ bluebell_faq = [
     ("What are The Bluebell’s opening hours?", "Monday to Thursday 10:00–01:00; Friday to Sunday 10:00–02:00."),
     ("What’s to drink and eat?", "Beers and pitchers, gin and tonics and cocktails at the bar, plus Guinness. From the kitchen, the pub classics: fish and chips, proper pies and more."),
     ("Is it a proper British pub?", "A modern one. The Bluebell is a modern British public house: elevated British classics from the kitchen, a bar lounge, a dining hall, the Chess Room (our snug) and a private dining room."),
+    ("Is there a pub quiz?", "Yes, every Wednesday. Bring a team, grab a pitcher and message us on WhatsApp to hold a table."),
     ("Can I book the private dining room?", "Yes. The private dining room seats ten. Message us on WhatsApp to book."),
 ]
 venue_page = f"""
@@ -978,7 +979,7 @@ NEW_POSTS = [
 <h2>More at the pub this week</h2>
 <ul class="ticks">
   <li><strong>Happy hour, every day 5–8 PM:</strong> gin and tonic for 100K++ (Classic or Sour Popsicle), and Heineken buckets for 280K++, buy 4 get 1 free.</li>
-  <li><strong>Jameson Bluebell’s Pub Quiz:</strong> Wednesday 4 November from 8 PM, hosted by Kienan. Sign-up is 175K per person with a Jameson Ginger & Lime or a mocktail, and the winning team takes home a bottle of Jameson.</li>
+  <li><strong>Pub Quiz, every Wednesday:</strong> teams, rounds and bragging rights. This week (Wednesday 4 November, 8 PM) is a one-off Jameson special hosted by Kienan: 175K per person with a Jameson Ginger & Lime or a mocktail, and a bottle of Jameson for the winners.</li>
   <li><strong>The Chess Room:</strong> our snug, for a quiet pint and a game.</li>
 </ul>
 <div class="box">
@@ -1306,6 +1307,7 @@ page("/", "Basho Projects | Jakarta Hospitality Group — BEBOP, BRIQ, The Blueb
       <div><em>Weekly · BEBOP</em><b>BMC Nights & Booty Groove</b><span>The Bebop Music Collective on the decks, then the dance floor.</span><a href="/bebop/#bmc">The collective →</a></div>
       <div><em>Weekends · BRIQ</em><b>Pasta promo, 200K++</b><span>Ravioli, rigatoni or tagliatelle with salad and a drink, 11:30–15:00.</span><a href="/blog/weekend-pasta-promo-at-briq-bistro/">BRIQ pasta →</a></div>
       <div><em>Sundays · The Bluebell</em><b>Sunday Roast</b><span>Roast beef, roast chicken or nut roast with all the trimmings, from 150K++.</span><a href="/blog/sunday-roast-at-the-bluebell-jakarta/">The roast →</a></div>
+      <div><em>Wednesday · The Bluebell</em><b>Pub Quiz</b><span>Teams, rounds and bragging rights, every Wednesday at the pub.</span><a href="/the-bluebell/#now-on">The Bluebell →</a></div>
       <div><em>Daily 5–8 PM · BEBOP & The Bluebell</em><b>Happy hours</b><span>100K cocktails at BEBOP; 100K++ G&Ts and Heineken buckets at The Bluebell.</span><a href="/the-bluebell/#now-on">Details →</a></div>
     </div>
   </div>

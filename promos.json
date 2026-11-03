@@ -84,13 +84,12 @@
       "image": "bluebell-bar.jpg"
     },
     {
-      "kicker": "Wednesday 4 Nov · 8 PM",
-      "title": "Jameson Pub Quiz",
-      "text": "Hosted by Kienan. 175K per person with a Jameson Ginger & Lime or mocktail. Winners take home a bottle of Jameson.",
-      "cta": "Sign up on WhatsApp",
+      "kicker": "Every Wednesday",
+      "title": "Pub Quiz",
+      "text": "Teams, rounds and bragging rights at the pub. Grab a pitcher, bring your smartest friends and come for the drinks, stay for a friendly competition.",
+      "cta": "Book your team a table",
       "url": "https://api.whatsapp.com/send/?phone=6285921219087",
-      "image": "bluebell-lounge.jpg",
-      "until": "2026-11-04"
+      "image": "bluebell-lounge.jpg"
     }
   ]
 }
