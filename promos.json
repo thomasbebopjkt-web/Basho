@@ -2,39 +2,55 @@
   "_how_to": "Promos shown at the top of each venue page (where the WiFi lands). Add, edit or remove entries, then run ./deploy.sh. Fields: kicker (small label), title, text, cta (button text), url (button link), image (file in site/assets/img/), until (optional YYYY-MM-DD: hidden after this date), feature (true = big card).",
   "bebop": [
     {
-      "kicker": "Every Monday & Friday",
-      "title": "Jazz Nights",
-      "text": "Live jazz curated by Bass G, from standards to funk and groove. Grab a Mega Highball and a table near the stage.",
-      "cta": "Book for jazz night",
+      "kicker": "Every night · 5–8 PM",
+      "title": "Happy hour: 100K cocktails",
+      "text": "Selected cocktails for 100K, every night from 5 to 8 PM. Only at BEBOP.",
+      "cta": "Book a table",
       "url": "https://api.whatsapp.com/send/?phone=628131847056",
-      "image": "jazz-1.jpg",
+      "image": "bebop-detail.jpg",
       "feature": true
     },
     {
-      "kicker": "Every Tuesday",
-      "title": "Trivia Tuesdays",
-      "text": "Hosted by Kara Chenoa. Brains, banter and a little buzz.",
+      "kicker": "Every Monday & Friday",
+      "title": "Jazz Nights",
+      "text": "Live jazz curated by Bass G. Recently, Between the Notes brought Barry Likumahuwa to our stage.",
       "cta": "See what's on",
       "url": "https://www.instagram.com/bebop.wav/",
-      "image": "bebop-room.jpg"
+      "image": "jazz-1.jpg"
+    },
+    {
+      "kicker": "Just happened",
+      "title": "Halloween Week recap",
+      "text": "Six nights of jazz, trivia, karaoke and Booty Groove. Thank you for dancing beneath the shadows.",
+      "cta": "Read the recap",
+      "url": "/blog/halloween-week-at-bebop-senopati/",
+      "image": "halloween-2.jpg"
     }
   ],
   "briq-bistro": [
     {
-      "kicker": "House favourite",
-      "title": "Home of the steak frites",
-      "text": "Our signature: a properly seared steak, crisp frites and a sauce worth mopping up. The dish BRIQ is known for in Senopati.",
-      "cta": "Book a table",
+      "kicker": "Weekends · 11:30–15:00",
+      "title": "Pasta promo: 200K++",
+      "text": "Ravioli, rigatoni or tagliatelle, with your choice of salad and a coffee, tea or soft drink.",
+      "cta": "Book a weekend table",
       "url": "https://api.whatsapp.com/send/?phone=6285921219087",
-      "image": "brock-hero.jpg",
+      "image": "pasta-rigatoni.jpg",
       "feature": true
     },
     {
-      "kicker": "This week",
-      "title": "Pasta promos",
-      "text": "New pasta deals running now. See this week's offer on our Instagram.",
-      "cta": "This week's promo",
-      "url": "https://www.instagram.com/briqbistro/",
+      "kicker": "Every day, all night",
+      "title": "Date package for two",
+      "text": "Two ribeye steaks (Café de Paris or sauce au poivre) and two fries, 495K++. Add escargots and two drinks for 100K++.",
+      "cta": "Book a date night",
+      "url": "https://api.whatsapp.com/send/?phone=6285921219087",
+      "image": "brock-hero.jpg"
+    },
+    {
+      "kicker": "House favourite",
+      "title": "Home of the steak frites",
+      "text": "A properly seared steak, crisp frites and a sauce worth mopping up.",
+      "cta": "See the menu",
+      "url": "https://drive.google.com/file/d/14s5RP07lYSFB83LDFETMX9C2kJ7qXe4m/view",
       "image": "briq-detail.jpg"
     }
   ],
@@ -51,21 +67,30 @@
   ],
   "the-bluebell": [
     {
-      "kicker": "Every day from 10:00",
-      "title": "Fish & chips, pies and a pint",
-      "text": "Pints, pitchers, G&Ts and Guinness, with fish & chips and proper pies from the kitchen. Bring the team after work or settle in for the evening.",
-      "cta": "Book on WhatsApp",
+      "kicker": "Every Sunday",
+      "title": "The Sunday Roast",
+      "text": "Roast beef 275K, roast chicken 200K or nut roast 150K (++), with Yorkshire pudding and all the trimmings. Pets welcome.",
+      "cta": "Book your roast",
       "url": "https://api.whatsapp.com/send/?phone=6285921219087",
-      "image": "bluebell-bar.jpg",
+      "image": "roast-beef.jpg",
       "feature": true
     },
     {
-      "kicker": "Groups & celebrations",
-      "title": "Private dining room for ten",
-      "text": "Birthdays, team dinners and long lunches, with the pub on your doorstep.",
-      "cta": "Ask about dates",
+      "kicker": "Every day · 5–8 PM",
+      "title": "Happy hour",
+      "text": "Gin and tonic 100K++ (Classic or Sour Popsicle). Heineken bucket 280K++: buy 4, get 1 free.",
+      "cta": "Book a table",
       "url": "https://api.whatsapp.com/send/?phone=6285921219087",
-      "image": "bluebell-hall-night.jpg"
+      "image": "bluebell-bar.jpg"
+    },
+    {
+      "kicker": "Wednesday 4 Nov · 8 PM",
+      "title": "Jameson Pub Quiz",
+      "text": "Hosted by Kienan. 175K per person with a Jameson Ginger & Lime or mocktail. Winners take home a bottle of Jameson.",
+      "cta": "Sign up on WhatsApp",
+      "url": "https://api.whatsapp.com/send/?phone=6285921219087",
+      "image": "bluebell-lounge.jpg",
+      "until": "2026-11-04"
     }
   ]
 }

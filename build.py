@@ -891,7 +891,7 @@ venue_page = f"""
     ("Round 2", "Find the pub", "Jl. Tulodong Atas No. 10 A-B", v["maps"]),
     ("Round 3", "Instagram", v["ig_handle"], v["instagram"]),
     ("Round 4", "Private dining", "A room for ten", v["book"]),
-    ("Round 5", "Our opening story", "From the Basho blog", "/blog/the-bluebell-public-house-opens-in-south-jakarta/"),
+    ("Round 5", "The Sunday roast", "Beef, chicken or nut roast", "/blog/sunday-roast-at-the-bluebell-jakarta/"),
     ("Round 6", "Message the team", "WhatsApp", WA_GROUP),
 ], f'<span>{v["hours_text"]}</span><span>Cheers</span>')}
 
@@ -947,7 +947,120 @@ page("/the-bluebell/", "The Bluebell Public House | British Pub in Senopati, Sou
 # ---------------------------------------------------------------- blog
 
 BB = VENUES["the-bluebell"]
-POSTS = [
+BE = VENUES["bebop"]
+BQ = VENUES["briq-bistro"]
+NEW_POSTS = [
+    {
+        "slug": "sunday-roast-at-the-bluebell-jakarta",
+        "title": "Sunday Roast Comes to Senopati: The Bluebell’s Roast Beef, Roast Chicken and Nut Roast",
+        "seo_title": "Sunday Roast in Jakarta | The Bluebell Public House",
+        "seo_desc": "Sunday roast at The Bluebell, Senopati: roast beef 275K, roast chicken 200K, nut roast 150K, all the trimmings. Pets welcome.",
+        "date": "3 November 2026", "iso": "2026-11-03",
+        "standfirst": "Roast beef, roast chicken or nut roast, with all the trimmings, every Sunday at Jakarta’s British pub.",
+        "cover": "roast-beef.jpg",
+        "body": f"""<figure>{img("roast-beef.jpg", "Sunday roast beef with Yorkshire pudding at The Bluebell, Senopati")}</figure>
+<p><strong>Jakarta, 3 November 2026</strong> — There are few things more British than a Sunday roast, and now there’s one on Jl. Tulodong Atas. The Bluebell Public House has launched its Sunday Roast: a proper plate of roast meat, Yorkshire pudding and gravy, served at a long table with a pint, in the heart of Senopati.</p>
+<p>For anyone searching for a British pub in Jakarta that does Sundays properly, this is the one. Start the day earlier with us, bring the family or the whole flat, and settle in. Our Sundays are pet friendly too, so the dog can come.</p>
+<h2>Pick your roast</h2>
+<p>Three roasts, each served with a Yorkshire pudding, cauliflower cheese, roast potatoes, roast carrots and cabbage, and a jug of gravy:</p>
+<ul class="ticks">
+  <li><strong>Roast Beef</strong> — 275K++</li>
+  <li><strong>Roast Chicken</strong> — 200K++</li>
+  <li><strong>Nut Roast</strong> — 150K++, our vegetarian roast</li>
+</ul>
+<div class="grid-2" style="margin:32px 0;gap:16px">
+  <figure style="margin:0">{img("roast-chicken.jpg", "Roast chicken Sunday roast at The Bluebell", sizes="(max-width: 760px) 100vw, 400px")}</figure>
+  <figure style="margin:0">{img("nut-roast.jpg", "Vegetarian nut roast at The Bluebell, Jakarta", sizes="(max-width: 760px) 100vw, 400px")}</figure>
+</div>
+<h2>A proper pint to go with it</h2>
+<p>The bar does what a pub should: pints and pitchers for the table, gin and tonics, cocktails and a proper Guinness. If Sunday isn’t your day, the kitchen serves British pub classics all week, from fish and chips to a proper pie.</p>
+<p>The Bluebell is open every day from 10:00, so it’s also one of the few bars open on a Sunday in Senopati where you can start with lunch and stay for the evening.</p>
+<h2>More at the pub this week</h2>
+<ul class="ticks">
+  <li><strong>Happy hour, every day 5–8 PM:</strong> gin and tonic for 100K++ (Classic or Sour Popsicle), and Heineken buckets for 280K++, buy 4 get 1 free.</li>
+  <li><strong>Jameson Bluebell’s Pub Quiz:</strong> Wednesday 4 November from 8 PM, hosted by Kienan. Sign-up is 175K per person with a Jameson Ginger & Lime or a mocktail, and the winning team takes home a bottle of Jameson.</li>
+  <li><strong>The Chess Room:</strong> our snug, for a quiet pint and a game.</li>
+</ul>
+<div class="box">
+<h3 class="h4">The Bluebell Public House</h3>
+<p>A modern British pub in Senopati, South Jakarta: pints, G&Ts, pitchers, fish & chips, pies and now the Sunday roast.</p>
+<h3 class="h4">Address + bookings</h3>
+<p>{BB["address"]}<br>Open {BB["hours_text"]}<br>Instagram: <a href="{BB["instagram"]}" target="_blank" rel="noopener">{BB["ig_handle"]}</a><br>Bookings: <a href="{WA_GROUP}" target="_blank" rel="noopener">WhatsApp us</a></p>
+</div>
+<p><a class="btn" href="{WA_GROUP}" target="_blank" rel="noopener">Book your Sunday roast</a></p>""",
+    },
+    {
+        "slug": "halloween-week-at-bebop-senopati",
+        "title": "What Lies Beneath the Night: A Look Back at Halloween Week at BEBOP",
+        "seo_title": "Halloween Week at BEBOP, Senopati | Recap",
+        "seo_desc": "Six nights of jazz, trivia, karaoke and Booty Groove: a look back at Halloween Week at BEBOP Bar + Kitchen in Senopati.",
+        "date": "3 November 2026", "iso": "2026-11-03",
+        "standfirst": "Six nights, a lot of costumes and one very full dance floor. Thank you for dancing beneath the shadows with us.",
+        "cover": "halloween-2.jpg",
+        "body": f"""<figure>{img("halloween-2.jpg", "Halloween party crowd dancing at BEBOP Bar + Kitchen, Senopati", sizes="(max-width: 760px) 100vw, 900px")}</figure>
+<p><strong>Jakarta, 3 November 2026</strong> — For one week at the end of October, BEBOP Bar + Kitchen turned into something a little stranger than usual. <em>What Lies Beneath the Night</em>, our Halloween Week, ran from Monday 26 to Saturday 31 October, with a different night every night and a costume dress code for all of it.</p>
+<h2>Six nights, six moods</h2>
+<ul class="ticks">
+  <li><strong>Monday 26 Oct — Special Monday Jazz.</strong> Our weekly live jazz night, with a darker set list.</li>
+  <li><strong>Tuesday 27 Oct — Trivia Night with Kara Chenoa.</strong> Brains, banter and bonus points for costumes.</li>
+  <li><strong>Wednesday 28 Oct — Lady Gaga Listening Party.</strong> Played front to back, the way a listening bar should.</li>
+  <li><strong>Thursday 29 Oct — Spooky Karaoke with cryonbike.</strong> Less about hitting the note, more about bringing the house down.</li>
+  <li><strong>Friday 30 Oct — Booty Groove</strong> with Jaka, Yelig (Club Odyssey) and Laskar.</li>
+  <li><strong>Saturday 31 Oct — Bebop Music Collective</strong> on the decks to close the week.</li>
+</ul>
+<div class="grid-2" style="margin:32px 0;gap:16px">
+  <figure style="margin:0">{img("halloween-1.jpg", "Guests in costume at BEBOP's Halloween party", sizes="(max-width: 760px) 100vw, 400px")}</figure>
+  <figure style="margin:0">{img("halloween-3.jpg", "Halloween costumes at BEBOP Bar + Kitchen, Jakarta", sizes="(max-width: 760px) 100vw, 400px")}</figure>
+</div>
+<h2>Why we do weeks like this</h2>
+<p>BEBOP has always been more than a bar in Senopati: it’s a room built around music and the people who come back for it. Halloween Week brought together everything we run through the year, from live jazz and trivia to karaoke and the Bebop Music Collective, in one six-night run. Thank you to everyone who dressed up, sang, danced and stayed late.</p>
+<figure>{img("halloween-4.jpg", "DJs from the Bebop Music Collective at Halloween Week", sizes="(max-width: 760px) 100vw, 900px")}</figure>
+<h2>What’s next at BEBOP</h2>
+<ul class="ticks">
+  <li><strong>Happy hour, every night 5–8 PM:</strong> selected cocktails for 100K.</li>
+  <li><strong>Live jazz every Monday and Friday</strong> — still one of the best answers to “jazz bar in Jakarta”. Recently, <em>Between the Notes</em> with Bass G brought Barry Likumahuwa to our stage.</li>
+  <li><strong>Trivia Tuesdays, karaoke and BMC nights</strong> through the week. Follow <a href="{BE["instagram"]}" target="_blank" rel="noopener">{BE["ig_handle"]}</a> for the line-up.</li>
+</ul>
+<div class="box">
+<h3 class="h4">BEBOP Bar + Kitchen</h3>
+<p>A jazz and cocktail bar on Jl. Senopati No. 61, South Jakarta, with modern Japanese plates and live music most nights. Open every day from 18:00 till late.</p>
+<p><a href="{BE["book"]}" target="_blank" rel="noopener">Book on WhatsApp</a> · <a href="{BE["instagram"]}" target="_blank" rel="noopener">{BE["ig_handle"]}</a></p>
+</div>
+<p><a class="btn" href="/bebop/">Visit BEBOP</a></p>""",
+    },
+    {
+        "slug": "weekend-pasta-promo-at-briq-bistro",
+        "title": "Weekend Pasta at BRIQ: Ravioli, Rigatoni or Tagliatelle, with Salad and a Drink, for 200K",
+        "seo_title": "Weekend Pasta Promo at BRIQ Bistro, Senopati",
+        "seo_desc": "BRIQ's weekend pasta promo: ravioli, rigatoni or tagliatelle with salad and a drink for 200K++, Sat & Sun 11:30–15:00.",
+        "date": "3 November 2026", "iso": "2026-11-03",
+        "standfirst": "Make your weekends a little more special: pasta, a salad and a drink, every Saturday and Sunday lunchtime.",
+        "cover": "pasta-rigatoni.jpg",
+        "body": f"""<figure>{img("pasta-rigatoni.jpg", "Rigatoni from BRIQ Bistro's weekend pasta promo, Senopati")}</figure>
+<p><strong>Jakarta, 3 November 2026</strong> — BRIQ Bistro has launched its weekend Pasta Promo, a new reason to spend a slow Saturday or Sunday lunch in Senopati. Pick your pasta, add a salad and a drink, and the whole thing comes to 200K++.</p>
+<h2>How it works</h2>
+<ul class="ticks">
+  <li><strong>Choose your pasta:</strong> ravioli, rigatoni or tagliatelle.</li>
+  <li><strong>Add your choice of salad.</strong></li>
+  <li><strong>And a drink:</strong> coffee, tea or a soft drink.</li>
+  <li><strong>200K++</strong>, every weekend from 11:30 to 15:00.</li>
+</ul>
+<figure>{img("pasta-tagliatelle.jpg", "Tagliatelle with salmon at BRIQ Bistro, Jakarta")}</figure>
+<h2>Weekends at BRIQ, all day</h2>
+<p>On weekdays BRIQ is a dinner spot, but on Saturdays and Sundays we’re open all day, from 10:00 to 22:00. Pasta at lunch, a glass of something on the terrace in the afternoon, and dinner if you’re not ready to leave.</p>
+<p>BRIQ is still the home of the steak frites: a properly seared steak, crisp frites and a sauce worth mopping up, made with beef from our own butcher, Brock.</p>
+<h2>Bringing someone?</h2>
+<p>The <strong>BRIQ Date Package</strong> runs every day, all night: two ribeye steaks with your choice of Café de Paris butter or sauce au poivre, and two portions of fries, for 495K++ for two. Add escargots and two drinks for 100K++.</p>
+<div class="box">
+<h3 class="h4">BRIQ Bistro</h3>
+<p>A neighbourhood French bistro in Senopati, crafted between fine and casual. Dinner Monday to Friday from 17:00; all day at weekends.</p>
+<p>{BQ["address"]}<br><a href="{BQ["book"]}" target="_blank" rel="noopener">Book on WhatsApp</a> · <a href="{BQ["instagram"]}" target="_blank" rel="noopener">{BQ["ig_handle"]}</a></p>
+</div>
+<p><a class="btn" href="{BQ["book"]}" target="_blank" rel="noopener">Book a weekend table</a></p>""",
+    },
+]
+
+POSTS = NEW_POSTS + [
     {
         "slug": "the-bluebell-public-house-opens-in-south-jakarta",
         "old": "/blog/the-bluebell-public-house-opens-in-south-jakarta-bringing-the-warmth-of-a-british-pub-to-senopati/",
@@ -1030,6 +1143,8 @@ for i, p in enumerate(POSTS):
         "publisher": {"@type": "Organization", "name": "Basho Projects", "logo": {"@type": "ImageObject", "url": f"{DOMAIN}/assets/img/basho-logo.png"}},
         "image": f"{DOMAIN}/assets/img/{p['cover']}", "mainEntityOfPage": f"{DOMAIN}/blog/{p['slug']}/",
     }
+    if p.get("seo_desc"):
+        SEO_META[f"/blog/{p['slug']}/"] = (p["seo_title"], p["seo_desc"])
     page(f"/blog/{p['slug']}/", f"{p['seo_title']} | Basho Projects", p["standfirst"], f"""
 <section class="section"><article class="wrap article">
   <a href="/blog/" class="kicker" style="text-decoration:none">← Blog</a>
@@ -1039,7 +1154,8 @@ for i, p in enumerate(POSTS):
   {p['body']}
   {nav}
 </article></section>""", image="/assets/img/" + p["cover"], with_collab=False, schema=[article_ld])
-    redirect(p["old"], f"/blog/{p['slug']}/")
+    if p.get("old"):
+        redirect(p["old"], f"/blog/{p['slug']}/")
 
 # ---------------------------------------------------------------- group pages (spliced into build.py)
 
@@ -1188,8 +1304,9 @@ page("/", "Basho Projects | Jakarta Hospitality Group — BEBOP, BRIQ, The Blueb
       <div><em>Monday & Friday · BEBOP</em><b>Jazz Nights</b><span>Live jazz curated by Bass G, from standards to funk and groove.</span><a href="/bebop/">BEBOP →</a></div>
       <div><em>Tuesday · BEBOP</em><b>Trivia Tuesdays</b><span>Hosted by Kara Chenoa. Brains, banter and a little buzz.</span><a href="/bebop/">BEBOP →</a></div>
       <div><em>Weekly · BEBOP</em><b>BMC Nights & Booty Groove</b><span>The Bebop Music Collective on the decks, then the dance floor.</span><a href="/bebop/#bmc">The collective →</a></div>
-      <div><em>Every day · BRIQ</em><b>Steak frites & pasta promos</b><span>Home of the steak frites, plus a new pasta deal most weeks.</span><a href="/briq-bistro/#now-on">BRIQ →</a></div>
-      <div><em>Every day · The Bluebell</em><b>The pub is open</b><span>From 10:00. Pints, G&Ts, pitchers, fish & chips and pies.</span><a href="/the-bluebell/">The Bluebell →</a></div>
+      <div><em>Weekends · BRIQ</em><b>Pasta promo, 200K++</b><span>Ravioli, rigatoni or tagliatelle with salad and a drink, 11:30–15:00.</span><a href="/blog/weekend-pasta-promo-at-briq-bistro/">BRIQ pasta →</a></div>
+      <div><em>Sundays · The Bluebell</em><b>Sunday Roast</b><span>Roast beef, roast chicken or nut roast with all the trimmings, from 150K++.</span><a href="/blog/sunday-roast-at-the-bluebell-jakarta/">The roast →</a></div>
+      <div><em>Daily 5–8 PM · BEBOP & The Bluebell</em><b>Happy hours</b><span>100K cocktails at BEBOP; 100K++ G&Ts and Heineken buckets at The Bluebell.</span><a href="/the-bluebell/#now-on">Details →</a></div>
     </div>
   </div>
 </section>
@@ -1609,7 +1726,8 @@ page("/bubbleandsqueakmedia/", "Bubble + Squeak Media | F&B Marketing, Ads & KOL
 # ---------------------------------------------------------------- redirects & extras
 
 for old, new in [("/home/", "/"), ("/about-us/", "/about/"), ("/bebop-1/", "/bebop/"),
-                 ("/bebop-111/", "/bebop/"), ("/the-bluebell-x/", "/the-bluebell/"), ("/meet-the-team/", "/team/")]:
+                 ("/bebop-111/", "/bebop/"), ("/the-bluebell-x/", "/the-bluebell/"), ("/meet-the-team/", "/team/"),
+                 ("/blog/blog-post-title-four-lr658-tcthp-7nadf-l6zw8/", "/blog/"), ("/blog/blog-post-title-one-3zaa9-zlxng-xbkmm-5ycan/", "/blog/")]:
     redirect(old, new)
 
 home = (ROOT / "index.html").read_text()
