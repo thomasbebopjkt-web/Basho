@@ -11,6 +11,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).parent / "site"
 DOMAIN = "https://www.bashoprojects.com"
+GA_ID = "G-FTQ6R39EZS"  # Google Analytics 4 property for bashoprojects.com
 # Fingerprint of the CSS/JS so browsers fetch fresh copies after every deploy
 ASSET_V = hashlib.md5(b"".join((ROOT / "assets" / p).read_bytes() for p in
                               ["css/site.css", "css/group.css", "css/venue.css", "js/site.js"])).hexdigest()[:8]
@@ -243,6 +244,9 @@ def page(path, title, description, main, image="/assets/img/briq-hero.jpg", with
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id={GA_ID}"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','{GA_ID}');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{escape(title)}</title>
 <meta name="description" content="{escape(description)}">
