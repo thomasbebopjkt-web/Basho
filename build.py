@@ -214,6 +214,8 @@ SEO_META = {
                        "British pub in Senopati: pints, G&Ts, pitchers and cocktails, fish & chips, pies and Guinness. Open daily from 10:00."),
     "/the-bluebell/food/": ("British Food in Senopati | The Bluebell Public House",
                             "Modern British food near SCBD: Sunday roast, fish & chips and pies. Open daily from 10:00 for lunch and dinner."),
+    "/the-bluebell/private-rooms/": ("Private Dining & Meeting Rooms in Senopati - The Bluebell",
+                                     "Two private rooms in Senopati, a short walk from SCBD: a dining and meeting room for 12 and a Chess Room for 6. No minimum spend."),
     "/briq-bistro/food/": ("French Food in Senopati | Steak Frites at BRIQ Bistro",
                            "French bistro food in Senopati: steak frites with Brock beef, steak for two 495K++, weekend pasta 200K++."),
     "/bebop/live-music/": ("Live Music in Senopati | Jazz Mon & Fri at BEBOP",
@@ -945,7 +947,7 @@ bluebell_faq = [
     ("What’s to drink and eat?", "Beers and pitchers, gin and tonics and cocktails at the bar, plus Guinness. From the kitchen, the pub classics: fish and chips, proper pies and more."),
     ("Is it a proper British pub?", "A modern one. The Bluebell is a modern British public house: elevated British classics from the kitchen, a bar lounge, a dining hall, the Chess Room (our snug) and a private dining room."),
     ("Is there a pub quiz?", "Yes, every Wednesday. Bring a team, grab a pitcher and message us on WhatsApp to hold a table."),
-    ("Can I book the private dining room?", "Yes. The private dining room seats ten. Message us on WhatsApp to book."),
+    ("Can I book a private room?", "Yes. The private dining and meeting room seats twelve and the Chess Room seats six, with no minimum spend. Message us on WhatsApp to book."),
 ]
 venue_page = f"""
 {vhero(v, "bluebell-facade.jpg", "The Bluebell Public House on Jl. Tulodong Atas, Senopati, at night",
@@ -955,7 +957,7 @@ venue_page = f"""
     ("Round 1", "Book a table", "WhatsApp us, we’ll hold it", v["book"]),
     ("Round 2", "Find the pub", "Jl. Tulodong Atas No. 10 A-B", v["maps"]),
     ("Round 3", "Instagram", v["ig_handle"], v["instagram"]),
-    ("Round 4", "Private dining", "A room for ten", v["book"]),
+    ("Round 4", "Private rooms", "Rooms for 12 and 6", "/the-bluebell/private-rooms/"),
     ("Round 5", "The Sunday roast", "Beef, chicken or nut roast", "/blog/sunday-roast-at-the-bluebell-jakarta/"),
     ("Round 6", "Message the team", "WhatsApp", WA_GROUP),
 ], f'<span>{v["hours_text"]}</span><span>Cheers</span>')}
@@ -981,10 +983,11 @@ venue_page = f"""
       <ul class="facts">
         <li><span>Bar lounge</span><span>High stools, the long bar and pitchers for the table</span></li>
         <li><span>Dining hall</span><span>Banquettes, pendant lights and the full pub menu</span></li>
-        <li><span>The Chess Room</span><span>Our snug: a quiet pint and a game of chess</span></li>
-        <li><span>Private dining room</span><span>Seats ten, for dinners and celebrations</span></li>
+        <li><span>The Chess Room</span><span>Our snug and a private room for up to six</span></li>
+        <li><span>Private dining room</span><span>Seats twelve, for dinners, meetings and celebrations</span></li>
       </ul>
       <p class="muted" style="margin-top:18px">Room for about 95 seated and 140 standing for a full-pub booking.</p>
+      <div class="btn-row"><a class="btn btn--ghost" href="/the-bluebell/private-rooms/">See the private rooms</a></div>
     </div>
     <div class="media media--wide reveal">{img("bluebell-hall-night.jpg", "The dining hall at The Bluebell in the evening")}</div>
   </div>
@@ -1079,9 +1082,10 @@ page("/the-bluebell/food/", "British Food in Senopati | The Bluebell Public Hous
       <h2>Lunch, dinner <span class="serif">or a long table.</span></h2>
       <ul class="facts">
         <li><span>Dining hall</span><span>Banquettes, pendant lights and the full menu</span></li>
-        <li><span>The Chess Room</span><span>A quiet corner and a game of chess</span></li>
-        <li><span>Private dining room</span><span>Seats ten, for birthdays, team lunches and family dinners</span></li>
+        <li><span>The Chess Room</span><span>A private room for up to six</span></li>
+        <li><span>Private dining room</span><span>Seats twelve, for birthdays, team lunches and meetings</span></li>
       </ul>
+      <div class="btn-row"><a class="btn btn--ghost" href="/the-bluebell/private-rooms/">See the private rooms</a></div>
       <p class="muted" style="margin-top:18px">Restoran Inggris di Senopati, Jakarta Selatan. Reservasi meja lewat WhatsApp.</p>
     </div>
   </div>
@@ -1089,6 +1093,53 @@ page("/the-bluebell/food/", "British Food in Senopati | The Bluebell Public Hous
 {landing_close(v, "Book a table at The Bluebell")}
 """, image="/assets/img/roast-beef.jpg", with_collab=False, body_class="venue v-bluebell lp",
      schema=[venue_schema(v, "bluebell-hall-night.jpg")])
+
+# The Bahasa copy on the private rooms page is waiting on a native-speaker check. Set this to
+# True once it has been checked, then deploy.
+BLUEBELL_ROOMS_BAHASA_CHECKED = False
+rooms_bahasa = bahasa("Dalam Bahasa Indonesia", 'Ruang privat <span class="serif">di Senopati</span>', [
+    "Dua ruang privat di The Bluebell, hanya beberapa menit berjalan kaki dari SCBD. Cocok untuk makan siang bisnis, makan malam bersama klien, atau meeting tim. Tanpa minimum spend.",
+    "<strong>Private Dining &amp; Meeting Room:</strong> Untuk maksimal 12 orang. Ruang privat untuk makan siang, makan malam, dan meeting, dengan hidangan dari dapur The Bluebell.",
+    "<strong>Chess Room:</strong> Untuk maksimal 6 orang. Ruang yang lebih kecil untuk meeting santai atau makan bersama secara privat.",
+    f'<a class="btn" href="{v["book"]}" target="_blank" rel="noopener">Reservasi lewat WhatsApp</a>',
+]) if BLUEBELL_ROOMS_BAHASA_CHECKED else ""
+
+page("/the-bluebell/private-rooms/", "Private Dining & Meeting Rooms in Senopati - The Bluebell", "", f"""
+{vhero(v, "bluebell-2.jpg", "A private dining room at The Bluebell, Senopati",
+       'Private rooms <span class="serif">in Senopati</span>',
+       "Two private rooms at The Bluebell, a short walk from SCBD. Book one for a business lunch, a client dinner or a team meeting. There is no minimum spend.")}
+</div>
+<section class="section">
+  <div class="wrap split split--center">
+    <div class="media media--tall reveal">{img("bluebell-hall-night.jpg", "The Bluebell in the evening, set for dinner")}</div>
+    <div class="reveal">
+      <span class="eyebrow">Two rooms</span>
+      <h2>Lunch, dinner <span class="serif">or a meeting.</span></h2>
+      <div class="lineup" style="grid-template-columns:1fr">
+        <div><em>Seats up to 12</em><b>Private Dining &amp; Meeting Room</b><span>A private space for long lunches, dinners and meetings, with food from The Bluebell kitchen.</span></div>
+        <div><em>Seats up to 6</em><b>Chess Room</b><span>A smaller room for a quiet meeting or a private meal.</span></div>
+      </div>
+      <div class="btn-row" style="margin-top:28px"><a class="btn" href="{v["book"]}" target="_blank" rel="noopener">Book on WhatsApp</a></div>
+    </div>
+  </div>
+</section>
+<section class="section" style="border-top:1px solid var(--vline)">
+  <div class="wrap split">
+    <div class="reveal"><span class="eyebrow">Good to know</span><h2>Book <span class="serif">a room</span></h2>
+      <ul class="facts">
+        <li><span>Minimum spend</span><span>None</span></li>
+        <li><span>Open</span><span>Daily from 10:00</span></li>
+        <li><span>Address</span><span><a href="{v["maps"]}" target="_blank" rel="noopener">Jl. Tulodong Atas No. 10 A-B, Senopati</a></span></li>
+      </ul>
+    </div>
+    <div class="reveal"><p>Message us on WhatsApp with the date, the time, which room you’d like and how many of you, and we’ll hold it.</p>
+      <p><a class="btn" href="{v["book"]}" target="_blank" rel="noopener">Book on WhatsApp</a></p>
+      <p class="muted"><a href="/the-bluebell/food/">See the food at The Bluebell</a></p></div>
+  </div>
+</section>
+{rooms_bahasa}
+""", image="/assets/img/bluebell-2.jpg", with_collab=False, body_class="venue v-bluebell lp",
+     schema=[venue_schema(v, "bluebell-2.jpg")])
 
 v = VENUES["briq-bistro"]
 page("/briq-bistro/food/", "French Food in Senopati | Steak Frites at BRIQ Bistro", "", f"""
@@ -1254,7 +1305,7 @@ NEW_POSTS = [
 <ul class="ticks">
   <li><strong>Pub Quiz, every Wednesday:</strong> teams, rounds and bragging rights.</li>
   <li><strong>The Chess Room:</strong> our snug, for a quiet corner and a game of chess.</li>
-  <li><strong>Private dining room:</strong> seats ten, for birthdays and family lunches.</li>
+  <li><strong>Private dining room:</strong> seats twelve, for birthdays and family lunches. <a href="/the-bluebell/private-rooms/">See the private rooms</a>.</li>
 </ul>
 <div class="box">
 <h3 class="h4">The Bluebell Public House</h3>
@@ -2018,7 +2069,7 @@ main_inner = home.split('<main id="main">')[1].split("</main>")[0]
     .replace('<meta name="viewport"', '<meta name="robots" content="noindex">\n<meta name="viewport"'))
 
 pages = ["/", "/about/", "/team/", "/services/", "/invest/", "/contact/", "/our-projects/", "/bebop/", "/briq-bistro/",
-         "/brock-butchery/", "/the-bluebell/", "/the-bluebell/food/", "/briq-bistro/food/", "/bebop/live-music/", "/bubbleandsqueakmedia/", "/blog/"] + [f"/blog/{p['slug']}/" for p in POSTS]
+         "/brock-butchery/", "/the-bluebell/", "/the-bluebell/food/", "/the-bluebell/private-rooms/", "/briq-bistro/food/", "/bebop/live-music/", "/bubbleandsqueakmedia/", "/blog/"] + [f"/blog/{p['slug']}/" for p in POSTS]
 (ROOT / "sitemap.xml").write_text(
     '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
     + "".join(f"  <url><loc>{DOMAIN}{p}</loc><lastmod>{TODAY.isoformat()}</lastmod></url>\n" for p in pages) + "</urlset>\n")
