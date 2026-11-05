@@ -947,6 +947,7 @@ bluebell_faq = [
     ("What’s to drink and eat?", "Beers and pitchers, gin and tonics and cocktails at the bar, plus Guinness. From the kitchen, the pub classics: fish and chips, proper pies and more."),
     ("Is it a proper British pub?", "A modern one. The Bluebell is a modern British public house: elevated British classics from the kitchen, a bar lounge, a dining hall, the Chess Room (our snug) and a private dining room."),
     ("Is there a pub quiz?", "Yes, every Wednesday. Bring a team, grab a pitcher and message us on WhatsApp to hold a table."),
+    ("Can I smoke at The Bluebell?", "IQOS and other heated tobacco are welcome inside. Vapes and cigarettes are for the outdoor smoking area."),
     ("Can I book a private room?", "Yes. The private dining and meeting room seats twelve and the Chess Room seats six, with no minimum spend. Message us on WhatsApp to book."),
 ]
 venue_page = f"""
@@ -986,7 +987,7 @@ venue_page = f"""
         <li><span>The Chess Room</span><span>Our snug and a private room for up to six</span></li>
         <li><span>Private dining room</span><span>Seats twelve, for dinners, meetings and celebrations</span></li>
       </ul>
-      <p class="muted" style="margin-top:18px">Room for about 95 seated and 140 standing for a full-pub booking.</p>
+      <p class="muted" style="margin-top:18px">Room for about 95 seated and 140 standing for a full-pub booking. IQOS and heated tobacco friendly inside; vapes and smoking in the outdoor smoking area.</p>
       <div class="btn-row"><a class="btn btn--ghost" href="/the-bluebell/private-rooms/">See the private rooms</a></div>
     </div>
     <div class="media media--wide reveal">{img("bluebell-hall-night.jpg", "The dining hall at The Bluebell in the evening")}</div>
@@ -1008,6 +1009,7 @@ venue_page = f"""
 {bahasa("Dalam Bahasa Indonesia", 'Pub di <span class="serif">Jakarta Selatan</span>', [
     "The Bluebell Public House adalah pub Inggris modern di Senopati, Jakarta Selatan, hanya beberapa menit dari SCBD. Dari dapur ada fish and chips, pie, dan Sunday roast setiap hari Minggu; di bar ada bir, pitcher, gin and tonic, koktail dan Guinness.",
     "Pub Quiz setiap hari Rabu. Buka setiap hari mulai pukul 10.00.",
+    "IQOS dan produk tembakau yang dipanaskan boleh digunakan di dalam. Vape dan rokok di area merokok di luar ruangan.",
     f'<a class="btn" href="{v["book"]}" target="_blank" rel="noopener">Reservasi meja lewat WhatsApp</a>',
 ])}
 {sisters("the-bluebell")}
