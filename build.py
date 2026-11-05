@@ -6,6 +6,8 @@ Edit the content here, run `python3 build.py` (or `./deploy.sh` to publish).
 """
 import hashlib
 import json
+from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 from html import escape
 from pathlib import Path
 
@@ -204,12 +206,16 @@ SEO_META = {
           "Jakarta hospitality group behind BEBOP, BRIQ, The Bluebell & Brock in Senopati. Book a table, work with us or invest."),
     "/bebop/": ("BEBOP Bar + Kitchen | Jazz & Cocktail Bar, Senopati",
                 "Jazz & cocktail bar on Jl. Senopati 61. Live jazz Mon & Fri, DJs, highballs, Japanese plates. Open 18:00 till late."),
-    "/briq-bistro/": ("BRIQ Bistro | Steak Frites & French Bistro, Senopati",
+    "/briq-bistro/": ("BRIQ Bistro | Steak Frites & French Restaurant, Senopati",
                       "French bistro in Senopati, home of the steak frites. Pasta promos, wine, terrace. Dinner nightly, all day weekends."),
     "/brock-butchery/": ("Brock Butchery | Premium Meat Delivered in Jakarta",
                          "Premium meat delivered across Jakarta. Order on Tokopedia or Shopee with no minimum, or set up trade supply."),
     "/the-bluebell/": ("The Bluebell Public House | British Pub, Senopati",
                        "British pub in Senopati: pints, G&Ts, pitchers and cocktails, fish & chips, pies and Guinness. Open daily from 10:00."),
+    "/the-bluebell/food/": ("British Food in Senopati | The Bluebell Public House",
+                            "Modern British food near SCBD: Sunday roast, fish & chips and pies. Open daily from 10:00 for lunch and dinner."),
+    "/bebop/live-music/": ("Live Music in Senopati | Jazz Mon & Fri at BEBOP",
+                           "Live jazz every Monday and Friday, Trivia Tuesdays and resident DJs at BEBOP, Jl. Senopati 61. Modern Japanese plates."),
     "/blog/": ("Journal | Stories from Senopati | Basho Projects",
                "Stories from Basho Projects in Senopati, Jakarta: openings, live jazz at BEBOP, The Bluebell and more."),
     "/blog/the-bluebell-public-house-opens-in-south-jakarta/": ("The Bluebell Public House Opens in Senopati, Jakarta",
@@ -458,6 +464,48 @@ def faq_html(faqs):
     return '<div class="faq">' + "".join(f"<details><summary>{q}</summary><p>{a}</p></details>" for q, a in faqs) + "</div>"
 
 
+TODAY = datetime.now(ZoneInfo("Asia/Jakarta")).date()
+
+
+def weekly_events(v, name, description, weekdays, image, weeks=8):
+    """Event markup for a weekly night: one Event per date over the next few weeks (weekdays: 0 = Monday).
+    Dates are worked out at build time, so redeploy at least every few weeks to keep them in the future."""
+    out = []
+    for i in range(weeks * 7):
+        day = TODAY + timedelta(days=i)
+        if day.weekday() not in weekdays:
+            continue
+        out.append({
+            "@context": "https://schema.org", "@type": "Event", "name": f"{name} at {v['name']}",
+            "description": description, "startDate": day.isoformat(),
+            "eventStatus": "https://schema.org/EventScheduled",
+            "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+            "location": {"@type": "Place", "name": v["name"], "address": {
+                "@type": "PostalAddress", "streetAddress": v["street"], "addressLocality": v["locality"],
+                "addressRegion": "DKI Jakarta", "addressCountry": "ID"}},
+            "image": [f"{DOMAIN}/assets/img/{image}"],
+            "organizer": {"@type": "Organization", "name": v["name"], "url": DOMAIN + v["path"]},
+        })
+    return out
+
+
+def bebop_events():
+    v = VENUES["bebop"]
+    return (weekly_events(v, "Jazz Night", "Live jazz curated by Bass G, from standards to funk and groove.", {0, 4}, "jazz-2.jpg")
+            + weekly_events(v, "Trivia Tuesday", "Pub-style trivia hosted by Kara Chenoa. Teams, rounds and bragging rights.", {1}, "jazz-2.jpg"))
+
+
+def bahasa(eyebrow, h2, paras):
+    """A short Indonesian-language section, for the searches people make in Bahasa."""
+    body = "".join(f"<p>{t}</p>" for t in paras)
+    return f"""<section class="section" lang="id" style="border-top:1px solid var(--vline)">
+  <div class="wrap split">
+    <div class="reveal"><span class="eyebrow">{eyebrow}</span><h2>{h2}</h2></div>
+    <div class="reveal">{body}</div>
+  </div>
+</section>"""
+
+
 # ---------------------------------------------------------------- venues
 
 
@@ -618,12 +666,12 @@ venue_page = f"""
     <p class="muted" style="max-width:60ch">Looking for a jazz bar in Jakarta, or a bar di Senopati with a proper sound system? This is the weekly rotation. Line-ups change, so check <a href="{v['instagram']}" target="_blank" rel="noopener">{v['ig_handle']}</a> before you head over.</p>
     <div class="lineup">
       <div><em>Mon & Fri</em><b>Jazz Nights</b><span>Live jazz curated by Bass G, from standards to funk and groove.</span></div>
-      <div><em>Weekly</em><b>Trivia Tuesdays</b><span>Teams, rounds, bragging rights.</span></div>
+      <div><em>Tuesdays</em><b>Trivia Tuesdays</b><span>Teams, rounds, bragging rights.</span></div>
       <div><em>Weekly</em><b>Karaoke Nights</b><span>The mic is yours. Be brave.</span></div>
       <div><em>Weekly</em><b>BMC Nights</b><span>The Bebop Music Collective on the decks: house, future beats, jazz and soul.</span></div>
       <div><em>Weekly</em><b>Booty Groove</b><span>Late, loud and very much a dance floor.</span></div>
     </div>
-    <p style="margin-top:28px"><a class="btn" href="/blog/jazz-at-bebop/">Read: Jazz at BEBOP</a></p>
+    <div class="btn-row" style="margin-top:28px"><a class="btn" href="/bebop/live-music/">Live music at BEBOP</a><a class="btn btn--ghost" href="/blog/jazz-at-bebop/">Read: Jazz at BEBOP</a></div>
   </div>
 </section>
 
@@ -702,12 +750,17 @@ venue_page = f"""
     <div class="reveal"><h2 class="h3">Good to know</h2>{faq_html(bebop_faq)}</div>
   </div>
 </section>
+{bahasa("Dalam Bahasa Indonesia", 'Bar di Senopati <span class="serif">dengan live music</span>', [
+    "BEBOP Bar + Kitchen adalah bar jazz dan koktail di Jl. Senopati No. 61, Kebayoran Baru, Jakarta Selatan. Ada live jazz setiap Senin dan Jumat, Trivia Tuesday setiap Selasa, dan DJ residen dari Bebop Music Collective.",
+    "Dapur kami menyajikan hidangan Jepang modern untuk dinikmati bersama. Buka setiap hari mulai pukul 18.00 sampai larut malam.",
+    f'<a class="btn" href="{v["book"]}" target="_blank" rel="noopener">Reservasi meja lewat WhatsApp</a>',
+])}
 {sisters("bebop")}
 """
 page("/bebop/", "BEBOP Bar + Kitchen | Jazz & Cocktail Bar in Senopati, Jakarta",
      "BEBOP Bar + Kitchen: live jazz every Monday & Friday, DJs, cocktails and a modern Japanese kitchen at Jl. Senopati 61, South Jakarta. Open 18:00 till late. Book, menu & directions.",
      venue_page, image="/assets/img/bebop-hero.jpg", with_collab=False, body_class="venue v-bebop",
-     schema=[venue_schema(v, "bebop-hero.jpg"), faq_schema(bebop_faq)])
+     schema=[venue_schema(v, "bebop-hero.jpg"), faq_schema(bebop_faq)] + bebop_events())
 
 # BRIQ ----------------------------------------------------------------
 
@@ -737,7 +790,7 @@ venue_page = f"""
     <div class="reveal">
       <span class="eyebrow">The concept</span>
       <h2>Organic. Human. Eclectic. Raw. <span class="serif">Fine-casual.</span></h2>
-      <p>BRIQ Bistro is designed around authentic culinary traditions presented with clarity and restraint: quality ingredients, classic techniques, and balanced presentation. The dining experience feels both refined and approachable — casual enough for a relaxed brunch, polished enough for a memorable dinner.</p>
+      <p>BRIQ is a French restaurant in Senopati with the soul of a neighbourhood bistro, designed around authentic culinary traditions presented with clarity and restraint: quality ingredients, classic techniques, and balanced presentation. The dining experience feels both refined and approachable — casual enough for a relaxed brunch, polished enough for a memorable dinner.</p>
       <p>BRIQ was created for Jakarta’s growing dining audience: diners who appreciate quality behind the plate, a warm room, and genuine hospitality.</p>
       <ul class="ticks">
         <li>Refined yet approachable French cooking in a bistro setting</li>
@@ -778,7 +831,7 @@ venue_page = f"""
       <h2>Home of the <span class="serif">steak frites.</span></h2>
       <p>If you only order one thing at BRIQ, make it this: a properly seared steak, crisp frites and a sauce worth mopping up. It’s the dish we’re known for in Senopati, made with beef from our own butcher, <a href="/brock-butchery/">Brock</a>.</p>
       <p>Alongside it, the kitchen runs rotating pasta promos and monthly specials. Follow <a href="{v['instagram']}" target="_blank" rel="noopener">{v['ig_handle']}</a> for this week’s offer.</p>
-      <div class="btn-row"><a class="btn" href="{v['book']}" target="_blank" rel="noopener">Book for steak frites</a><a class="btn btn--ghost" href="{v['menu']}" target="_blank" rel="noopener">See the menu</a></div>
+      <div class="btn-row"><a class="btn" href="{v['book']}" target="_blank" rel="noopener">Book for steak frites</a><a class="btn btn--ghost" href="/blog/steak-frites-in-jakarta-at-briq-bistro/">Read: steak frites in Jakarta</a></div>
     </div>
   </div>
 </section>
@@ -803,6 +856,11 @@ venue_page = f"""
     <div class="reveal"><h2 class="h3">Good to know</h2>{faq_html(briq_faq)}</div>
   </div>
 </section>
+{bahasa("Dalam Bahasa Indonesia", 'Restoran Prancis <span class="serif">di Senopati</span>', [
+    "BRIQ Bistro adalah restoran Prancis di Senopati, Jakarta Selatan, dengan suasana bistro yang hangat dan santai. Menu andalan kami adalah steak frites, dibuat dengan daging sapi dari butcher kami sendiri, Brock.",
+    "Buka untuk makan malam Senin sampai Jumat pukul 17.00–22.00, dan sepanjang hari pada akhir pekan pukul 10.00–22.00.",
+    f'<a class="btn" href="{v["book"]}" target="_blank" rel="noopener">Reservasi meja lewat WhatsApp</a>',
+])}
 {sisters("briq-bistro")}
 """
 page("/briq-bistro/", "BRIQ Bistro | Steak Frites & French Bistro in Senopati, Jakarta",
@@ -908,7 +966,7 @@ venue_page = f"""
       <h2>Pints. G&Ts. <span class="serif">Pitchers.</span></h2>
       <p>The Bluebell brings the social soul of the British pub to Senopati: a dimly lit, warm room where post-work drinks stretch into long, relaxed evenings. Beers and pitchers for the table, gin and tonics, cocktails and a proper Guinness at the bar; fish and chips, pies and British pub classics from the kitchen.</p>
       <p>Cosy nooks, a proper bar lounge, a dining hall and a private dining room — approachably premium and easy to enjoy, whether you’re in for a quick bite after work or settling in for a nightcap.</p>
-      <p><a class="btn" href="/blog/the-bluebell-public-house-opens-in-south-jakarta/">Read the opening story</a></p>
+      <div class="btn-row"><a class="btn" href="/the-bluebell/food/">See the food</a><a class="btn btn--ghost" href="/blog/the-bluebell-public-house-opens-in-south-jakarta/">Read the opening story</a></div>
     </div>
   </div>
 </section>
@@ -942,6 +1000,11 @@ venue_page = f"""
     <div class="reveal"><h2 class="h3">Good to know</h2>{faq_html(bluebell_faq)}</div>
   </div>
 </section>
+{bahasa("Dalam Bahasa Indonesia", 'Pub di <span class="serif">Jakarta Selatan</span>', [
+    "The Bluebell Public House adalah pub Inggris modern di Senopati, Jakarta Selatan, hanya beberapa menit dari SCBD. Dari dapur ada fish and chips, pie, dan Sunday roast setiap hari Minggu; di bar ada bir, pitcher, gin and tonic, koktail dan Guinness.",
+    "Pub Quiz setiap hari Rabu. Buka setiap hari mulai pukul 10.00.",
+    f'<a class="btn" href="{v["book"]}" target="_blank" rel="noopener">Reservasi meja lewat WhatsApp</a>',
+])}
 {sisters("the-bluebell")}
 """
 page("/the-bluebell/", "The Bluebell Public House | British Pub in Senopati, South Jakarta",
@@ -949,12 +1012,160 @@ page("/the-bluebell/", "The Bluebell Public House | British Pub in Senopati, Sou
      venue_page, image="/assets/img/bluebell-facade.jpg", with_collab=False, body_class="venue v-bluebell",
      schema=[venue_schema(v, "bluebell-facade.jpg"), faq_schema(bluebell_faq)])
 
+# ---------------------------------------------------------------- ad landing pages
+# Pages for Google Ads to send people to. Google reviews the landing page as well as the ad, and
+# alcohol content (words or images) gets venue ads limited or disapproved in Indonesia. So these
+# pages talk about food, music and the room only: no drink wording, and no photos with bottles,
+# glasses, taps or back bars. Keep it that way when editing them.
+
+
+def landing_close(v, cta):
+    return f"""<section class="section" style="border-top:1px solid var(--vline)">
+  <div class="wrap split">
+    <div class="reveal"><span class="eyebrow">Plan your visit</span><h2>Book <span class="serif">a table</span></h2>{facts(v)}</div>
+    <div class="reveal"><p>Message us on WhatsApp with the day, time and how many of you, and we’ll hold a table.</p>
+      <p><a class="btn" href="{v["book"]}" target="_blank" rel="noopener">{cta}</a></p></div>
+  </div>
+</section>"""
+
+
+v = VENUES["the-bluebell"]
+page("/the-bluebell/food/", "British Food in Senopati | The Bluebell Public House", "", f"""
+{vhero(v, "bluebell-hall-night.jpg", "The dining hall at The Bluebell, Senopati, in the evening",
+       'British food <span class="serif">in Senopati</span>',
+       "Modern British cooking at The Bluebell Public House, a short walk from SCBD: fish and chips, proper pies and a Sunday roast. Open daily from 10:00 for lunch and dinner.")}
+</div>
+<section class="section">
+  <div class="wrap split split--center">
+    <div class="media media--tall reveal">{img("roast-beef.jpg", "Sunday roast beef with Yorkshire pudding at The Bluebell")}</div>
+    <div class="reveal">
+      <span class="eyebrow">Every Sunday</span>
+      <h2>The Sunday <span class="serif">roast.</span></h2>
+      <p>Roast beef, roast chicken or a nut roast, each with Yorkshire pudding, cauliflower cheese, roast potatoes, roast carrots and cabbage, and a jug of gravy.</p>
+      <ul class="ticks">
+        <li><strong>Roast Beef</strong> — 275K++</li>
+        <li><strong>Roast Chicken</strong> — 200K++</li>
+        <li><strong>Nut Roast</strong> — 150K++, our vegetarian roast</li>
+      </ul>
+      <div class="btn-row"><a class="btn" href="{v["book"]}" target="_blank" rel="noopener">Book a Sunday roast</a><a class="btn btn--ghost" href="/blog/sunday-roast-at-the-bluebell-jakarta/">More on the roast</a></div>
+    </div>
+  </div>
+</section>
+<section class="section" style="border-top:1px solid var(--vline)">
+  <div class="wrap split">
+    <div class="reveal">
+      <span class="eyebrow">All week</span>
+      <h2>British classics, <span class="serif">done properly.</span></h2>
+      <p>Lunch and dinner every day from 10:00. The kitchen cooks the dishes people miss from home: fish and chips with a proper crunch, and pies with a real pastry lid.</p>
+      <div class="lineup" style="grid-template-columns:1fr">
+        <div><em>The classic</em><b>Fish & chips</b><span>Battered fish, thick-cut chips, the works.</span></div>
+        <div><em>Comfort food</em><b>Proper pies</b><span>Slow-cooked fillings under a golden pastry lid.</span></div>
+        <div><em>Sundays</em><b>The roast</b><span>Beef, chicken or nut roast with all the trimmings.</span></div>
+      </div>
+    </div>
+    <div class="grid-2 reveal" style="gap:16px;align-content:start">
+      <figure style="margin:0">{img("roast-chicken.jpg", "Roast chicken Sunday roast at The Bluebell", sizes="(max-width: 760px) 100vw, 400px")}</figure>
+      <figure style="margin:0">{img("nut-roast.jpg", "Vegetarian nut roast at The Bluebell, Jakarta", sizes="(max-width: 760px) 100vw, 400px")}</figure>
+    </div>
+  </div>
+</section>
+<section class="section" style="border-top:1px solid var(--vline)">
+  <div class="wrap split">
+    <div class="media media--wide reveal">{img("bluebell-2.jpg", "The dining room at The Bluebell Public House")}</div>
+    <div class="reveal">
+      <span class="eyebrow">The rooms</span>
+      <h2>Lunch, dinner <span class="serif">or a long table.</span></h2>
+      <ul class="facts">
+        <li><span>Dining hall</span><span>Banquettes, pendant lights and the full menu</span></li>
+        <li><span>The Chess Room</span><span>A quiet corner and a game of chess</span></li>
+        <li><span>Private dining room</span><span>Seats ten, for birthdays, team lunches and family dinners</span></li>
+      </ul>
+      <p class="muted" style="margin-top:18px">Restoran Inggris di Senopati, Jakarta Selatan. Reservasi meja lewat WhatsApp.</p>
+    </div>
+  </div>
+</section>
+{landing_close(v, "Book a table at The Bluebell")}
+""", image="/assets/img/roast-beef.jpg", with_collab=False, body_class="venue v-bluebell lp",
+     schema=[venue_schema(v, "bluebell-hall-night.jpg")])
+
+v = VENUES["bebop"]
+page("/bebop/live-music/", "Live Music in Senopati | Jazz Mon & Fri at BEBOP", "", f"""
+{vhero(v, "jazz-2.jpg", "A full room for live music at BEBOP, Jl. Senopati",
+       'Live music <span class="serif">in Senopati</span>',
+       "Live jazz every Monday and Friday at BEBOP Bar + Kitchen, Jl. Senopati 61, with modern Japanese plates from the kitchen. Open daily from 18:00.")}
+</div>
+<section class="section">
+  <div class="wrap">
+    <span class="eyebrow">The week at BEBOP</span>
+    <h2>Something on <span class="serif">most nights.</span></h2>
+    <div class="lineup">
+      <div><em>Mon & Fri</em><b>Jazz Nights</b><span>Live jazz curated by resident musician Bass G, from standards to funk and groove.</span></div>
+      <div><em>Tuesdays</em><b>Trivia Tuesdays</b><span>Hosted by Kara Chenoa. Teams, rounds, bragging rights.</span></div>
+      <div><em>Weekly</em><b>Karaoke Nights</b><span>The mic is yours. Be brave.</span></div>
+      <div><em>Weekly</em><b>BMC Nights</b><span>Resident DJs from the Bebop Music Collective: house, future beats, jazz and soul.</span></div>
+    </div>
+  </div>
+</section>
+<section class="section" style="border-top:1px solid var(--vline)">
+  <div class="wrap split">
+    <div class="reveal">
+      <span class="eyebrow">Jazz at BEBOP</span>
+      <h2>Big names, <span class="serif">small room.</span></h2>
+      <p>The stage has hosted some of Indonesia’s most respected names in jazz and beyond, including Dewa Budjana, Barry Likumahuwa and Sandhy Sandoro, alongside a rotating cast of local musicians.</p>
+      <p>Come to listen closely, or come for dinner and let the music carry the night. You don’t need to know jazz to enjoy it.</p>
+      <p><a class="btn btn--ghost" href="/blog/jazz-at-bebop/">Read: Jazz at BEBOP</a></p>
+    </div>
+    <div class="reveal">
+      <span class="eyebrow">The kitchen</span>
+      <h2>Modern <span class="serif">Japanese plates.</span></h2>
+      <p>Bold snacks, smoky plates and comforting bites, made for sharing across the table while the band plays.</p>
+      <p class="muted">Musik live di Senopati, Jakarta Selatan: jazz setiap Senin dan Jumat. Reservasi meja lewat WhatsApp.</p>
+    </div>
+  </div>
+</section>
+{landing_close(v, "Book a table for jazz night")}
+""", image="/assets/img/jazz-2.jpg", with_collab=False, body_class="venue v-bebop lp",
+     schema=[venue_schema(v, "jazz-2.jpg")] + bebop_events())
+
 # ---------------------------------------------------------------- blog
 
 BB = VENUES["the-bluebell"]
 BE = VENUES["bebop"]
 BQ = VENUES["briq-bistro"]
 NEW_POSTS = [
+    {
+        # Also BRIQ's Google Ads landing page: keep it free of drink wording and of photos with bottles or glasses.
+        "slug": "steak-frites-in-jakarta-at-briq-bistro",
+        "title": "Steak Frites in Jakarta: Why BRIQ Bistro Is the Home of the Steak Frites in Senopati",
+        "seo_title": "Steak Frites in Jakarta | BRIQ Bistro, Senopati",
+        "seo_desc": "Steak frites in Senopati with beef from our own butcher, Brock. A French restaurant in Jakarta. Book on WhatsApp.",
+        "date": "5 November 2026", "iso": "2026-11-05",
+        "standfirst": "A properly seared steak, crisp frites and a sauce worth mopping up, with beef from our own butcher, Brock.",
+        "cover": "brock-cuts.jpg",
+        "body": f"""<figure>{img("brock-cuts.jpg", "Sliced steak for BRIQ Bistro's steak frites, Senopati")}</figure>
+<p><strong>Jakarta, 5 November 2026</strong> — Ask anyone who has eaten at BRIQ Bistro what to order and the answer is the same: the steak frites. It is the dish BRIQ is known for, and the reason we call ourselves the home of the steak frites in Senopati.</p>
+<h2>It starts with the beef</h2>
+<p>Most restaurants buy their steak from a supplier. BRIQ buys it from <a href="/brock-butchery/">Brock Butchery</a>, the butcher we run ourselves. That means we choose the cuts, we set the spec, and if the quality ever slips, we are the first to know. It is the same beef Brock delivers to home kitchens across Jakarta.</p>
+<figure>{img("brock-hero.jpg", "Steak on the grill for BRIQ's steak frites")}</figure>
+<h2>Steak frites, the BRIQ way</h2>
+<ul class="ticks">
+  <li><strong>The steak:</strong> seared hard and rested properly, so it is cooked the way you asked for it.</li>
+  <li><strong>The sauce:</strong> Café de Paris butter or sauce au poivre.</li>
+  <li><strong>The frites:</strong> crisp outside, soft inside, and plenty of them.</li>
+</ul>
+<h2>Steak frites for two</h2>
+<p>The <strong>BRIQ Date Package</strong> runs every day, all night: two ribeye steaks with your choice of Café de Paris butter or sauce au poivre, and two portions of fries, for 495K++ for two.</p>
+<h2>A French restaurant in Senopati</h2>
+<p>BRIQ is a French bistro crafted between fine and casual: the care of fine dining, with the warmth of a neighbourhood restaurant. Dinner runs Monday to Friday from 17:00, and at weekends we are open all day, from 10:00 to 22:00.</p>
+<p>At weekend lunchtimes there is also our <a href="/blog/weekend-pasta-promo-at-briq-bistro/">weekend pasta promo</a>: ravioli, rigatoni or tagliatelle with a salad and a coffee, tea or soft drink for 200K++, from 11:30 to 15:00.</p>
+<figure>{img("pasta-rigatoni.jpg", "Rigatoni from BRIQ Bistro's weekend pasta promo")}</figure>
+<div class="box">
+<h3 class="h4">BRIQ Bistro</h3>
+<p>{BQ["address"]}<br>Dinner Monday to Friday from 17:00 · All day at weekends, 10:00–22:00<br><a href="{BQ["book"]}" target="_blank" rel="noopener">Book on WhatsApp</a> · <a href="{BQ["instagram"]}" target="_blank" rel="noopener">{BQ["ig_handle"]}</a></p>
+<p lang="id">Restoran Prancis di Senopati, Jakarta Selatan. Reservasi meja lewat WhatsApp.</p>
+</div>
+<p><a class="btn" href="{BQ["book"]}" target="_blank" rel="noopener">Book a table for steak frites</a></p>""",
+    },
     {
         "slug": "sunday-roast-at-the-bluebell-jakarta",
         "title": "Sunday Roast Comes to Senopati: The Bluebell’s Roast Beef, Roast Chicken and Nut Roast",
@@ -964,7 +1175,7 @@ NEW_POSTS = [
         "standfirst": "Roast beef, roast chicken or nut roast, with all the trimmings, every Sunday at Jakarta’s British pub.",
         "cover": "roast-beef.jpg",
         "body": f"""<figure>{img("roast-beef.jpg", "Sunday roast beef with Yorkshire pudding at The Bluebell, Senopati")}</figure>
-<p><strong>Jakarta, 3 November 2026</strong> — There are few things more British than a Sunday roast, and now there’s one on Jl. Tulodong Atas. The Bluebell Public House has launched its Sunday Roast: a proper plate of roast meat, Yorkshire pudding and gravy, served at a long table with a pint, in the heart of Senopati.</p>
+<p><strong>Jakarta, 3 November 2026</strong> — There are few things more British than a Sunday roast, and now there’s one on Jl. Tulodong Atas. The Bluebell Public House has launched its Sunday Roast: a proper plate of roast meat, Yorkshire pudding and gravy, served at a long table in the heart of Senopati.</p>
 <p>For anyone searching for a British pub in Jakarta that does Sundays properly, this is the one. Start the day earlier with us, bring the family or the whole flat, and settle in. Our Sundays are pet friendly too, so the dog can come.</p>
 <h2>Pick your roast</h2>
 <p>Three roasts, each served with a Yorkshire pudding, cauliflower cheese, roast potatoes, roast carrots and cabbage, and a jug of gravy:</p>
@@ -977,18 +1188,18 @@ NEW_POSTS = [
   <figure style="margin:0">{img("roast-chicken.jpg", "Roast chicken Sunday roast at The Bluebell", sizes="(max-width: 760px) 100vw, 400px")}</figure>
   <figure style="margin:0">{img("nut-roast.jpg", "Vegetarian nut roast at The Bluebell, Jakarta", sizes="(max-width: 760px) 100vw, 400px")}</figure>
 </div>
-<h2>A proper pint to go with it</h2>
-<p>The bar does what a pub should: pints and pitchers for the table, gin and tonics, cocktails and a proper Guinness. If Sunday isn’t your day, the kitchen serves British pub classics all week, from fish and chips to a proper pie.</p>
-<p>The Bluebell is open every day from 10:00, so it’s also one of the few bars open on a Sunday in Senopati where you can start with lunch and stay for the evening.</p>
+<h2>British classics all week</h2>
+<p>If Sunday isn’t your day, the kitchen serves British classics all week, from fish and chips to a proper pie. <a href="/the-bluebell/food/">See the food at The Bluebell</a>.</p>
+<p>The Bluebell is open every day from 10:00, so on a Sunday in Senopati you can start with lunch and stay for the evening.</p>
 <h2>More at the pub this week</h2>
 <ul class="ticks">
-  <li><strong>Happy hour, every day 5–8 PM:</strong> gin and tonic for 100K++ (Classic or Sour Popsicle), and Heineken buckets for 280K++, buy 4 get 1 free.</li>
-  <li><strong>Pub Quiz, every Wednesday:</strong> teams, rounds and bragging rights. This week (Wednesday 4 November, 8 PM) is a one-off Jameson special hosted by Kienan: 175K per person with a Jameson Ginger & Lime or a mocktail, and a bottle of Jameson for the winners.</li>
-  <li><strong>The Chess Room:</strong> our snug, for a quiet pint and a game.</li>
+  <li><strong>Pub Quiz, every Wednesday:</strong> teams, rounds and bragging rights.</li>
+  <li><strong>The Chess Room:</strong> our snug, for a quiet corner and a game of chess.</li>
+  <li><strong>Private dining room:</strong> seats ten, for birthdays and family lunches.</li>
 </ul>
 <div class="box">
 <h3 class="h4">The Bluebell Public House</h3>
-<p>A modern British pub in Senopati, South Jakarta: pints, G&Ts, pitchers, fish & chips, pies and now the Sunday roast.</p>
+<p>A modern British public house in Senopati, South Jakarta: fish & chips, pies and now the Sunday roast.</p>
 <h3 class="h4">Address + bookings</h3>
 <p>{BB["address"]}<br>Open {BB["hours_text"]}<br>Instagram: <a href="{BB["instagram"]}" target="_blank" rel="noopener">{BB["ig_handle"]}</a><br>Bookings: <a href="{WA_GROUP}" target="_blank" rel="noopener">WhatsApp us</a></p>
 </div>
@@ -1748,10 +1959,10 @@ main_inner = home.split('<main id="main">')[1].split("</main>")[0]
     .replace('<meta name="viewport"', '<meta name="robots" content="noindex">\n<meta name="viewport"'))
 
 pages = ["/", "/about/", "/team/", "/services/", "/invest/", "/contact/", "/our-projects/", "/bebop/", "/briq-bistro/",
-         "/brock-butchery/", "/the-bluebell/", "/bubbleandsqueakmedia/", "/blog/"] + [f"/blog/{p['slug']}/" for p in POSTS]
+         "/brock-butchery/", "/the-bluebell/", "/the-bluebell/food/", "/bebop/live-music/", "/bubbleandsqueakmedia/", "/blog/"] + [f"/blog/{p['slug']}/" for p in POSTS]
 (ROOT / "sitemap.xml").write_text(
     '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-    + "".join(f"  <url><loc>{DOMAIN}{p}</loc><lastmod>2026-10-29</lastmod></url>\n" for p in pages) + "</urlset>\n")
+    + "".join(f"  <url><loc>{DOMAIN}{p}</loc><lastmod>{TODAY.isoformat()}</lastmod></url>\n" for p in pages) + "</urlset>\n")
 (ROOT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {DOMAIN}/sitemap.xml\n")
 (ROOT / "CNAME").write_text("www.bashoprojects.com\n")
 (ROOT / ".nojekyll").write_text("")
