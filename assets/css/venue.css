@@ -20,6 +20,7 @@
 .venue .vhero > img { animation: kenburns 24s ease-out both; }
 @keyframes kenburns { from { transform: scale(1.08); } to { transform: scale(1); } }
 @media (prefers-reduced-motion: reduce) { .venue .vhero > img { animation: none; } }
+.lp .vhero > img { animation: none; } /* ad landing pages: a still hero */
 .vx-meta { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-bottom: 14px; }
 .vx-meta .status { margin: 0; }
 .vx-meta .eyebrow { margin: 0; color: #fff; }
