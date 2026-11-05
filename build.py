@@ -214,6 +214,8 @@ SEO_META = {
                        "British pub in Senopati: pints, G&Ts, pitchers and cocktails, fish & chips, pies and Guinness. Open daily from 10:00."),
     "/the-bluebell/food/": ("British Food in Senopati | The Bluebell Public House",
                             "Modern British food near SCBD: Sunday roast, fish & chips and pies. Open daily from 10:00 for lunch and dinner."),
+    "/briq-bistro/food/": ("French Food in Senopati | Steak Frites at BRIQ Bistro",
+                           "French bistro food in Senopati: steak frites with Brock beef, steak for two 495K++, weekend pasta 200K++."),
     "/bebop/live-music/": ("Live Music in Senopati | Jazz Mon & Fri at BEBOP",
                            "Live jazz every Monday and Friday, Trivia Tuesdays and resident DJs at BEBOP, Jl. Senopati 61. Modern Japanese plates."),
     "/blog/": ("Journal | Stories from Senopati | Basho Projects",
@@ -831,7 +833,7 @@ venue_page = f"""
       <h2>Home of the <span class="serif">steak frites.</span></h2>
       <p>If you only order one thing at BRIQ, make it this: a properly seared steak, crisp frites and a sauce worth mopping up. It’s the dish we’re known for in Senopati, made with beef from our own butcher, <a href="/brock-butchery/">Brock</a>.</p>
       <p>Alongside it, the kitchen runs rotating pasta promos and monthly specials. Follow <a href="{v['instagram']}" target="_blank" rel="noopener">{v['ig_handle']}</a> for this week’s offer.</p>
-      <div class="btn-row"><a class="btn" href="{v['book']}" target="_blank" rel="noopener">Book for steak frites</a><a class="btn btn--ghost" href="/blog/steak-frites-in-jakarta-at-briq-bistro/">Read: steak frites in Jakarta</a></div>
+      <div class="btn-row"><a class="btn" href="{v['book']}" target="_blank" rel="noopener">Book for steak frites</a><a class="btn btn--ghost" href="/briq-bistro/food/">See the food</a></div>
     </div>
   </div>
 </section>
@@ -1087,6 +1089,63 @@ page("/the-bluebell/food/", "British Food in Senopati | The Bluebell Public Hous
 {landing_close(v, "Book a table at The Bluebell")}
 """, image="/assets/img/roast-beef.jpg", with_collab=False, body_class="venue v-bluebell lp",
      schema=[venue_schema(v, "bluebell-hall-night.jpg")])
+
+v = VENUES["briq-bistro"]
+page("/briq-bistro/food/", "French Food in Senopati | Steak Frites at BRIQ Bistro", "", f"""
+{vhero(v, "brock-hero.jpg", "Steak on the grill for BRIQ Bistro's steak frites",
+       'French food <span class="serif">in Senopati</span>',
+       "BRIQ Bistro is a French restaurant in Senopati, crafted between fine and casual, and the home of the steak frites. Dinner Monday to Friday, all day at weekends.")}
+</div>
+<section class="section">
+  <div class="wrap split split--center">
+    <div class="media media--tall reveal">{img("brock-cuts.jpg", "Sliced steak for BRIQ Bistro's steak frites")}</div>
+    <div class="reveal">
+      <span class="eyebrow">The signature</span>
+      <h2>Home of the <span class="serif">steak frites.</span></h2>
+      <p>A properly seared steak, crisp frites and a sauce worth mopping up. The beef comes from <a href="/brock-butchery/">Brock</a>, the butcher we run ourselves, so we choose every cut.</p>
+      <ul class="ticks">
+        <li><strong>The steak:</strong> seared hard and rested properly</li>
+        <li><strong>The sauce:</strong> Café de Paris butter or sauce au poivre</li>
+        <li><strong>The frites:</strong> crisp outside, soft inside</li>
+      </ul>
+      <div class="btn-row"><a class="btn" href="{v["book"]}" target="_blank" rel="noopener">Book for steak frites</a><a class="btn btn--ghost" href="/blog/steak-frites-in-jakarta-at-briq-bistro/">More on the steak frites</a></div>
+    </div>
+  </div>
+</section>
+<section class="section" style="border-top:1px solid var(--vline)">
+  <div class="wrap split">
+    <div class="reveal">
+      <span class="eyebrow">Every day, all night</span>
+      <h2>Steak for two, <span class="serif">495K++.</span></h2>
+      <p>The BRIQ Date Package: two ribeye steaks with your choice of Café de Paris butter or sauce au poivre, and two portions of fries, for 495K++ for two.</p>
+      <span class="eyebrow" style="display:block;margin-top:40px">Saturdays & Sundays · 11:30–15:00</span>
+      <h2>Weekend pasta, <span class="serif">200K++.</span></h2>
+      <p>Ravioli, rigatoni or tagliatelle, with a salad and a coffee, tea or soft drink. <a href="/blog/weekend-pasta-promo-at-briq-bistro/">More on the pasta promo</a>.</p>
+    </div>
+    <div class="grid-2 reveal" style="gap:16px;align-content:start">
+      <figure style="margin:0">{img("pasta-rigatoni.jpg", "Rigatoni from BRIQ's weekend pasta promo", sizes="(max-width: 760px) 100vw, 400px")}</figure>
+      <figure style="margin:0">{img("pasta-tagliatelle.jpg", "Tagliatelle with salmon at BRIQ Bistro", sizes="(max-width: 760px) 100vw, 400px")}</figure>
+    </div>
+  </div>
+</section>
+<section class="section" style="border-top:1px solid var(--vline)">
+  <div class="wrap split">
+    <div class="media media--wide reveal">{img("briq-room.jpg", "The entrance to BRIQ Bistro, Senopati")}</div>
+    <div class="reveal">
+      <span class="eyebrow">When to come</span>
+      <h2>Dinner nightly, <span class="serif">all day at weekends.</span></h2>
+      <ul class="facts">
+        <li><span>Monday to Friday</span><span>Dinner, 17:00–22:00</span></li>
+        <li><span>Saturday & Sunday</span><span>All day, 10:00–22:00: brunch, lunch and dinner</span></li>
+        <li><span>Groups & events</span><span>Birthdays, dinners and small gatherings</span></li>
+      </ul>
+      <p class="muted" style="margin-top:18px" lang="id">Restoran Prancis di Senopati, Jakarta Selatan. Reservasi meja lewat WhatsApp.</p>
+    </div>
+  </div>
+</section>
+{landing_close(v, "Book a table at BRIQ")}
+""", image="/assets/img/brock-cuts.jpg", with_collab=False, body_class="venue v-briq lp",
+     schema=[venue_schema(v, "brock-hero.jpg")])
 
 v = VENUES["bebop"]
 page("/bebop/live-music/", "Live Music in Senopati | Jazz Mon & Fri at BEBOP", "", f"""
@@ -1959,7 +2018,7 @@ main_inner = home.split('<main id="main">')[1].split("</main>")[0]
     .replace('<meta name="viewport"', '<meta name="robots" content="noindex">\n<meta name="viewport"'))
 
 pages = ["/", "/about/", "/team/", "/services/", "/invest/", "/contact/", "/our-projects/", "/bebop/", "/briq-bistro/",
-         "/brock-butchery/", "/the-bluebell/", "/the-bluebell/food/", "/bebop/live-music/", "/bubbleandsqueakmedia/", "/blog/"] + [f"/blog/{p['slug']}/" for p in POSTS]
+         "/brock-butchery/", "/the-bluebell/", "/the-bluebell/food/", "/briq-bistro/food/", "/bebop/live-music/", "/bubbleandsqueakmedia/", "/blog/"] + [f"/blog/{p['slug']}/" for p in POSTS]
 (ROOT / "sitemap.xml").write_text(
     '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
     + "".join(f"  <url><loc>{DOMAIN}{p}</loc><lastmod>{TODAY.isoformat()}</lastmod></url>\n" for p in pages) + "</urlset>\n")
