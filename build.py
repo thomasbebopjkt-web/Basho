@@ -36,8 +36,8 @@ VENUES = {
         "card_pos": "center 72%",
         "address": "Jl. Senopati No. 61, Kebayoran Baru, South Jakarta",
         "street": "Jl. Senopati No. 61", "locality": "Kebayoran Baru, South Jakarta",
-        "hours_text": "Every day, 18:00 till late",
-        "hours": EVERY_DAY([[18, 26]]),
+        "hours_text": "Every day, 17:00 till late",
+        "hours": EVERY_DAY([[17, 26]]),
         "late": True,
         "book": "https://api.whatsapp.com/send/?phone=628131847056",
         "menu": "https://drive.google.com/file/d/1fVueKjI0878L3gZe2G2E3yK-eqkakVwX/view",
@@ -205,7 +205,7 @@ SEO_META = {
     "/": ("Basho Projects | Jakarta Hospitality Group, Senopati",
           "Jakarta hospitality group behind BEBOP, BRIQ, The Bluebell & Brock in Senopati. Book a table, work with us or invest."),
     "/bebop/": ("BEBOP Bar + Kitchen | Jazz & Cocktail Bar, Senopati",
-                "Jazz & cocktail bar on Jl. Senopati 61. Live jazz Mon & Fri, DJs, highballs, Japanese plates. Open 18:00 till late."),
+                "Jazz & cocktail bar on Jl. Senopati 61. Live jazz Mon & Fri, DJs, highballs, Japanese plates. Open 17:00 till late."),
     "/briq-bistro/": ("BRIQ Bistro | Steak Frites & French Restaurant, Senopati",
                       "French bistro in Senopati, home of the steak frites. Pasta promos, wine, terrace. Dinner nightly, all day weekends."),
     "/brock-butchery/": ("Brock Butchery | Premium Meat Delivered in Jakarta",
@@ -477,7 +477,7 @@ def weekly_events(v, name, description, weekdays, image, weeks=8):
             continue
         out.append({
             "@context": "https://schema.org", "@type": "Event", "name": f"{name} at {v['name']}",
-            "description": description, "startDate": day.isoformat(),
+            "description": description, "startDate": f"{day.isoformat()}T20:00:00+07:00",
             "eventStatus": "https://schema.org/EventScheduled",
             "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
             "location": {"@type": "Place", "name": v["name"], "address": {
@@ -627,7 +627,7 @@ v = VENUES["bebop"]
 bebop_faq = [
     ("Where is BEBOP Bar + Kitchen?", "BEBOP is at Jl. Senopati No. 61, Kebayoran Baru, South Jakarta — a few minutes’ walk from BRIQ Bistro and The Bluebell, and close to SCBD."),
     ("Is there live music at BEBOP?", "Yes. Live jazz runs every Monday and Friday, curated by resident musician Bass G. Other nights bring resident DJs from the Bebop Music Collective, karaoke and trivia. Check Instagram for this week’s line-up."),
-    ("What time does BEBOP open?", "Every day from 18:00 until late."),
+    ("What time does BEBOP open?", "Every day from 17:00 until late, with happy hour from 17:00 to 20:00. Live music and events start from about 20:00."),
     ("Do I need to book a table?", "Booking is the safest bet, especially for jazz nights and weekends. Message us on WhatsApp and we’ll hold a table."),
     ("Is there food, or just drinks?", "Both. The bar leads with cocktails, Mega Highballs and teapot cocktails, and the kitchen serves modern Japanese plates built for sharing."),
     ("Can I book BEBOP for a private event?", "Yes. We host birthdays, launches, company nights and takeovers, with weekday and weekend free-flow packages for groups of 50 and up and minimum-spend options for smaller groups. Message us on WhatsApp for the 2026 packages."),
@@ -665,11 +665,11 @@ venue_page = f"""
     <h2>Live music <span class="serif">in Senopati</span>, most nights of the week</h2>
     <p class="muted" style="max-width:60ch">Looking for a jazz bar in Jakarta, or a bar di Senopati with a proper sound system? This is the weekly rotation. Line-ups change, so check <a href="{v['instagram']}" target="_blank" rel="noopener">{v['ig_handle']}</a> before you head over.</p>
     <div class="lineup">
-      <div><em>Mon & Fri</em><b>Jazz Nights</b><span>Live jazz curated by Bass G, from standards to funk and groove.</span></div>
-      <div><em>Tuesdays</em><b>Trivia Tuesdays</b><span>Teams, rounds, bragging rights.</span></div>
-      <div><em>Weekly</em><b>Karaoke Nights</b><span>The mic is yours. Be brave.</span></div>
-      <div><em>Weekly</em><b>BMC Nights</b><span>The Bebop Music Collective on the decks: house, future beats, jazz and soul.</span></div>
-      <div><em>Weekly</em><b>Booty Groove</b><span>Late, loud and very much a dance floor.</span></div>
+      <div><em>Mon & Fri · from 20:00</em><b>Jazz Nights</b><span>Live jazz curated by Bass G, from standards to funk and groove.</span></div>
+      <div><em>Tuesdays · from 20:00</em><b>Trivia Tuesdays</b><span>Teams, rounds, bragging rights.</span></div>
+      <div><em>Weekly · from 20:00</em><b>Karaoke Nights</b><span>The mic is yours. Be brave.</span></div>
+      <div><em>Weekly · from 20:00</em><b>BMC Nights</b><span>The Bebop Music Collective on the decks: house, future beats, jazz and soul.</span></div>
+      <div><em>Special nights · see Instagram</em><b>Booty Groove</b><span>Late, loud and very much a dance floor.</span></div>
     </div>
     <div class="btn-row" style="margin-top:28px"><a class="btn" href="/bebop/live-music/">Live music at BEBOP</a><a class="btn btn--ghost" href="/blog/jazz-at-bebop/">Read: Jazz at BEBOP</a></div>
   </div>
@@ -752,13 +752,13 @@ venue_page = f"""
 </section>
 {bahasa("Dalam Bahasa Indonesia", 'Bar di Senopati <span class="serif">dengan live music</span>', [
     "BEBOP Bar + Kitchen adalah bar jazz dan koktail di Jl. Senopati No. 61, Kebayoran Baru, Jakarta Selatan. Ada live jazz setiap Senin dan Jumat, Trivia Tuesday setiap Selasa, dan DJ residen dari Bebop Music Collective.",
-    "Dapur kami menyajikan hidangan Jepang modern untuk dinikmati bersama. Buka setiap hari mulai pukul 18.00 sampai larut malam.",
+    "Dapur kami menyajikan hidangan Jepang modern untuk dinikmati bersama. Buka setiap hari mulai pukul 17.00 sampai larut malam. Live music mulai sekitar pukul 20.00.",
     f'<a class="btn" href="{v["book"]}" target="_blank" rel="noopener">Reservasi meja lewat WhatsApp</a>',
 ])}
 {sisters("bebop")}
 """
 page("/bebop/", "BEBOP Bar + Kitchen | Jazz & Cocktail Bar in Senopati, Jakarta",
-     "BEBOP Bar + Kitchen: live jazz every Monday & Friday, DJs, cocktails and a modern Japanese kitchen at Jl. Senopati 61, South Jakarta. Open 18:00 till late. Book, menu & directions.",
+     "BEBOP Bar + Kitchen: live jazz every Monday & Friday, DJs, cocktails and a modern Japanese kitchen at Jl. Senopati 61, South Jakarta. Open 17:00 till late. Book, menu & directions.",
      venue_page, image="/assets/img/bebop-hero.jpg", with_collab=False, body_class="venue v-bebop",
      schema=[venue_schema(v, "bebop-hero.jpg"), faq_schema(bebop_faq)] + bebop_events())
 
@@ -1092,17 +1092,17 @@ v = VENUES["bebop"]
 page("/bebop/live-music/", "Live Music in Senopati | Jazz Mon & Fri at BEBOP", "", f"""
 {vhero(v, "jazz-2.jpg", "A full room for live music at BEBOP, Jl. Senopati",
        'Live music <span class="serif">in Senopati</span>',
-       "Live jazz every Monday and Friday at BEBOP Bar + Kitchen, Jl. Senopati 61, with modern Japanese plates from the kitchen. Open daily from 18:00.")}
+       "Live jazz every Monday and Friday at BEBOP Bar + Kitchen, Jl. Senopati 61, with modern Japanese plates from the kitchen. Open daily from 17:00, with music from 20:00.")}
 </div>
 <section class="section">
   <div class="wrap">
     <span class="eyebrow">The week at BEBOP</span>
     <h2>Something on <span class="serif">most nights.</span></h2>
     <div class="lineup">
-      <div><em>Mon & Fri</em><b>Jazz Nights</b><span>Live jazz curated by resident musician Bass G, from standards to funk and groove.</span></div>
-      <div><em>Tuesdays</em><b>Trivia Tuesdays</b><span>Hosted by Kara Chenoa. Teams, rounds, bragging rights.</span></div>
-      <div><em>Weekly</em><b>Karaoke Nights</b><span>The mic is yours. Be brave.</span></div>
-      <div><em>Weekly</em><b>BMC Nights</b><span>Resident DJs from the Bebop Music Collective: house, future beats, jazz and soul.</span></div>
+      <div><em>Mon & Fri · from 20:00</em><b>Jazz Nights</b><span>Live jazz curated by resident musician Bass G, from standards to funk and groove.</span></div>
+      <div><em>Tuesdays · from 20:00</em><b>Trivia Tuesdays</b><span>Hosted by Kara Chenoa. Teams, rounds, bragging rights.</span></div>
+      <div><em>Weekly · from 20:00</em><b>Karaoke Nights</b><span>The mic is yours. Be brave.</span></div>
+      <div><em>Weekly · from 20:00</em><b>BMC Nights</b><span>Resident DJs from the Bebop Music Collective: house, future beats, jazz and soul.</span></div>
     </div>
   </div>
 </section>
@@ -1239,7 +1239,7 @@ NEW_POSTS = [
 </ul>
 <div class="box">
 <h3 class="h4">BEBOP Bar + Kitchen</h3>
-<p>A jazz and cocktail bar on Jl. Senopati No. 61, South Jakarta, with modern Japanese plates and live music most nights. Open every day from 18:00 till late.</p>
+<p>A jazz and cocktail bar on Jl. Senopati No. 61, South Jakarta, with modern Japanese plates and live music most nights. Open every day from 17:00 till late.</p>
 <p><a href="{BE["book"]}" target="_blank" rel="noopener">Book on WhatsApp</a> · <a href="{BE["instagram"]}" target="_blank" rel="noopener">{BE["ig_handle"]}</a></p>
 </div>
 <p><a class="btn" href="/bebop/">Visit BEBOP</a></p>""",
