@@ -13,7 +13,7 @@ const WEB3FORMS_KEYS = [
   // "d9019d5d-1b7f-4b34-87a4-36c5b986a880", // form "bashoprojects.com (copy 2)"
 ];
 const FORM_ENDPOINT = WEB3FORMS_KEYS.length || FORM_TO ? "on" : "";
-const WHATSAPP_NUMBER = "6285921219087";
+const WHATSAPP_NUMBER = document.body.dataset.wa || "6285921219087"; // venue pages set data-wa
 
 async function sendForm(fields, subject) {
   if (WEB3FORMS_KEYS.length) {
