@@ -39,7 +39,7 @@ VENUES = {
         "hours_text": "Every day, 17:00 till late",
         "hours": EVERY_DAY([[17, 26]]),
         "late": True,
-        "book": "https://api.whatsapp.com/send/?phone=628131847056",
+        "book": "https://wa.me/628132229293",
         "menu": "https://drive.google.com/file/d/1fVueKjI0878L3gZe2G2E3yK-eqkakVwX/view",
         "maps": "https://share.google/71emNbci6KrwuVk7n",
         "instagram": "https://www.instagram.com/bebop.wav/",
@@ -58,7 +58,7 @@ VENUES = {
         "street": "Jl. Prof. Joko Sutono SH No. 7B", "locality": "Kebayoran Baru, South Jakarta",
         "hours_text": "Mon–Fri dinner 17:00–22:00 · Sat–Sun all day 10:00–22:00",
         "hours": {0: [[10, 22]], 1: [[17, 22]], 2: [[17, 22]], 3: [[17, 22]], 4: [[17, 22]], 5: [[17, 22]], 6: [[10, 22]]},
-        "book": WA_GROUP,
+        "book": "https://wa.me/6285286147342",
         "menu": "https://drive.google.com/file/d/14s5RP07lYSFB83LDFETMX9C2kJ7qXe4m/view",
         "maps": "https://maps.app.goo.gl/oVa2PtMUAXVPxSpC8",
         "instagram": "https://www.instagram.com/briqbistro/",
@@ -95,7 +95,7 @@ VENUES = {
         "hours_text": "Mon–Thu 10:00–01:00 · Fri–Sun 10:00–02:00",
         "hours": {0: [[10, 26]], 1: [[10, 25]], 2: [[10, 25]], 3: [[10, 25]], 4: [[10, 25]], 5: [[10, 26]], 6: [[10, 26]]},
         "phone": "0821-4401-216", "tel": "+628214401216",
-        "book": WA_GROUP,
+        "book": "https://wa.me/628214401216",
         "maps": "https://share.google/se4JQBoWzcS53Zwa8",
         "instagram": "https://www.instagram.com/atthebluebell/",
         "ig_handle": "@atthebluebell",
@@ -180,7 +180,7 @@ def newsletter_popup():
 </aside>"""
 
 
-def footer():
+def footer(wa=WA_GROUP):
     venues = "".join(f'<li><a href="{u}">{n}</a></li>' for n, u in NAV)
     return f"""<footer class="site-footer">
   <div class="wrap">
@@ -193,7 +193,7 @@ def footer():
       </div>
       <div><p class="foot-h">Projects</p><ul>{venues}</ul></div>
       <div><p class="foot-h">Company</p><ul><li><a href="/services/">Services</a></li><li><a href="/about/">About us</a></li><li><a href="/team/">Team</a></li><li><a href="/blog/">Blog</a></li><li><a href="/contact/">Contact</a></li></ul></div>
-      <div><p class="foot-h">Follow</p><ul><li><a href="{VENUES['bebop']['instagram']}" target="_blank" rel="noopener">BEBOP on Instagram</a></li><li><a href="{VENUES['briq-bistro']['instagram']}" target="_blank" rel="noopener">BRIQ on Instagram</a></li><li><a href="{VENUES['the-bluebell']['instagram']}" target="_blank" rel="noopener">The Bluebell on Instagram</a></li><li><a href="{VENUES['brock-butchery']['instagram']}" target="_blank" rel="noopener">Brock on Instagram</a></li><li><a href="{WA_GROUP}" target="_blank" rel="noopener">WhatsApp us</a></li></ul></div>
+      <div><p class="foot-h">Follow</p><ul><li><a href="{VENUES['bebop']['instagram']}" target="_blank" rel="noopener">BEBOP on Instagram</a></li><li><a href="{VENUES['briq-bistro']['instagram']}" target="_blank" rel="noopener">BRIQ on Instagram</a></li><li><a href="{VENUES['the-bluebell']['instagram']}" target="_blank" rel="noopener">The Bluebell on Instagram</a></li><li><a href="{VENUES['brock-butchery']['instagram']}" target="_blank" rel="noopener">Brock on Instagram</a></li><li><a href="{wa}" target="_blank" rel="noopener">WhatsApp us</a></li></ul></div>
     </div>
     <div class="legal"><span>© <span data-year>2026</span> PT Basho Projects Capital</span><span>Made in Senopati, Jakarta</span></div>
   </div>
@@ -242,8 +242,12 @@ SEO_META = {
 
 
 def page(path, title, description, main, image="/assets/img/briq-hero.jpg", with_collab=True,
-         body_class="g", schema=None, enquiry=None):
+         body_class="g", schema=None, enquiry=None, venue=None):
     url = DOMAIN + path
+    # Pages under a venue, and that venue's blog posts, use its WhatsApp number; the rest use WA_GROUP
+    venue = venue or next((k for k in ("bebop", "briq-bistro", "the-bluebell") if path.startswith(VENUES[k]["path"])), None)
+    wa = VENUES[venue]["book"] if venue else WA_GROUP
+    wa_attr = f' data-wa="{wa.rsplit("/", 1)[1]}"' if venue else ""
     title, description = SEO_META.get(path, (title, description))
     if len(title) > 58 or len(description) > 125:
         print(f"  SEO length warning {path}: title {len(title)}/58, description {len(description)}/125")
@@ -282,13 +286,13 @@ def page(path, title, description, main, image="/assets/img/briq-hero.jpg", with
 <link rel="stylesheet" href="/assets/css/venue.css?v={ASSET_V}">
 <script src="/assets/js/site.js?v={ASSET_V}" defer></script>
 {ld}</head>
-<body class="{body_class}">
+<body class="{body_class}"{wa_attr}>
 {header()}
 <main id="main">
 {main}
 {collaborate(enquiry) if with_collab else ""}
 </main>
-{footer()}
+{footer(wa)}
 {newsletter_popup()}
 </body>
 </html>
@@ -647,7 +651,7 @@ venue_page = f"""
     ("A3", "What’s on tonight", "Live jazz every Monday & Friday", "#whats-on"),
     ("B1", "Find us", "Jl. Senopati No. 61", v["maps"]),
     ("B2", "Instagram", v["ig_handle"], v["instagram"]),
-    ("B3", "Events & private hire", "Birthdays, launches, takeovers", WA_GROUP),
+    ("B3", "Events & private hire", "Birthdays, launches, takeovers", v["book"]),
 ], f'<span>{v["hours_text"]}</span><span>Senopati · South Jakarta</span>')}
 
 <section class="section">
@@ -960,7 +964,7 @@ venue_page = f"""
     ("Round 3", "Instagram", v["ig_handle"], v["instagram"]),
     ("Round 4", "Private rooms", "Rooms for 12 and 6", "/the-bluebell/private-rooms/"),
     ("Round 5", "The Sunday roast", "Beef, chicken or nut roast", "/blog/sunday-roast-at-the-bluebell-jakarta/"),
-    ("Round 6", "Message the team", "WhatsApp", WA_GROUP),
+    ("Round 6", "Message the team", "WhatsApp", v["book"]),
 ], f'<span>{v["hours_text"]}</span><span>Cheers</span>')}
 
 <section class="section">
@@ -1248,6 +1252,7 @@ NEW_POSTS = [
     {
         # Also BRIQ's Google Ads landing page: keep it free of drink wording and of photos with bottles or glasses.
         "slug": "steak-frites-in-jakarta-at-briq-bistro",
+        "venue": "briq-bistro",
         "title": "Steak Frites in Jakarta: Why BRIQ Bistro Is the Home of the Steak Frites in Senopati",
         "seo_title": "Steak Frites in Jakarta | BRIQ Bistro, Senopati",
         "seo_desc": "Steak frites in Senopati with beef from our own butcher, Brock. A French restaurant in Jakarta. Book on WhatsApp.",
@@ -1280,6 +1285,7 @@ NEW_POSTS = [
     },
     {
         "slug": "sunday-roast-at-the-bluebell-jakarta",
+        "venue": "the-bluebell",
         "title": "Sunday Roast Comes to Senopati: The Bluebell’s Roast Beef, Roast Chicken and Nut Roast",
         "seo_title": "Sunday Roast in Jakarta | The Bluebell Public House",
         "seo_desc": "Sunday roast at The Bluebell, Senopati: roast beef 275K, roast chicken 200K, nut roast 150K, all the trimmings. Pets welcome.",
@@ -1313,12 +1319,13 @@ NEW_POSTS = [
 <h3 class="h4">The Bluebell Public House</h3>
 <p>A modern British public house in Senopati, South Jakarta: fish & chips, pies and now the Sunday roast.</p>
 <h3 class="h4">Address + bookings</h3>
-<p>{BB["address"]}<br>Open {BB["hours_text"]}<br>Instagram: <a href="{BB["instagram"]}" target="_blank" rel="noopener">{BB["ig_handle"]}</a><br>Bookings: <a href="{WA_GROUP}" target="_blank" rel="noopener">WhatsApp us</a></p>
+<p>{BB["address"]}<br>Open {BB["hours_text"]}<br>Instagram: <a href="{BB["instagram"]}" target="_blank" rel="noopener">{BB["ig_handle"]}</a><br>Bookings: <a href="{BB["book"]}" target="_blank" rel="noopener">WhatsApp us</a></p>
 </div>
-<p><a class="btn" href="{WA_GROUP}" target="_blank" rel="noopener">Book your Sunday roast</a></p>""",
+<p><a class="btn" href="{BB["book"]}" target="_blank" rel="noopener">Book your Sunday roast</a></p>""",
     },
     {
         "slug": "halloween-week-at-bebop-senopati",
+        "venue": "bebop",
         "title": "What Lies Beneath the Night: A Look Back at Halloween Week at BEBOP",
         "seo_title": "Halloween Week at BEBOP, Senopati | Recap",
         "seo_desc": "Six nights of jazz, trivia, karaoke and Booty Groove: a look back at Halloween Week at BEBOP Bar + Kitchen in Senopati.",
@@ -1358,6 +1365,7 @@ NEW_POSTS = [
     },
     {
         "slug": "weekend-pasta-promo-at-briq-bistro",
+        "venue": "briq-bistro",
         "title": "Weekend Pasta at BRIQ: Ravioli, Rigatoni or Tagliatelle, with Salad and a Drink, for 200K",
         "seo_title": "Weekend Pasta Promo at BRIQ Bistro, Senopati",
         "seo_desc": "BRIQ's weekend pasta promo: ravioli, rigatoni or tagliatelle with salad and a drink for 200K++, Sat & Sun 11:30–15:00.",
@@ -1391,6 +1399,7 @@ NEW_POSTS = [
 POSTS = NEW_POSTS + [
     {
         "slug": "the-bluebell-public-house-opens-in-south-jakarta",
+        "venue": "the-bluebell",
         "old": "/blog/the-bluebell-public-house-opens-in-south-jakarta-bringing-the-warmth-of-a-british-pub-to-senopati/",
         "title": "The Bluebell Public House Opens in South Jakarta, Bringing the Warmth of a British Pub to Senopati",
         "seo_title": "The Bluebell Public House Opens: A British Pub in Senopati, Jakarta",
@@ -1409,12 +1418,13 @@ POSTS = NEW_POSTS + [
 <h3 class="h4">About The Bluebell Public House</h3>
 <p>The Bluebell Public House is a British-inspired pub in Senopati, South Jakarta. The concept brings together food, drinks, and a relaxed social atmosphere, drawing on the character of the British pub while making it its own in Jakarta.</p>
 <h3 class="h4">Address + contact</h3>
-<p>{BB["address"]}<br>Open {BB["hours_text"]}<br>Instagram: <a href="{BB["instagram"]}" target="_blank" rel="noopener">{BB["ig_handle"]}</a><br>Bookings: <a href="{WA_GROUP}" target="_blank" rel="noopener">WhatsApp us</a></p>
+<p>{BB["address"]}<br>Open {BB["hours_text"]}<br>Instagram: <a href="{BB["instagram"]}" target="_blank" rel="noopener">{BB["ig_handle"]}</a><br>Bookings: <a href="{BB["book"]}" target="_blank" rel="noopener">WhatsApp us</a></p>
 </div>
 <p><a class="btn" href="/the-bluebell/">Visit The Bluebell</a></p>""",
     },
     {
         "slug": "jazz-at-bebop",
+        "venue": "bebop",
         "old": "/blog/wpdv5ufmcja78usx0i0q62bosubba8/",
         "title": "Jazz at BEBOP Creates Moments That Don’t Happen Twice",
         "seo_title": "Jazz at BEBOP: Live Jazz Bar in Senopati, Jakarta, Every Monday & Friday",
@@ -1481,7 +1491,7 @@ for i, p in enumerate(POSTS):
   <p class="standfirst">{p['standfirst']}</p>
   {p['body']}
   {nav}
-</article></section>""", image="/assets/img/" + p["cover"], with_collab=False, schema=[article_ld])
+</article></section>""", image="/assets/img/" + p["cover"], with_collab=False, schema=[article_ld], venue=p["venue"])
     if p.get("old"):
         redirect(p["old"], f"/blog/{p['slug']}/")
 
