@@ -220,6 +220,8 @@ SEO_META = {
                             "Modern British food near SCBD: Sunday roast, fish & chips and pies. Open daily from 10:00 for lunch and dinner."),
     "/the-bluebell/private-rooms/": ("Private Dining & Meeting Rooms in Senopati - The Bluebell",
                                      "Two private rooms in Senopati, a short walk from SCBD: a dining and meeting room for 12 and a Chess Room for 6. No minimum spend."),
+    "/the-bluebell/football/": ("Watch Premier League Football in Senopati - The Bluebell",
+                                "Watch live Premier League football at The Bluebell in Senopati, a short walk from SCBD, with British food at your table. Book on WhatsApp."),
     "/briq-bistro/food/": ("French Food in Senopati | Steak Frites at BRIQ Bistro",
                            "French bistro food in Senopati: steak frites with Brock beef, steak for two 495K++, weekend pasta 200K++."),
     "/bebop/live-music/": ("Live Music in Senopati | Jazz Mon & Fri at BEBOP",
@@ -996,7 +998,7 @@ venue_page = f"""
         <li><span>Private dining room</span><span>Seats twelve, for dinners, meetings and celebrations</span></li>
       </ul>
       <p class="muted" style="margin-top:18px">Room for about 95 seated and 140 standing for a full-pub booking. IQOS, heated tobacco and vape friendly inside; cigarettes in the outdoor smoking area.</p>
-      <div class="btn-row"><a class="btn btn--ghost" href="/the-bluebell/private-rooms/">See the private rooms</a></div>
+      <div class="btn-row"><a class="btn btn--ghost" href="/the-bluebell/private-rooms/">See the private rooms</a><a class="btn btn--ghost" href="/the-bluebell/football/">Watch the football</a></div>
     </div>
     <div class="media media--wide reveal">{img("bluebell-hall-night.jpg", "The dining hall at The Bluebell in the evening")}</div>
   </div>
@@ -1151,6 +1153,34 @@ page("/the-bluebell/private-rooms/", "Private Dining & Meeting Rooms in Senopati
 {rooms_bahasa}
 """, image="/assets/img/bluebell-2.jpg", with_collab=False, body_class="venue v-bluebell lp",
      schema=[venue_schema(v, "bluebell-2.jpg")])
+
+page("/the-bluebell/football/", "Watch Premier League Football in Senopati - The Bluebell", "", f"""
+{vhero(v, "bluebell-hall-night.jpg", "The dining hall at The Bluebell, Senopati, in the evening",
+       'Premier League football <span class="serif">in Senopati</span>',
+       "Watch live Premier League football at The Bluebell, a short walk from SCBD. Pull up a chair, order from the kitchen and book your table for match day.")}
+</div>
+<section class="section">
+  <div class="wrap split split--center">
+    <div class="media media--tall reveal">{img("roast-beef.jpg", "Roast beef with Yorkshire pudding from The Bluebell kitchen")}</div>
+    <div class="reveal">
+      <h2>How it <span class="serif">works</span></h2>
+      <ul class="ticks">
+        <li>Live Premier League matches on weekends</li>
+        <li>We show one match at a time, so message us to check what’s on</li>
+        <li>British food from our kitchen, served at your table</li>
+        <li>Open daily from 10:00</li>
+      </ul>
+      <p><a href="{v["maps"]}" target="_blank" rel="noopener">Jl. Tulodong Atas No. 10 A-B, Senopati</a></p>
+      <div class="btn-row"><a class="btn" href="{v["book"]}" target="_blank" rel="noopener">Book a table on WhatsApp</a></div>
+    </div>
+  </div>
+</section>
+{bahasa("Dalam Bahasa Indonesia", 'Nobar Liga Inggris <span class="serif">di Senopati</span>', [
+    "Nonton bareng Liga Inggris di The Bluebell, hanya beberapa menit berjalan kaki dari SCBD, ditemani hidangan khas Inggris dari dapur kami. Kami menayangkan satu pertandingan dalam satu waktu, jadi hubungi kami untuk jadwalnya.",
+    f'<a class="btn" href="{v["book"]}" target="_blank" rel="noopener">Reservasi lewat WhatsApp</a>',
+])}
+""", image="/assets/img/bluebell-hall-night.jpg", with_collab=False, body_class="venue v-bluebell lp",
+     schema=[venue_schema(v, "bluebell-hall-night.jpg")])
 
 v = VENUES["briq-bistro"]
 page("/briq-bistro/food/", "French Food in Senopati | Steak Frites at BRIQ Bistro", "", f"""
@@ -2084,7 +2114,7 @@ main_inner = home.split('<main id="main">')[1].split("</main>")[0]
     .replace('<meta name="viewport"', '<meta name="robots" content="noindex">\n<meta name="viewport"'))
 
 pages = ["/", "/about/", "/team/", "/services/", "/invest/", "/contact/", "/our-projects/", "/bebop/", "/briq-bistro/",
-         "/brock-butchery/", "/the-bluebell/", "/the-bluebell/food/", "/the-bluebell/private-rooms/", "/briq-bistro/food/", "/bebop/live-music/", "/bubbleandsqueakmedia/", "/blog/"] + [f"/blog/{p['slug']}/" for p in POSTS]
+         "/brock-butchery/", "/the-bluebell/", "/the-bluebell/food/", "/the-bluebell/private-rooms/", "/the-bluebell/football/", "/briq-bistro/food/", "/bebop/live-music/", "/bubbleandsqueakmedia/", "/blog/"] + [f"/blog/{p['slug']}/" for p in POSTS]
 (ROOT / "sitemap.xml").write_text(
     '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
     + "".join(f"  <url><loc>{DOMAIN}{p}</loc><lastmod>{TODAY.isoformat()}</lastmod></url>\n" for p in pages) + "</urlset>\n")
