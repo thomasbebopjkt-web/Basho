@@ -954,7 +954,7 @@ bluebell_faq = [
     ("What’s to drink and eat?", "Beers and pitchers, gin and tonics and cocktails at the bar, plus Guinness. From the kitchen, the pub classics: fish and chips, proper pies and more."),
     ("Is it a proper British pub?", "A modern one. The Bluebell is a modern British public house: elevated British classics from the kitchen, a bar lounge, a dining hall, the Chess Room (our snug) and a private dining room."),
     ("Is there a pub quiz?", "Yes, every Wednesday. Bring a team, grab a pitcher and message us on WhatsApp to hold a table."),
-    ("Do you show live sport?", "Yes. We show the Premier League, UFC, F1, rugby, AFL and more on Saturdays, Sundays and midweek, live on Jakarta time when games fall within our opening hours. The timetable is in our Instagram highlights (@atthebluebell). To request a game, message us on WhatsApp."),
+    ("Do you show live sport?", "Yes. We’re showing the Premier League now, on Saturdays, Sundays and midweek, live on Jakarta time when games fall within our opening hours. UFC, F1, rugby, AFL and more are coming soon or on request: message us on WhatsApp to ask for a game. The timetable is in our Instagram highlights (@atthebluebell)."),
     ("Can I smoke at The Bluebell?", "IQOS, heated tobacco and vapes are welcome inside. Cigarettes are for the outdoor smoking area."),
     ("Can I book a private room?", "Yes. The private dining and meeting room seats twelve and the Chess Room seats six, with no minimum spend. Message us on WhatsApp to book."),
 ]
@@ -1017,7 +1017,7 @@ venue_page = f"""
 {bahasa("Dalam Bahasa Indonesia", 'Pub di <span class="serif">Jakarta Selatan</span>', [
     "The Bluebell Public House adalah pub Inggris modern di Senopati, Jakarta Selatan, hanya beberapa menit dari SCBD. Dari dapur ada fish and chips, pie, dan Sunday roast setiap hari Minggu; di bar ada bir, pitcher, gin and tonic, koktail dan Guinness.",
     "Pub Quiz setiap hari Rabu. Buka setiap hari mulai pukul 10.00.",
-    "Kami menayangkan Premier League, UFC, F1, rugby, AFL, dan olahraga lainnya setiap Sabtu, Minggu, dan tengah minggu, langsung sesuai waktu Jakarta selama masih dalam jam buka kami. Jadwalnya ada di highlight Instagram kami. Ingin menonton pertandingan tertentu? Kirim permintaan lewat WhatsApp.",
+    "Kami menayangkan Premier League setiap Sabtu, Minggu, dan tengah minggu, langsung sesuai waktu Jakarta selama masih dalam jam buka kami. UFC, F1, rugby, AFL, dan olahraga lainnya segera hadir atau bisa diminta lewat WhatsApp. Jadwalnya ada di highlight Instagram kami.",
     "IQOS, produk tembakau yang dipanaskan, dan vape boleh digunakan di dalam. Rokok di area merokok di luar ruangan.",
     f'<a class="btn" href="{v["book"]}" target="_blank" rel="noopener">Reservasi meja lewat WhatsApp</a>',
 ])}
