@@ -2059,7 +2059,7 @@ page("/bubbleandsqueakmedia/", "Bubble + Squeak Media | F&B Marketing, Ads & KOL
     </div>
   </div>
 </section>
-""", image="/assets/img/briq-case-study.webp", body_class="bs", schema=[faq_schema(bs_faq)], enquiry="Bubble + Squeak Media")
+""", image="/assets/img/bubble-squeak-share.jpg", body_class="bs", schema=[faq_schema(bs_faq)], enquiry="Bubble + Squeak Media")
 
 
 # ---------------------------------------------------------------- redirects & extras
