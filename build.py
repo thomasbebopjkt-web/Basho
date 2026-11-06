@@ -20,7 +20,6 @@ ASSET_V = hashlib.md5(b"".join((ROOT / "assets" / p).read_bytes() for p in
 
 # ---------------------------------------------------------------- shared data
 
-WA_GROUP = "https://api.whatsapp.com/send/?phone=6285921219087"
 
 # Hours: weekday (0 = Sunday) -> list of [open, close] in 24h Jakarta time; 26 = 02:00 next day.
 EVERY_DAY = lambda spans: {d: spans for d in range(7)}
@@ -103,6 +102,10 @@ VENUES = {
         "cuisine": "British",
     },
 }
+# The three WhatsApp lines, shown together in the footer and on /contact/
+WA_LINES = [(VENUES["the-bluebell"]["book"], "The Bluebell", "+62 821 4401 216"),
+            (VENUES["briq-bistro"]["book"], "BRIQ Bistro", "+62 852 8614 7342"),
+            (VENUES["bebop"]["book"], "BEBOP", "+62 813 2229 293")]
 VENUE_ORDER = ["bebop", "briq-bistro", "brock-butchery", "the-bluebell"]
 NAV = [(VENUES[k]["name"], VENUES[k]["path"]) for k in VENUE_ORDER] + [("Bubble + Squeak Media", "/bubbleandsqueakmedia/")]
 
@@ -180,7 +183,8 @@ def newsletter_popup():
 </aside>"""
 
 
-def footer(wa=WA_GROUP):
+def footer():
+    wa = "".join(f'<li><a href="{u}" target="_blank" rel="noopener">{n}<br>{num}</a></li>' for u, n, num in WA_LINES)
     venues = "".join(f'<li><a href="{u}">{n}</a></li>' for n, u in NAV)
     return f"""<footer class="site-footer">
   <div class="wrap">
@@ -193,7 +197,7 @@ def footer(wa=WA_GROUP):
       </div>
       <div><p class="foot-h">Projects</p><ul>{venues}</ul></div>
       <div><p class="foot-h">Company</p><ul><li><a href="/services/">Services</a></li><li><a href="/about/">About us</a></li><li><a href="/team/">Team</a></li><li><a href="/blog/">Blog</a></li><li><a href="/contact/">Contact</a></li></ul></div>
-      <div><p class="foot-h">Follow</p><ul><li><a href="{VENUES['bebop']['instagram']}" target="_blank" rel="noopener">BEBOP on Instagram</a></li><li><a href="{VENUES['briq-bistro']['instagram']}" target="_blank" rel="noopener">BRIQ on Instagram</a></li><li><a href="{VENUES['the-bluebell']['instagram']}" target="_blank" rel="noopener">The Bluebell on Instagram</a></li><li><a href="{VENUES['brock-butchery']['instagram']}" target="_blank" rel="noopener">Brock on Instagram</a></li><li><a href="{wa}" target="_blank" rel="noopener">WhatsApp us</a></li></ul></div>
+      <div><p class="foot-h">Follow</p><ul><li><a href="{VENUES['bebop']['instagram']}" target="_blank" rel="noopener">BEBOP on Instagram</a></li><li><a href="{VENUES['briq-bistro']['instagram']}" target="_blank" rel="noopener">BRIQ on Instagram</a></li><li><a href="{VENUES['the-bluebell']['instagram']}" target="_blank" rel="noopener">The Bluebell on Instagram</a></li><li><a href="{VENUES['brock-butchery']['instagram']}" target="_blank" rel="noopener">Brock on Instagram</a></li>{wa}</ul></div>
     </div>
     <div class="legal"><span>© <span data-year>2026</span> PT Basho Projects Capital</span><span>Made in Senopati, Jakarta</span></div>
   </div>
@@ -244,10 +248,9 @@ SEO_META = {
 def page(path, title, description, main, image="/assets/img/briq-hero.jpg", with_collab=True,
          body_class="g", schema=None, enquiry=None, venue=None):
     url = DOMAIN + path
-    # Pages under a venue, and that venue's blog posts, use its WhatsApp number; the rest use WA_GROUP
+    # Pages under a venue, and that venue's blog posts, send form fallbacks to its WhatsApp number
     venue = venue or next((k for k in ("bebop", "briq-bistro", "the-bluebell") if path.startswith(VENUES[k]["path"])), None)
-    wa = VENUES[venue]["book"] if venue else WA_GROUP
-    wa_attr = f' data-wa="{wa.rsplit("/", 1)[1]}"' if venue else ""
+    wa_attr = f' data-wa="{VENUES[venue]["book"].rsplit("/", 1)[1]}"' if venue else ""
     title, description = SEO_META.get(path, (title, description))
     if len(title) > 58 or len(description) > 125:
         print(f"  SEO length warning {path}: title {len(title)}/58, description {len(description)}/125")
@@ -292,7 +295,7 @@ def page(path, title, description, main, image="/assets/img/briq-hero.jpg", with
 {main}
 {collaborate(enquiry) if with_collab else ""}
 </main>
-{footer(wa)}
+{footer()}
 {newsletter_popup()}
 </body>
 </html>
@@ -623,7 +626,7 @@ def facts(v):
     if v.get("hours_text"):
         rows.append(("Hours", v["hours_text"]))
     if v.get("phone"):
-        rows.append(("WhatsApp", f'<a href="{v.get("book", WA_GROUP)}" target="_blank" rel="noopener">Message us to book</a>'))
+        rows.append(("WhatsApp", f'<a href="{v["book"]}" target="_blank" rel="noopener">Message us to book</a>'))
     if v.get("instagram"):
         rows.append(("Instagram", f'<a href="{v["instagram"]}" target="_blank" rel="noopener">{v["ig_handle"]}</a>'))
     return '<ul class="facts">' + "".join(f"<li><span>{k}</span><span>{val}</span></li>" for k, val in rows) + "</ul>"
@@ -891,7 +894,7 @@ venue_page = f"""
 {hub(v, "Today’s cuts", "Jakarta delivery", "", [
     ("No.1", "Order on Tokopedia", "Delivered to your door", v["tokopedia"]),
     ("No.2", "Order on Shopee", "Same cuts, your favourite app", v["shopee"]),
-    ("No.3", "Trade enquiries", "Restaurants, hotels, groups", WA_GROUP),
+    ("No.3", "Order on Tokopedia", "Restaurants, hotels, groups", v["tokopedia"]),
     ("No.4", "Instagram", "@brockbutchery", v["instagram"]),
     ("No.5", "TikTok", "@brock.butchery", v["tiktok"]),
 ], '<span>No trade account · No minimum order</span><span>Supplier to BRIQ Bistro</span>')}
@@ -1510,8 +1513,6 @@ def venue_rows(heading_tag="h3"):
         acts = [f'<a class="pill" href="{v["path"]}">View<span class="skip"> {v["name"]}</span></a>']
         if v.get("book"):
             acts.append(f'<a class="pill" href="{v["book"]}" target="_blank" rel="noopener">Book</a>')
-        elif v.get("tel"):
-            acts.append(f'<a class="pill" href="{WA_GROUP}" target="_blank" rel="noopener">Book</a>')
         if v.get("menu"):
             acts.append(f'<a class="pill" href="{v["menu"]}" target="_blank" rel="noopener">Menu</a>')
         if v.get("tokopedia"):
@@ -1923,7 +1924,7 @@ page("/contact/", "Contact Basho Projects | Jakarta Hospitality Group",
       <span class="eyebrow">Contact</span>
       <h1 style="font-size:clamp(48px,7vw,104px)">Coffee, cocktails <span class="serif" style="font-family:var(--serif);font-weight:400;color:var(--hot)">or call.</span></h1>
       <p class="lede">Launching your first concept, reimagining a space, looking to invest, or just after a table? Tell us what you’re after and the right person will reply.</p>
-      <p><a class="btn" href="{WA_GROUP}" target="_blank" rel="noopener">Message us on WhatsApp</a></p>
+      <ul class="facts">{"".join(f'<li><span>{n}</span><span><a href="{u}" target="_blank" rel="noopener">{num}</a></span></li>' for u, n, num in WA_LINES)}</ul>
       <p class="muted" style="margin-top:24px">PT Basho Projects Capital · Senopati, South Jakarta</p>
     </div>
     <div class="reveal">{contact_form()}</div>
