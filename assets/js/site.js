@@ -13,7 +13,21 @@ const WEB3FORMS_KEYS = [
   // "d9019d5d-1b7f-4b34-87a4-36c5b986a880", // form "bashoprojects.com (copy 2)"
 ];
 const FORM_ENDPOINT = WEB3FORMS_KEYS.length || FORM_TO ? "on" : "";
-const WHATSAPP_NUMBER = document.body.dataset.wa || "6285921219087"; // venue pages set data-wa
+const WHATSAPP_NUMBER = document.body.dataset.wa || "628214401216"; // venue pages set data-wa; elsewhere The Bluebell
+
+// GA4 events, one per WhatsApp number and one per email form. Mark these as key events in GA4.
+const WA_EVENTS = {
+  "628214401216": "whatsapp_bluebell",
+  "6285286147342": "whatsapp_briq",
+  "628132229293": "whatsapp_bebop",
+};
+function track(name, params) {
+  if (typeof gtag === "function") gtag("event", name, params || {});
+}
+function openWhatsApp(text) {
+  track(WA_EVENTS[WHATSAPP_NUMBER], { method: "form_fallback" });
+  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`, "_blank", "noopener");
+}
 
 async function sendForm(fields, subject) {
   if (WEB3FORMS_KEYS.length) {
@@ -50,6 +64,13 @@ async function sendFormSubmit(fields, subject) {
 document.addEventListener("DOMContentLoaded", () => {
   const body = document.body;
   const header = document.querySelector(".site-header");
+
+  // Any click on a WhatsApp link, wherever it is on the page
+  document.addEventListener("click", (e) => {
+    const link = e.target.closest && e.target.closest('a[href^="https://wa.me/"]');
+    const name = link && WA_EVENTS[link.href.replace("https://wa.me/", "").split(/[/?]/)[0]];
+    if (name) track(name, { method: "link", link_text: link.innerText.replace(/\s+/g, " ").trim() });
+  });
 
   // Mobile menu
   const toggle = document.querySelector(".menu-toggle");
@@ -104,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const text =
           `Hello Basho Projects — ${kind}\n\n${data.get("message")}\n\n` +
           `${data.get("first_name")} ${data.get("last_name")}\n${data.get("email")}`;
-        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`, "_blank", "noopener");
+        openWhatsApp(text);
       };
       if (FORM_ENDPOINT) {
         status.textContent = "Sending…";
@@ -112,6 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
           const fields = Object.fromEntries(data.entries());
           fields.name = `${fields.first_name || ""} ${fields.last_name || ""}`.trim();
           await sendForm(fields, `${kind}: ${fields.name} — bashoprojects.com`);
+          track("email_contact", { enquiry_type: kind });
           form.reset();
           status.textContent = "Thank you. We'll be in touch shortly.";
         } catch (err) {
@@ -208,16 +230,17 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
           const source = fromWifi && venueName ? `WiFi at ${venueName}` : location.pathname;
           await sendForm({ email, list: "Guest list (newsletter)", source }, `New guest-list sign-up (${source}): ${email}`);
+          track("email_newsletter", { source });
           form.reset();
           if (note) note.textContent = "You're on the list. See you at the bar.";
         } catch (err) {
           const text = `Hi Basho, please add me to the guest list: ${email}`;
-          window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`, "_blank", "noopener");
+          openWhatsApp(text);
           if (note) note.textContent = "Our inbox didn't answer, so we've opened WhatsApp to confirm.";
         }
       } else {
         const text = `Hi Basho, please add me to the guest list: ${email}`;
-        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`, "_blank", "noopener");
+        openWhatsApp(text);
         if (note) note.textContent = "Opening WhatsApp to confirm…";
       }
       try { localStorage.setItem("basho-nl-dismissed", Date.now()); } catch (e) {}
