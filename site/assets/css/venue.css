@@ -181,3 +181,8 @@ img { height: auto; }
 .promos > .promo:nth-child(3) .promo__ph { aspect-ratio: auto; min-height: 220px; }
 .promos > .promo:nth-child(3) .promo__body { justify-content: center; }
 @media (max-width: 900px) { .promos > .promo:nth-child(3) { grid-template-columns: 1fr; } .promos > .promo:nth-child(3) .promo__ph { aspect-ratio: 16 / 9; min-height: 0; } }
+/* Four promos: the last two share a row instead of leaving one on its own */
+@media (min-width: 901px) {
+  .promos > .promo:nth-child(3):nth-last-child(2), .promos > .promo:nth-child(4):last-child { grid-column: span 6; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr; }
+  .promos > .promo:nth-child(3):nth-last-child(2) .promo__ph { aspect-ratio: 16 / 9; min-height: 0; }
+}

@@ -76,6 +76,14 @@
       "feature": true
     },
     {
+      "kicker": "Sat, Sun & midweek",
+      "title": "Live sport",
+      "text": "Premier League, UFC, F1, rugby, AFL and more, live on Jakarta time when games fall within our opening hours. The timetable is in our <a href=\"https://www.instagram.com/atthebluebell/\" target=\"_blank\" rel=\"noopener\">Instagram highlights</a>, or ask us to put your game on.",
+      "cta": "Request a game",
+      "url": "https://wa.me/628214401216",
+      "image": "bluebell-hall-night.jpg"
+    },
+    {
       "kicker": "Every day · 5–8 PM",
       "title": "Happy hour",
       "text": "Gin and tonic 100K++ (Classic or Sour Popsicle). Heineken bucket 280K++: buy 4, get 1 free.",
