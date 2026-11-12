@@ -4,6 +4,7 @@
 Every page shares one header, footer, contact block and newsletter popup, defined below.
 Edit the content here, run `python3 build.py` (or `./deploy.sh` to publish).
 """
+from urllib.parse import quote
 import hashlib
 import json
 from datetime import datetime, timedelta
@@ -222,6 +223,10 @@ SEO_META = {
                                      "Two private rooms in Senopati, a short walk from SCBD: a dining and meeting room for 12 and a Chess Room for 6. No minimum spend."),
     "/the-bluebell/football/": ("Watch Premier League Football in Senopati - The Bluebell",
                                 "Watch live Premier League football at The Bluebell in Senopati, a short walk from SCBD, with British food at your table. Book on WhatsApp."),
+    "/briq-bistro/weekend/": ("Weekend Brunch & Lunch in Senopati | BRIQ Bistro",
+                              "BRIQ Bistro is open all day at weekends in Senopati, 10:00 to 22:00. Weekend pasta lunch with salad and a coffee, tea or soft drink, 200K++. Book on WhatsApp."),
+    "/briq-bistro/groups/": ("Group Dinners & Birthdays in Senopati | BRIQ Bistro",
+                             "Birthdays, team dinners and small gatherings at BRIQ Bistro, a French bistro in Senopati. Steak frites and soulful French food. Book on WhatsApp."),
     "/briq-bistro/food/": ("French Food in Senopati | Steak Frites at BRIQ Bistro",
                            "French bistro food in Senopati: steak frites with Brock beef, steak for two 495K++, weekend pasta 200K++."),
     "/bebop/live-music/": ("Live Music in Senopati | Jazz Mon & Fri at BEBOP",
@@ -852,6 +857,7 @@ venue_page = f"""
       <p>If you only order one thing at BRIQ, make it this: a properly seared steak, crisp frites and a sauce worth mopping up. It’s the dish we’re known for in Senopati, made with beef from our own butcher, <a href="/brock-butchery/">Brock</a>.</p>
       <p>Alongside it, the kitchen runs rotating pasta promos and monthly specials. Follow <a href="{v['instagram']}" target="_blank" rel="noopener">{v['ig_handle']}</a> for this week’s offer.</p>
       <div class="btn-row"><a class="btn" href="{v['book']}" target="_blank" rel="noopener">Book for steak frites</a><a class="btn btn--ghost" href="/briq-bistro/food/">See the food</a></div>
+      <div class="btn-row" style="margin-top:12px"><a class="btn btn--ghost" href="/briq-bistro/weekend/">Weekends at BRIQ</a><a class="btn btn--ghost" href="/briq-bistro/groups/">Groups & celebrations</a></div>
     </div>
   </div>
 </section>
@@ -1189,6 +1195,16 @@ page("/the-bluebell/football/", "Watch Premier League Football in Senopati - The
 """, image="/assets/img/bluebell-hall-night.jpg", with_collab=False, body_class="venue v-bluebell lp",
      schema=[venue_schema(v, "bluebell-hall-night.jpg")])
 
+# BRIQ ad landing pages: food and the room only. No wine, cocktail, beer, bar or "drinks" wording
+# (the one exception is "coffee, tea or soft drink"), no photos with bottles, glasses or a bar, and
+# no schema link to the menu PDF, which lists the wine.
+BRIQ_LP = {**VENUES["briq-bistro"], "menu": None}
+
+# The Bahasa sections on the weekend and groups pages still need a native-speaker check.
+# Group size, set menus and minimum spend are waiting on Tom. Leave as None and the section stays
+# off the page; set it to the confirmed text (HTML is fine) to publish it.
+BRIQ_GROUP_DETAILS = None
+
 v = VENUES["briq-bistro"]
 page("/briq-bistro/food/", "French Food in Senopati | Steak Frites at BRIQ Bistro", "", f"""
 {vhero(v, "brock-hero.jpg", "Steak on the grill for BRIQ Bistro's steak frites",
@@ -1239,12 +1255,101 @@ page("/briq-bistro/food/", "French Food in Senopati | Steak Frites at BRIQ Bistr
         <li><span>Groups & events</span><span>Birthdays, dinners and small gatherings</span></li>
       </ul>
       <p class="muted" style="margin-top:18px" lang="id">Restoran Prancis di Senopati, Jakarta Selatan. Reservasi meja lewat WhatsApp.</p>
+      <div class="btn-row"><a class="btn btn--ghost" href="/briq-bistro/weekend/">Weekends at BRIQ</a><a class="btn btn--ghost" href="/briq-bistro/groups/">Groups & celebrations</a></div>
     </div>
   </div>
 </section>
 {landing_close(v, "Book a table at BRIQ")}
 """, image="/assets/img/brock-cuts.jpg", with_collab=False, body_class="venue v-briq lp",
-     schema=[venue_schema(v, "brock-hero.jpg")])
+     schema=[venue_schema(BRIQ_LP, "brock-hero.jpg")])
+
+v = VENUES["briq-bistro"]
+BRIQ_GROUP_MESSAGE = "Hi BRIQ, I'd like to book for a group of __ on __."
+briq_group_wa = f'{v["book"]}?text={quote(BRIQ_GROUP_MESSAGE)}'
+
+page("/briq-bistro/weekend/", "Weekend Brunch & Lunch in Senopati | BRIQ Bistro", "", f"""
+{vhero(v, "pasta-tagliatelle.jpg", "Tagliatelle with salmon at BRIQ Bistro, Senopati",
+       'Weekends <span class="serif">at BRIQ</span>',
+       "BRIQ Bistro is open all day on Saturdays and Sundays, from 10:00 to 22:00, for brunch, lunch and dinner in Senopati.")}
+</div>
+<section class="section">
+  <div class="wrap split split--center">
+    <div class="media media--wide reveal">{img("briq-room.jpg", "The entrance to BRIQ Bistro, Senopati, on a weekend morning")}</div>
+    <div class="reveal">
+      <span class="eyebrow">Saturday & Sunday · 10:00–22:00</span>
+      <h2>Open <span class="serif">all day.</span></h2>
+      <p>Brunch, lunch and dinner, every Saturday and Sunday from 10:00 to 22:00.</p>
+      <ul class="facts">
+        <li><span>Brunch & lunch</span><span>From 10:00</span></li>
+        <li><span>Weekend pasta</span><span>11:30–15:00</span></li>
+        <li><span>Dinner</span><span>Until 22:00</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+<section class="section" style="border-top:1px solid var(--vline)">
+  <div class="wrap split split--center">
+    <div class="media media--tall reveal">{img("pasta-rigatoni.jpg", "Rigatoni from BRIQ's weekend pasta lunch")}</div>
+    <div class="reveal">
+      <span class="eyebrow">Saturdays & Sundays · 11:30–15:00</span>
+      <h2>Weekend pasta, <span class="serif">200K++.</span></h2>
+      <p>Ravioli, rigatoni or tagliatelle, with a salad and a coffee, tea or soft drink.</p>
+      <div class="btn-row"><a class="btn" href="{v["book"]}" target="_blank" rel="noopener">Book a weekend table</a><a class="btn btn--ghost" href="/blog/weekend-pasta-promo-at-briq-bistro/">More on the pasta</a></div>
+      <span class="eyebrow" style="display:block;margin-top:40px">All weekend</span>
+      <h2>Home of the <span class="serif">steak frites.</span></h2>
+      <p>Steak frites is on all weekend, made with beef from Brock, our own butcher, and served with Café de Paris butter or sauce au poivre. <a href="/blog/steak-frites-in-jakarta-at-briq-bistro/">More on the steak frites</a>.</p>
+    </div>
+  </div>
+</section>
+{bahasa("Dalam Bahasa Indonesia", 'Brunch dan makan siang akhir pekan <span class="serif">di Senopati</span>', [
+    "BRIQ Bistro buka sepanjang hari setiap Sabtu dan Minggu, pukul 10.00–22.00. Paket pasta akhir pekan 200K++: ravioli, rigatoni, atau tagliatelle dengan salad dan kopi, teh, atau soft drink, pukul 11.30–15.00.",
+    f'<a class="btn" href="{v["book"]}" target="_blank" rel="noopener">Reservasi meja lewat WhatsApp</a>',
+])}
+{landing_close(BRIQ_LP, "Book a table at BRIQ")}
+""", image="/assets/img/pasta-tagliatelle.jpg", with_collab=False, body_class="venue v-briq lp",
+     schema=[venue_schema(BRIQ_LP, "pasta-tagliatelle.jpg")])
+
+group_details = f"""<section class="section" style="border-top:1px solid var(--vline)">
+  <div class="wrap split">
+    <div class="reveal"><span class="eyebrow">Good to know</span><h2>Group size <span class="serif">and set menus</span></h2></div>
+    <div class="reveal">{BRIQ_GROUP_DETAILS}</div>
+  </div>
+</section>""" if BRIQ_GROUP_DETAILS else ""
+
+page("/briq-bistro/groups/", "Group Dinners & Birthdays in Senopati | BRIQ Bistro", "", f"""
+{vhero(v, "brock-hero.jpg", "Steak on the grill for BRIQ Bistro's steak frites",
+       'Groups and celebrations <span class="serif">at BRIQ</span>',
+       "Birthdays, dinners and small gatherings at BRIQ Bistro, a French bistro in Senopati, crafted between fine and casual.")}
+</div>
+<section class="section">
+  <div class="wrap split split--center">
+    <div class="media media--tall reveal">{img("brock-cuts.jpg", "Sliced steak for BRIQ Bistro's steak frites")}</div>
+    <div class="reveal">
+      <span class="eyebrow">What to eat</span>
+      <h2>Steak frites, <span class="serif">for the table.</span></h2>
+      <div class="lineup" style="grid-template-columns:1fr">
+        <div><em>The signature</em><b>Steak frites</b><span>Beef from Brock, our own butcher, with Café de Paris butter or sauce au poivre.</span></div>
+        <div><em>495K++</em><b>Steak for two</b><span>Two ribeye steaks with your choice of sauce, and two portions of fries.</span></div>
+      </div>
+      <div class="btn-row" style="margin-top:28px"><a class="btn" href="{briq_group_wa}" target="_blank" rel="noopener">Enquire on WhatsApp</a></div>
+    </div>
+  </div>
+</section>
+{group_details}
+{bahasa("Dalam Bahasa Indonesia", 'Makan malam rombongan dan ulang tahun <span class="serif">di Senopati</span>', [
+    "Rayakan ulang tahun, makan malam bersama, atau acara kecil di BRIQ Bistro, bistro Prancis di Senopati. Hubungi kami lewat WhatsApp untuk reservasi rombongan.",
+    f'<a class="btn" href="{briq_group_wa}" target="_blank" rel="noopener">Tanya lewat WhatsApp</a>',
+])}
+<section class="section" style="border-top:1px solid var(--vline)">
+  <div class="wrap split">
+    <div class="reveal"><span class="eyebrow">Plan your visit</span><h2>Enquire <span class="serif">on WhatsApp</span></h2>{facts(BRIQ_LP)}</div>
+    <div class="reveal"><p>Message us on WhatsApp with the date, the time and how many of you, and we’ll come back to you.</p>
+      <p><a class="btn" href="{briq_group_wa}" target="_blank" rel="noopener">Enquire on WhatsApp</a></p>
+      <p class="muted"><a href="/briq-bistro/food/">See the food at BRIQ</a></p></div>
+  </div>
+</section>
+""", image="/assets/img/brock-cuts.jpg", with_collab=False, body_class="venue v-briq lp",
+     schema=[venue_schema(BRIQ_LP, "brock-hero.jpg")])
 
 # BEBOP ad landing pages. Google allows no alcohol advertising in Indonesia, so these pages carry
 # no drink wording at all, no photos with bottles, glasses or the bar, and no link to the menu PDF
@@ -1547,27 +1652,27 @@ NEW_POSTS = [
     {
         "slug": "weekend-pasta-promo-at-briq-bistro",
         "venue": "briq-bistro",
-        "title": "Weekend Pasta at BRIQ: Ravioli, Rigatoni or Tagliatelle, with Salad and a Drink, for 200K",
+        "title": "Weekend Pasta at BRIQ: Ravioli, Rigatoni or Tagliatelle, with Salad and Coffee, Tea or a Soft Drink, for 200K",
         "seo_title": "Weekend Pasta Promo at BRIQ Bistro, Senopati",
-        "seo_desc": "BRIQ's weekend pasta promo: ravioli, rigatoni or tagliatelle with salad and a drink for 200K++, Sat & Sun 11:30–15:00.",
+        "seo_desc": "BRIQ's weekend pasta: ravioli, rigatoni or tagliatelle with salad and coffee, tea or a soft drink, 200K++, Sat & Sun.",
         "date": "3 November 2026", "iso": "2026-11-03",
-        "standfirst": "Make your weekends a little more special: pasta, a salad and a drink, every Saturday and Sunday lunchtime.",
+        "standfirst": "Make your weekends a little more special: pasta, a salad and coffee, tea or a soft drink, every Saturday and Sunday lunchtime.",
         "cover": "pasta-rigatoni.jpg",
         "body": f"""<figure>{img("pasta-rigatoni.jpg", "Rigatoni from BRIQ Bistro's weekend pasta promo, Senopati")}</figure>
-<p><strong>Jakarta, 3 November 2026</strong> — BRIQ Bistro has launched its weekend Pasta Promo, a new reason to spend a slow Saturday or Sunday lunch in Senopati. Pick your pasta, add a salad and a drink, and the whole thing comes to 200K++.</p>
+<p><strong>Jakarta, 3 November 2026</strong> — BRIQ Bistro has launched its weekend Pasta Promo, a new reason to spend a slow Saturday or Sunday lunch in Senopati. Pick your pasta, add a salad and coffee, tea or a soft drink, and the whole thing comes to 200K++.</p>
 <h2>How it works</h2>
 <ul class="ticks">
   <li><strong>Choose your pasta:</strong> ravioli, rigatoni or tagliatelle.</li>
   <li><strong>Add your choice of salad.</strong></li>
-  <li><strong>And a drink:</strong> coffee, tea or a soft drink.</li>
+  <li><strong>Plus</strong> coffee, tea or a soft drink.</li>
   <li><strong>200K++</strong>, every weekend from 11:30 to 15:00.</li>
 </ul>
 <figure>{img("pasta-tagliatelle.jpg", "Tagliatelle with salmon at BRIQ Bistro, Jakarta")}</figure>
 <h2>Weekends at BRIQ, all day</h2>
-<p>On weekdays BRIQ is a dinner spot, but on Saturdays and Sundays we’re open all day, from 10:00 to 22:00. Pasta at lunch, a glass of something on the terrace in the afternoon, and dinner if you’re not ready to leave.</p>
+<p>On weekdays BRIQ is a dinner spot, but on Saturdays and Sundays we’re open all day, from 10:00 to 22:00. Pasta at lunch, a coffee on the terrace in the afternoon, and dinner if you’re not ready to leave.</p>
 <p>BRIQ is still the home of the steak frites: a properly seared steak, crisp frites and a sauce worth mopping up, made with beef from our own butcher, Brock.</p>
 <h2>Bringing someone?</h2>
-<p>The <strong>BRIQ Date Package</strong> runs every day, all night: two ribeye steaks with your choice of Café de Paris butter or sauce au poivre, and two portions of fries, for 495K++ for two. Add escargots and two drinks for 100K++.</p>
+<p>The <strong>BRIQ Date Package</strong> runs every day, all night: two ribeye steaks with your choice of Café de Paris butter or sauce au poivre, and two portions of fries, for 495K++ for two.</p>
 <div class="box">
 <h3 class="h4">BRIQ Bistro</h3>
 <p>A neighbourhood French bistro in Senopati, crafted between fine and casual. Dinner Monday to Friday from 17:00; all day at weekends.</p>
@@ -2260,7 +2365,7 @@ main_inner = home.split('<main id="main">')[1].split("</main>")[0]
     .replace('<meta name="viewport"', '<meta name="robots" content="noindex">\n<meta name="viewport"'))
 
 pages = ["/", "/about/", "/team/", "/services/", "/invest/", "/contact/", "/our-projects/", "/bebop/", "/briq-bistro/",
-         "/brock-butchery/", "/the-bluebell/", "/the-bluebell/food/", "/the-bluebell/private-rooms/", "/the-bluebell/football/", "/briq-bistro/food/", "/bebop/live-music/", "/bebop/kitchen/", "/bebop/trivia/", "/bebop/private-hire/", "/bubbleandsqueakmedia/", "/blog/"] + [f"/blog/{p['slug']}/" for p in POSTS]
+         "/brock-butchery/", "/the-bluebell/", "/the-bluebell/food/", "/the-bluebell/private-rooms/", "/the-bluebell/football/", "/briq-bistro/food/", "/briq-bistro/weekend/", "/briq-bistro/groups/", "/bebop/live-music/", "/bebop/kitchen/", "/bebop/trivia/", "/bebop/private-hire/", "/bubbleandsqueakmedia/", "/blog/"] + [f"/blog/{p['slug']}/" for p in POSTS]
 (ROOT / "sitemap.xml").write_text(
     '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
     + "".join(f"  <url><loc>{DOMAIN}{p}</loc><lastmod>{TODAY.isoformat()}</lastmod></url>\n" for p in pages) + "</urlset>\n")
