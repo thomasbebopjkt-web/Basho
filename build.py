@@ -1313,7 +1313,7 @@ page("/bebop/live-music/", "Live Music in Senopati | Jazz Mon & Fri at BEBOP", "
      schema=[bebop_schema("jazz-2.jpg")] + bebop_events())
 
 # Trivia details still to confirm with Tom: leave as None and they stay off the page.
-TRIVIA_FREE = None   # There is an entry fee (confirmed 12 Nov 2026); add it here once the amount is known
+TRIVIA_FREE = "Entry is 175K per person"   # It includes a drink, but this is an ad landing page, so that stays off it
 TRIVIA_TEAM = "Teams of up to six"
 
 v = VENUES["bebop"]
