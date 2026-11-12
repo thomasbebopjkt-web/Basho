@@ -16,16 +16,23 @@ const FORM_ENDPOINT = WEB3FORMS_KEYS.length || FORM_TO ? "on" : "";
 const WHATSAPP_NUMBER = document.body.dataset.wa || "628214401216"; // venue pages set data-wa; elsewhere The Bluebell
 
 // GA4 events, one per WhatsApp number and one per email form. Mark these as key events in GA4.
-const WA_EVENTS = {
-  "628214401216": "whatsapp_bluebell",
-  "6285286147342": "whatsapp_briq",
-  "628132229293": "whatsapp_bebop",
+// Every WhatsApp contact also sends whatsapp_click with a venue parameter.
+const WA_VENUES = {
+  "628214401216": "bluebell",
+  "6285286147342": "briq",
+  "628132229293": "bebop",
 };
 function track(name, params) {
   if (typeof gtag === "function") gtag("event", name, params || {});
 }
+function trackWhatsApp(number, params) {
+  const venue = WA_VENUES[number];
+  if (!venue) return;
+  track(`whatsapp_${venue}`, params);
+  track("whatsapp_click", { ...params, venue });
+}
 function openWhatsApp(text) {
-  track(WA_EVENTS[WHATSAPP_NUMBER], { method: "form_fallback" });
+  trackWhatsApp(WHATSAPP_NUMBER, { method: "form_fallback" });
   window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`, "_blank", "noopener");
 }
 
@@ -68,8 +75,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // Any click on a WhatsApp link, wherever it is on the page
   document.addEventListener("click", (e) => {
     const link = e.target.closest && e.target.closest('a[href^="https://wa.me/"]');
-    const name = link && WA_EVENTS[link.href.replace("https://wa.me/", "").split(/[/?]/)[0]];
-    if (name) track(name, { method: "link", link_text: link.innerText.replace(/\s+/g, " ").trim() });
+    if (!link) return;
+    trackWhatsApp(link.href.replace("https://wa.me/", "").split(/[/?]/)[0], {
+      method: "link",
+      placement: link.closest(".site-footer") ? "footer" : "page",
+      link_text: link.innerText.replace(/\s+/g, " ").trim(),
+    });
   });
 
   // Mobile menu
