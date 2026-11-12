@@ -226,6 +226,12 @@ SEO_META = {
                            "French bistro food in Senopati: steak frites with Brock beef, steak for two 495K++, weekend pasta 200K++."),
     "/bebop/live-music/": ("Live Music in Senopati | Jazz Mon & Fri at BEBOP",
                            "Live jazz every Monday and Friday, Trivia Tuesdays and resident DJs at BEBOP, Jl. Senopati 61. Modern Japanese plates."),
+    "/bebop/kitchen/": ("Modern Japanese Food in Senopati | BEBOP Kitchen",
+                        "Modern Japanese plates at BEBOP, Jl. Senopati 61: karaage, takoyaki, smash burgers and more. Open daily from 17:00."),
+    "/bebop/trivia/": ("Trivia Tuesdays in Senopati | BEBOP",
+                       "Trivia Tuesdays at BEBOP, Jl. Senopati 61, hosted by Kara Chenoa. Every Tuesday from 20:00. Book a team table on WhatsApp."),
+    "/bebop/private-hire/": ("Private Events & Parties in Senopati | BEBOP",
+                             "Private hire at BEBOP in Senopati: birthdays, launches and takeovers with live music or resident DJs and Japanese plates."),
     "/blog/": ("Journal | Stories from Senopati | Basho Projects",
                "Stories from Basho Projects in Senopati, Jakarta: openings, live jazz at BEBOP, The Bluebell and more."),
     "/blog/the-bluebell-public-house-opens-in-south-jakarta/": ("The Bluebell Public House Opens in Senopati, Jakarta",
@@ -685,6 +691,7 @@ venue_page = f"""
       <div><em>Special nights · see Instagram</em><b>Booty Groove</b><span>Late, loud and very much a dance floor.</span></div>
     </div>
     <div class="btn-row" style="margin-top:28px"><a class="btn" href="/bebop/live-music/">Live music at BEBOP</a><a class="btn btn--ghost" href="/blog/jazz-at-bebop/">Read: Jazz at BEBOP</a></div>
+    <div class="btn-row" style="margin-top:12px"><a class="btn btn--ghost" href="/bebop/kitchen/">The kitchen</a><a class="btn btn--ghost" href="/bebop/trivia/">Trivia & karaoke</a><a class="btn btn--ghost" href="/bebop/private-hire/">Private hire</a></div>
   </div>
 </section>
 
@@ -1239,6 +1246,32 @@ page("/briq-bistro/food/", "French Food in Senopati | Steak Frites at BRIQ Bistr
 """, image="/assets/img/brock-cuts.jpg", with_collab=False, body_class="venue v-briq lp",
      schema=[venue_schema(v, "brock-hero.jpg")])
 
+# BEBOP ad landing pages. Google allows no alcohol advertising in Indonesia, so these pages carry
+# no drink wording at all, no photos with bottles, glasses or the bar, and no link to the menu PDF
+# (it lists the drinks). Restaurant schema, not BarOrPub.
+BEBOP_RESTAURANT = {**VENUES["bebop"], "schema_type": "Restaurant", "cuisine": "Japanese", "menu": None}
+
+
+def bebop_schema(image):
+    return venue_schema(BEBOP_RESTAURANT, image)
+
+
+# From the food section of the BEBOP menu (Oct 2025). Drinks are left out on purpose.
+BEBOP_FOOD = [
+    ("Small plates", [
+        ("Karaage", "Chicken thigh in a spiced buttermilk marinade, with our special sauce."),
+        ("Takoyaki", "The classic Japanese snack with diced octopus, topped with Kewpie mayo, otafuku sauce and katsuobushi."),
+        ("Edamame garlic", "Japanese edamame in garlic butter and Japanese soy, with a dash of togarashi."),
+    ]),
+    ("Burgers", [
+        ("Signature smash burger", "80/20 beef patty, American cheddar, onions and jalapeños in a brioche bun, with organic potato crisps."),
+        ("Fish burger", "Crisp fish with kyabetsu salad, squid in mayo, lettuce and tomato in a charcoal bun."),
+    ]),
+    ("On the side", [
+        ("Nori French fries", "Triple-cooked, julienne-cut fries with Japanese seasoning and nori."),
+    ]),
+]
+
 v = VENUES["bebop"]
 page("/bebop/live-music/", "Live Music in Senopati | Jazz Mon & Fri at BEBOP", "", f"""
 {vhero(v, "jazz-2.jpg", "A full room for live music at BEBOP, Jl. Senopati",
@@ -1255,6 +1288,7 @@ page("/bebop/live-music/", "Live Music in Senopati | Jazz Mon & Fri at BEBOP", "
       <div><em>Weekly · from 20:00</em><b>Karaoke Nights</b><span>The mic is yours. Be brave.</span></div>
       <div><em>Weekly · from 20:00</em><b>BMC Nights</b><span>Resident DJs from the Bebop Music Collective: house, future beats, jazz and soul.</span></div>
     </div>
+    <div class="btn-row" style="margin-top:28px"><a class="btn btn--ghost" href="/bebop/trivia/">Trivia & karaoke</a><a class="btn btn--ghost" href="/bebop/kitchen/">The kitchen</a><a class="btn btn--ghost" href="/bebop/private-hire/">Private hire</a></div>
   </div>
 </section>
 <section class="section" style="border-top:1px solid var(--vline)">
@@ -1276,7 +1310,119 @@ page("/bebop/live-music/", "Live Music in Senopati | Jazz Mon & Fri at BEBOP", "
 </section>
 {landing_close(v, "Book a table for jazz night")}
 """, image="/assets/img/jazz-2.jpg", with_collab=False, body_class="venue v-bebop lp",
-     schema=[venue_schema(v, "jazz-2.jpg")] + bebop_events())
+     schema=[bebop_schema("jazz-2.jpg")] + bebop_events())
+
+# Trivia details still to confirm with Tom: leave as None and they stay off the page.
+TRIVIA_FREE = None   # There is an entry fee (confirmed 12 Nov 2026); add it here once the amount is known
+TRIVIA_TEAM = "Teams of up to six"
+
+v = VENUES["bebop"]
+food_html = "".join(
+    f"""<div class="reveal"><span class="eyebrow">{group}</span>
+      <div class="lineup" style="grid-template-columns:1fr;margin-top:14px">{"".join(f"<div><b>{n}</b><span>{d}</span></div>" for n, d in items)}</div></div>"""
+    for group, items in BEBOP_FOOD)
+page("/bebop/kitchen/", "Modern Japanese Food in Senopati | BEBOP Kitchen", "", f"""
+{vhero(v, "jazz-2.jpg", "Guests at BEBOP Bar + Kitchen on Jl. Senopati during live music",
+       'Modern Japanese plates <span class="serif">in Senopati</span>',
+       "The kitchen at BEBOP Bar + Kitchen, Jl. Senopati 61, cooks bold snacks, smoky plates and comforting bites, made for sharing across the table. Open every day from 17:00 till late.")}
+</div>
+<section class="section">
+  <div class="wrap">
+    <span class="eyebrow">The kitchen</span>
+    <h2>From the <span class="serif">menu.</span></h2>
+    <div class="grid-3" style="gap:32px;margin-top:28px;align-items:start">{food_html}</div>
+    <div class="btn-row" style="margin-top:32px"><a class="btn" href="{v["book"]}" target="_blank" rel="noopener">Book a table</a></div>
+    <p style="margin-top:20px"><a href="/bebop/live-music/">Live jazz every Monday and Friday from 20:00</a></p>
+  </div>
+</section>
+{bahasa("Dalam Bahasa Indonesia", 'Restoran Jepang modern <span class="serif">di Senopati</span>', [
+    "BEBOP Bar + Kitchen di Jl. Senopati No. 61 menyajikan hidangan Jepang modern untuk dinikmati bersama: karaage, takoyaki, edamame bawang putih, smash burger, dan kentang goreng nori. Buka setiap hari mulai pukul 17.00.",
+    f'<a class="btn" href="{v["book"]}" target="_blank" rel="noopener">Reservasi meja lewat WhatsApp</a>',
+])}
+{landing_close(v, "Book a table")}
+""", image="/assets/img/jazz-2.jpg", with_collab=False, body_class="venue v-bebop lp",
+     schema=[bebop_schema("jazz-2.jpg")])
+
+trivia_extra = "".join(f"<li>{t}</li>" for t in (TRIVIA_FREE, TRIVIA_TEAM) if t)
+page("/bebop/trivia/", "Trivia Tuesdays in Senopati | BEBOP", "", f"""
+{vhero(v, "jazz-2.jpg", "A full room at BEBOP Bar + Kitchen, Jl. Senopati",
+       'Trivia Tuesdays <span class="serif">at BEBOP</span>',
+       "Every Tuesday from 20:00 at BEBOP Bar + Kitchen, Jl. Senopati 61, hosted by Kara Chenoa. Teams, rounds, bragging rights.")}
+</div>
+<section class="section">
+  <div class="wrap split">
+    <div class="reveal">
+      <span class="eyebrow">Every Tuesday · from 20:00</span>
+      <h2>How it <span class="serif">works.</span></h2>
+      <ul class="ticks">
+        <li>Bring a team</li>
+        <li>Book ahead on WhatsApp so we can hold your table</li>
+        {trivia_extra}
+        <li>Kara Chenoa hosts, with rounds from 20:00</li>
+        <li>Order modern Japanese plates from the kitchen while you play</li>
+      </ul>
+      <div class="btn-row"><a class="btn" href="{v["book"]}" target="_blank" rel="noopener">Book a team table</a></div>
+    </div>
+    <div class="reveal">
+      <span class="eyebrow">Weekly · from 20:00</span>
+      <h2>Karaoke <span class="serif">Nights.</span></h2>
+      <p>The mic is yours. Be brave.</p>
+      <p><a href="/bebop/kitchen/">See the kitchen</a> · <a href="/bebop/live-music/">Live jazz every Monday and Friday from 20:00</a></p>
+    </div>
+  </div>
+</section>
+{bahasa("Dalam Bahasa Indonesia", 'Trivia night di Senopati <span class="serif">setiap Selasa</span>', [
+    "Setiap Selasa mulai pukul 20.00 di BEBOP Bar + Kitchen, Jl. Senopati No. 61, dipandu oleh Kara Chenoa. Ajak tim kamu dan reservasi meja lewat WhatsApp. Ada juga Karaoke Night setiap minggu mulai pukul 20.00.",
+    f'<a class="btn" href="{v["book"]}" target="_blank" rel="noopener">Reservasi meja lewat WhatsApp</a>',
+])}
+{landing_close(v, "Book a table")}
+""", image="/assets/img/jazz-2.jpg", with_collab=False, body_class="venue v-bebop lp",
+     schema=[bebop_schema("jazz-2.jpg")] + weekly_events(v, "Trivia Tuesday", "Trivia hosted by Kara Chenoa. Teams, rounds and bragging rights.", {1}, "jazz-2.jpg"))
+
+page("/bebop/private-hire/", "Private Events & Parties in Senopati | BEBOP", "", f"""
+{vhero(v, "halloween-2.jpg", "A packed private party at BEBOP Bar + Kitchen, Senopati",
+       'Private hire <span class="serif">at BEBOP</span>',
+       "Birthdays, launches and takeovers at BEBOP Bar + Kitchen, Jl. Senopati 61, with live music or resident DJs and modern Japanese plates from the kitchen.")}
+</div>
+<section class="section">
+  <div class="wrap">
+    <span class="eyebrow">Your night, your crowd</span>
+    <h2>Make the room <span class="serif">yours.</span></h2>
+    <div class="lineup">
+      <div><em>Celebrations</em><b>Birthdays</b><span>Bring everyone together for a night with music, food and your own crowd.</span></div>
+      <div><em>Brands & companies</em><b>Launches</b><span>Product launches, brand nights and company events in Senopati.</span></div>
+      <div><em>The whole room</em><b>Takeovers</b><span>Take over BEBOP for the night, with the music set the way you want it.</span></div>
+    </div>
+  </div>
+</section>
+<section class="section" style="border-top:1px solid var(--vline)">
+  <div class="wrap split">
+    <div class="reveal">
+      <span class="eyebrow">The music</span>
+      <h2>Live music <span class="serif">or resident DJs.</span></h2>
+      <p>Book a live band, or a set from the Bebop Music Collective: 14 resident DJs playing house, future beats, jazz and soul.</p>
+    </div>
+    <div class="reveal">
+      <span class="eyebrow">The kitchen</span>
+      <h2>Modern <span class="serif">Japanese plates.</span></h2>
+      <p>Karaage, takoyaki, smash burgers and more from the kitchen, made for sharing. <a href="/bebop/kitchen/">See the kitchen</a></p>
+      <div class="btn-row"><a class="btn" href="{v["book"]}" target="_blank" rel="noopener">Enquire on WhatsApp</a></div>
+    </div>
+  </div>
+</section>
+{bahasa("Dalam Bahasa Indonesia", 'Sewa tempat untuk acara <span class="serif">di Senopati</span>', [
+    "Rayakan ulang tahun, peluncuran produk, atau takeover di BEBOP Bar + Kitchen, Jl. Senopati No. 61, dengan live music atau DJ dari Bebop Music Collective dan hidangan Jepang modern dari dapur kami. Hubungi kami lewat WhatsApp untuk tanggal dan detailnya.",
+    f'<a class="btn" href="{v["book"]}" target="_blank" rel="noopener">Tanya lewat WhatsApp</a>',
+])}
+<section class="section" style="border-top:1px solid var(--vline)">
+  <div class="wrap split">
+    <div class="reveal"><span class="eyebrow">Plan your event</span><h2>Enquire <span class="serif">on WhatsApp</span></h2>{facts(v)}</div>
+    <div class="reveal"><p>Message us on WhatsApp with the date, the occasion and how many of you, and we’ll come back to you with the details.</p>
+      <p><a class="btn" href="{v["book"]}" target="_blank" rel="noopener">Enquire on WhatsApp</a></p></div>
+  </div>
+</section>
+""", image="/assets/img/halloween-2.jpg", with_collab=False, body_class="venue v-bebop lp",
+     schema=[bebop_schema("halloween-2.jpg")])
 
 # ---------------------------------------------------------------- blog
 
@@ -2114,7 +2260,7 @@ main_inner = home.split('<main id="main">')[1].split("</main>")[0]
     .replace('<meta name="viewport"', '<meta name="robots" content="noindex">\n<meta name="viewport"'))
 
 pages = ["/", "/about/", "/team/", "/services/", "/invest/", "/contact/", "/our-projects/", "/bebop/", "/briq-bistro/",
-         "/brock-butchery/", "/the-bluebell/", "/the-bluebell/food/", "/the-bluebell/private-rooms/", "/the-bluebell/football/", "/briq-bistro/food/", "/bebop/live-music/", "/bubbleandsqueakmedia/", "/blog/"] + [f"/blog/{p['slug']}/" for p in POSTS]
+         "/brock-butchery/", "/the-bluebell/", "/the-bluebell/food/", "/the-bluebell/private-rooms/", "/the-bluebell/football/", "/briq-bistro/food/", "/bebop/live-music/", "/bebop/kitchen/", "/bebop/trivia/", "/bebop/private-hire/", "/bubbleandsqueakmedia/", "/blog/"] + [f"/blog/{p['slug']}/" for p in POSTS]
 (ROOT / "sitemap.xml").write_text(
     '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
     + "".join(f"  <url><loc>{DOMAIN}{p}</loc><lastmod>{TODAY.isoformat()}</lastmod></url>\n" for p in pages) + "</urlset>\n")
