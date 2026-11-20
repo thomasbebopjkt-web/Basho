@@ -92,8 +92,8 @@ VENUES = {
         "address": "Jl. Tulodong Atas No. 10 A-B, Senopati, South Jakarta 12190",
         "street": "Jl. Tulodong Atas No. 10 A-B", "locality": "Senopati, South Jakarta",
         "postcode": "12190",
-        "hours_text": "Mon–Thu 10:00–01:00 · Fri–Sun 10:00–02:00",
-        "hours": {0: [[10, 26]], 1: [[10, 25]], 2: [[10, 25]], 3: [[10, 25]], 4: [[10, 25]], 5: [[10, 26]], 6: [[10, 26]]},
+        "hours_text": "Mon–Thu 11:00–01:00 · Fri–Sat 11:00–02:00 · Sun 08:00–23:00",
+        "hours": {0: [[8, 23]], 1: [[11, 25]], 2: [[11, 25]], 3: [[11, 25]], 4: [[11, 25]], 5: [[11, 26]], 6: [[11, 26]]},
         "phone": "0821-4401-216", "tel": "+628214401216",
         "book": "https://wa.me/628214401216",
         "maps": "https://share.google/se4JQBoWzcS53Zwa8",
@@ -216,15 +216,15 @@ SEO_META = {
     "/brock-butchery/": ("Brock Butchery | Premium Meat Delivered in Jakarta",
                          "Premium meat delivered across Jakarta. Order on Tokopedia or Shopee with no minimum, or set up trade supply."),
     "/the-bluebell/": ("The Bluebell Public House | British Pub, Senopati",
-                       "British pub in Senopati: pints, G&Ts, pitchers and cocktails, fish & chips, pies and Guinness. Open daily from 10:00."),
+                       "British pub in Senopati: pints, G&Ts, pitchers and cocktails, fish & chips, pies and Guinness. Open from 11:00 (Sun 08:00)."),
     "/the-bluebell/food/": ("British Food in Senopati | The Bluebell Public House",
-                            "Modern British food near SCBD: Sunday roast, fish & chips and pies. Open daily from 10:00 for lunch and dinner."),
+                            "Modern British food near SCBD: Sunday roast, fish & chips and pies. Open from 11:00, and from 08:00 on Sundays."),
     "/the-bluebell/private-rooms/": ("Private Dining & Meeting Rooms in Senopati - The Bluebell",
                                      "Two private rooms in Senopati, a short walk from SCBD: a dining and meeting room for 12 and a Chess Room for 6. No minimum spend."),
     "/the-bluebell/football/": ("Watch Premier League Football in Senopati - The Bluebell",
                                 "Watch live Premier League football at The Bluebell in Senopati, a short walk from SCBD, with British food at your table. Book on WhatsApp."),
     "/the-bluebell/brunch/": ("Brunch & Breakfast in Senopati - The Bluebell",
-                              "Full English breakfast, pancakes, kedgeree and breakfast sets with coffee from IDR 100k. Brunch every day until 14:00 in Senopati, near SCBD."),
+                              "Full English breakfast, pancakes, kedgeree and breakfast sets with coffee from IDR 100k++. Brunch every day until 14:00 in Senopati, near SCBD."),
     "/briq-bistro/weekend/": ("Weekend Brunch & Lunch in Senopati | BRIQ Bistro",
                               "BRIQ Bistro is open all day at weekends in Senopati, 10:00 to 22:00. Weekend pasta lunch with salad and a coffee, tea or soft drink, 200K++. Book on WhatsApp."),
     "/briq-bistro/groups/": ("Group Dinners & Birthdays in Senopati | BRIQ Bistro",
@@ -967,7 +967,7 @@ page("/brock-butchery/", "Brock Butchery | Premium Meat Delivered in Jakarta",
 v = VENUES["the-bluebell"]
 bluebell_faq = [
     ("Where is The Bluebell Public House?", "Jl. Tulodong Atas No. 10 A-B, Senopati, South Jakarta 12190 — between Senopati and SCBD, a short walk from BEBOP and BRIQ."),
-    ("What are The Bluebell’s opening hours?", "Monday to Thursday 10:00–01:00; Friday to Sunday 10:00–02:00."),
+    ("What are The Bluebell’s opening hours?", "Monday to Thursday 11:00–01:00; Friday and Saturday 11:00–02:00; Sunday 08:00–23:00."),
     ("What’s to drink and eat?", "Beers and pitchers, gin and tonics and cocktails at the bar, plus Guinness. From the kitchen, the pub classics: fish and chips, proper pies and more."),
     ("Is it a proper British pub?", "A modern one. The Bluebell is a modern British public house: elevated British classics from the kitchen, a bar lounge, a dining hall, the Chess Room (our snug) and a private dining room."),
     ("Is there a pub quiz?", "Yes, every Wednesday. Bring a team, grab a pitcher and message us on WhatsApp to hold a table."),
@@ -1033,7 +1033,7 @@ venue_page = f"""
 </section>
 {bahasa("Dalam Bahasa Indonesia", 'Pub di <span class="serif">Jakarta Selatan</span>', [
     "The Bluebell Public House adalah pub Inggris modern di Senopati, Jakarta Selatan, hanya beberapa menit dari SCBD. Dari dapur ada fish and chips, pie, dan Sunday roast setiap hari Minggu; di bar ada bir, pitcher, gin and tonic, koktail dan Guinness.",
-    "Pub Quiz setiap hari Rabu. Buka setiap hari mulai pukul 10.00.",
+    "Pub Quiz setiap hari Rabu. Buka Senin–Kamis pukul 11.00–01.00, Jumat–Sabtu pukul 11.00–02.00, dan Minggu pukul 08.00–23.00.",
     "Kami menayangkan Premier League setiap akhir pekan, langsung sesuai waktu Jakarta selama masih dalam jam buka kami. UFC, F1, rugby, AFL, dan olahraga lainnya segera hadir atau bisa diminta lewat WhatsApp. Jadwalnya ada di highlight Instagram kami.",
     "IQOS, produk tembakau yang dipanaskan, dan vape boleh digunakan di dalam. Rokok di area merokok di luar ruangan.",
     f'<a class="btn" href="{v["book"]}" target="_blank" rel="noopener">Reservasi meja lewat WhatsApp</a>',
@@ -1066,7 +1066,7 @@ v = VENUES["the-bluebell"]
 page("/the-bluebell/food/", "British Food in Senopati | The Bluebell Public House", "", f"""
 {vhero(v, "bluebell-hall-night.jpg", "The dining hall at The Bluebell, Senopati, in the evening",
        'British food <span class="serif">in Senopati</span>',
-       "Modern British cooking at The Bluebell Public House, a short walk from SCBD: fish and chips, proper pies and a Sunday roast. Open daily from 10:00 for lunch and dinner.")}
+       "Modern British cooking at The Bluebell Public House, a short walk from SCBD: fish and chips, proper pies and a Sunday roast. Open for lunch and dinner from 11:00, and from 08:00 on Sundays.")}
 </div>
 <section class="section">
   <div class="wrap split split--center">
@@ -1089,7 +1089,7 @@ page("/the-bluebell/food/", "British Food in Senopati | The Bluebell Public Hous
     <div class="reveal">
       <span class="eyebrow">All week</span>
       <h2>British classics, <span class="serif">done properly.</span></h2>
-      <p>Lunch and dinner every day from 10:00. The kitchen cooks the dishes people miss from home: fish and chips with a proper crunch, and pies with a real pastry lid.</p>
+      <p>Lunch and dinner every day, from 11:00 (08:00 on Sundays). The kitchen cooks the dishes people miss from home: fish and chips with a proper crunch, and pies with a real pastry lid.</p>
       <div class="lineup" style="grid-template-columns:1fr">
         <div><em>The classic</em><b>Fish & chips</b><span>Battered fish, thick-cut chips, the works.</span></div>
         <div><em>Comfort food</em><b>Proper pies</b><span>Slow-cooked fillings under a golden pastry lid.</span></div>
@@ -1156,7 +1156,7 @@ page("/the-bluebell/private-rooms/", "Private Dining & Meeting Rooms in Senopati
     <div class="reveal"><span class="eyebrow">Good to know</span><h2>Book <span class="serif">a room</span></h2>
       <ul class="facts">
         <li><span>Minimum spend</span><span>None</span></li>
-        <li><span>Open</span><span>Daily from 10:00</span></li>
+        <li><span>Open</span><span>Mon–Thu 11:00–01:00 · Fri–Sat 11:00–02:00 · Sun 08:00–23:00</span></li>
         <li><span>Address</span><span><a href="{v["maps"]}" target="_blank" rel="noopener">Jl. Tulodong Atas No. 10 A-B, Senopati</a></span></li>
       </ul>
     </div>
@@ -1183,7 +1183,7 @@ page("/the-bluebell/football/", "Watch Premier League Football in Senopati - The
         <li>Live Premier League matches on weekends</li>
         <li>We show one match at a time, so message us to check what’s on</li>
         <li>British food from our kitchen, served at your table</li>
-        <li>Open daily from 10:00</li>
+        <li>Open Mon–Thu 11:00–01:00 · Fri–Sat 11:00–02:00 · Sun 08:00–23:00</li>
       </ul>
       <p><a href="{v["maps"]}" target="_blank" rel="noopener">Jl. Tulodong Atas No. 10 A-B, Senopati</a></p>
       <div class="btn-row"><a class="btn" href="{v["book"]}" target="_blank" rel="noopener">Book a table on WhatsApp</a></div>
@@ -1200,17 +1200,17 @@ page("/the-bluebell/football/", "Watch Premier League Football in Senopati - The
 # Brunch menu as supplied 20 Nov 2026. Ad landing page: coffee is the only drink named.
 BLUEBELL_BRUNCH = [
     ("Breakfast", [
-        ("Full English Breakfast", "135k", "Eggs your way, beef sausages, beef bacon, baked beans, grilled tomato, mushrooms, hash browns and toast."),
-        ("Pancakes", "95k", "Fluffy pancakes with maple syrup or berry compote."),
-        ("Kedgeree", "100k", "Curry-spiced rice with smoked cakalang, soft-boiled egg, lemon and parsley."),
+        ("Full English Breakfast", "135k++", "Eggs your way, beef sausages, beef bacon, baked beans, grilled tomato, mushrooms, hash browns and toast."),
+        ("Pancakes", "95k++", "Fluffy pancakes with maple syrup or berry compote."),
+        ("Kedgeree", "100k++", "Curry-spiced rice with smoked cakalang, soft-boiled egg, lemon and parsley."),
     ]),
     ("Sandwiches", [
-        ("Breakfast Sausage Bun", "110k", "Brock beef sausages and eggs in a toasted brioche bun with HP sauce."),
-        ("Coronation Chicken", "90k", "Curried chicken, mayonnaise, mango chutney and lettuce."),
+        ("Breakfast Sausage Bun", "110k++", "Brock beef sausages and eggs in a toasted brioche bun with HP sauce."),
+        ("Coronation Chicken", "90k++", "Curried chicken, mayonnaise, mango chutney and lettuce."),
     ]),
     ("Breakfast sets, with coffee", [
-        ("Pancakes with Coffee", "100k", ""),
-        ("Coronation Chicken with Coffee", "100k", ""),
+        ("Pancakes with Coffee", "100k++", ""),
+        ("Coronation Chicken with Coffee", "100k++", ""),
     ]),
 ]
 brunch_html = "".join(
@@ -1221,11 +1221,11 @@ brunch_html = "".join(
 page("/the-bluebell/brunch/", "Brunch & Breakfast in Senopati - The Bluebell", "", f"""
 {vhero(v, "bluebell-2.jpg", "The dining room at The Bluebell, Senopati",
        'Brunch every day <span class="serif">in Senopati</span>',
-       "British breakfast at The Bluebell, a short walk from SCBD. Brunch is served every day from 10:00 until 14:00.")}
+       "British breakfast at The Bluebell, a short walk from SCBD. Brunch is served Mon–Sat 11:00–14:00 · Sun 08:00–14:00.")}
 </div>
 <section class="section">
   <div class="wrap">
-    <span class="eyebrow">Every day · 10:00–14:00</span>
+    <span class="eyebrow">Mon–Sat 11:00–14:00 · Sun 08:00–14:00</span>
     <h2>The brunch <span class="serif">menu.</span></h2>
     <div class="grid-3" style="gap:32px;margin-top:28px;align-items:start">{brunch_html}</div>
     <p style="margin-top:28px"><a href="{v["maps"]}" target="_blank" rel="noopener">Jl. Tulodong Atas No. 10 A-B, Senopati</a></p>
@@ -1233,7 +1233,7 @@ page("/the-bluebell/brunch/", "Brunch & Breakfast in Senopati - The Bluebell", "
   </div>
 </section>
 {bahasa("Dalam Bahasa Indonesia", 'Brunch setiap hari <span class="serif">di Senopati</span>', [
-    "Sarapan ala Inggris di The Bluebell, dekat SCBD. Brunch tersedia setiap hari pukul 10:00 sampai 14:00, dengan paket sarapan dan kopi mulai 100k.",
+    "Sarapan ala Inggris di The Bluebell, dekat SCBD. Brunch tersedia Senin–Sabtu pukul 11:00–14:00 dan Minggu pukul 08:00–14:00, dengan paket sarapan dan kopi mulai 100k++.",
     f'<a class="btn" href="{v["book"]}" target="_blank" rel="noopener">Reservasi lewat WhatsApp</a>',
 ])}
 """, image="/assets/img/bluebell-2.jpg", with_collab=False, body_class="venue v-bluebell lp",
@@ -1638,7 +1638,7 @@ NEW_POSTS = [
 </div>
 <h2>British classics all week</h2>
 <p>If Sunday isn’t your day, the kitchen serves British classics all week, from fish and chips to a proper pie. <a href="/the-bluebell/food/">See the food at The Bluebell</a>.</p>
-<p>The Bluebell is open every day from 10:00, so on a Sunday in Senopati you can start with lunch and stay for the evening.</p>
+<p>The Bluebell opens at 08:00 on Sundays, so you can start with brunch, stay for the roast and settle in for the evening.</p>
 <h2>More at the pub this week</h2>
 <ul class="ticks">
   <li><strong>Pub Quiz, every Wednesday:</strong> teams, rounds and bragging rights.</li>
@@ -1957,7 +1957,7 @@ page("/", "Basho Projects | Jakarta Hospitality Group — BEBOP, BRIQ, The Blueb
       <div class="reveal"><b>4</b><span>venues in Senopati, all walking distance</span></div>
       <div class="reveal"><b>14</b><span>resident DJs in the Bebop Music Collective</span></div>
       <div class="reveal"><b>2</b><span>live jazz nights a week at BEBOP</span></div>
-      <div class="reveal"><b>7</b><span>days a week The Bluebell pulls pints, from 10:00</span></div>
+      <div class="reveal"><b>7</b><span>days a week The Bluebell pulls pints</span></div>
     </div>
   </div>
 </section>
