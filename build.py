@@ -223,6 +223,8 @@ SEO_META = {
                                      "Two private rooms in Senopati, a short walk from SCBD: a dining and meeting room for 12 and a Chess Room for 6. No minimum spend."),
     "/the-bluebell/football/": ("Watch Premier League Football in Senopati - The Bluebell",
                                 "Watch live Premier League football at The Bluebell in Senopati, a short walk from SCBD, with British food at your table. Book on WhatsApp."),
+    "/the-bluebell/brunch/": ("Brunch & Breakfast in Senopati - The Bluebell",
+                              "Full English breakfast, pancakes, kedgeree and breakfast sets with coffee from IDR 100k. Brunch every day until 14:00 in Senopati, near SCBD."),
     "/briq-bistro/weekend/": ("Weekend Brunch & Lunch in Senopati | BRIQ Bistro",
                               "BRIQ Bistro is open all day at weekends in Senopati, 10:00 to 22:00. Weekend pasta lunch with salad and a coffee, tea or soft drink, 200K++. Book on WhatsApp."),
     "/briq-bistro/groups/": ("Group Dinners & Birthdays in Senopati | BRIQ Bistro",
@@ -1011,7 +1013,7 @@ venue_page = f"""
         <li><span>Private dining room</span><span>Seats twelve, for dinners, meetings and celebrations</span></li>
       </ul>
       <p class="muted" style="margin-top:18px">Room for about 95 seated and 140 standing for a full-pub booking. IQOS, heated tobacco and vape friendly inside; cigarettes in the outdoor smoking area.</p>
-      <div class="btn-row"><a class="btn btn--ghost" href="/the-bluebell/private-rooms/">See the private rooms</a><a class="btn btn--ghost" href="/the-bluebell/football/">Watch the football</a></div>
+      <div class="btn-row"><a class="btn btn--ghost" href="/the-bluebell/private-rooms/">See the private rooms</a><a class="btn btn--ghost" href="/the-bluebell/football/">Watch the football</a><a class="btn btn--ghost" href="/the-bluebell/brunch/">Brunch every day</a></div>
     </div>
     <div class="media media--wide reveal">{img("bluebell-hall-night.jpg", "The dining hall at The Bluebell in the evening")}</div>
   </div>
@@ -1111,7 +1113,7 @@ page("/the-bluebell/food/", "British Food in Senopati | The Bluebell Public Hous
         <li><span>The Chess Room</span><span>A private room for up to six</span></li>
         <li><span>Private dining room</span><span>Seats twelve, for birthdays, team lunches and meetings</span></li>
       </ul>
-      <div class="btn-row"><a class="btn btn--ghost" href="/the-bluebell/private-rooms/">See the private rooms</a></div>
+      <div class="btn-row"><a class="btn btn--ghost" href="/the-bluebell/private-rooms/">See the private rooms</a><a class="btn btn--ghost" href="/the-bluebell/brunch/">Brunch every day</a></div>
       <p class="muted" style="margin-top:18px">Restoran Inggris di Senopati, Jakarta Selatan. Reservasi meja lewat WhatsApp.</p>
     </div>
   </div>
@@ -1194,6 +1196,48 @@ page("/the-bluebell/football/", "Watch Premier League Football in Senopati - The
 ])}
 """, image="/assets/img/bluebell-hall-night.jpg", with_collab=False, body_class="venue v-bluebell lp",
      schema=[venue_schema(v, "bluebell-hall-night.jpg")])
+
+# Brunch menu as supplied 20 Nov 2026. Ad landing page: coffee is the only drink named.
+BLUEBELL_BRUNCH = [
+    ("Breakfast", [
+        ("Full English Breakfast", "135k", "Eggs your way, beef sausages, beef bacon, baked beans, grilled tomato, mushrooms, hash browns and toast."),
+        ("Pancakes", "95k", "Fluffy pancakes with maple syrup or berry compote."),
+        ("Kedgeree", "100k", "Curry-spiced rice with smoked cakalang, soft-boiled egg, lemon and parsley."),
+    ]),
+    ("Sandwiches", [
+        ("Breakfast Sausage Bun", "110k", "Brock beef sausages and eggs in a toasted brioche bun with HP sauce."),
+        ("Coronation Chicken", "90k", "Curried chicken, mayonnaise, mango chutney and lettuce."),
+    ]),
+    ("Breakfast sets, with coffee", [
+        ("Pancakes with Coffee", "100k", ""),
+        ("Coronation Chicken with Coffee", "100k", ""),
+    ]),
+]
+brunch_html = "".join(
+    f"""<div class="reveal"><span class="eyebrow">{group}</span>
+      <div class="lineup" style="grid-template-columns:1fr;margin-top:14px">{"".join(f"<div><em>{price}</em><b>{n}</b><span>{d}</span></div>" for n, price, d in items)}</div></div>"""
+    for group, items in BLUEBELL_BRUNCH)
+
+page("/the-bluebell/brunch/", "Brunch & Breakfast in Senopati - The Bluebell", "", f"""
+{vhero(v, "bluebell-2.jpg", "The dining room at The Bluebell, Senopati",
+       'Brunch every day <span class="serif">in Senopati</span>',
+       "British breakfast at The Bluebell, a short walk from SCBD. Brunch is served every day from 10:00 until 14:00.")}
+</div>
+<section class="section">
+  <div class="wrap">
+    <span class="eyebrow">Every day · 10:00–14:00</span>
+    <h2>The brunch <span class="serif">menu.</span></h2>
+    <div class="grid-3" style="gap:32px;margin-top:28px;align-items:start">{brunch_html}</div>
+    <p style="margin-top:28px"><a href="{v["maps"]}" target="_blank" rel="noopener">Jl. Tulodong Atas No. 10 A-B, Senopati</a></p>
+    <div class="btn-row"><a class="btn" href="{v["book"]}" target="_blank" rel="noopener">Book a table on WhatsApp</a></div>
+  </div>
+</section>
+{bahasa("Dalam Bahasa Indonesia", 'Brunch setiap hari <span class="serif">di Senopati</span>', [
+    "Sarapan ala Inggris di The Bluebell, dekat SCBD. Brunch tersedia setiap hari pukul 10:00 sampai 14:00, dengan paket sarapan dan kopi mulai 100k.",
+    f'<a class="btn" href="{v["book"]}" target="_blank" rel="noopener">Reservasi lewat WhatsApp</a>',
+])}
+""", image="/assets/img/bluebell-2.jpg", with_collab=False, body_class="venue v-bluebell lp",
+     schema=[venue_schema(v, "bluebell-2.jpg")])
 
 # BRIQ ad landing pages: food and the room only. No wine, cocktail, beer, bar or "drinks" wording
 # (the one exception is "coffee, tea or soft drink"), no photos with bottles, glasses or a bar, and
@@ -2365,7 +2409,7 @@ main_inner = home.split('<main id="main">')[1].split("</main>")[0]
     .replace('<meta name="viewport"', '<meta name="robots" content="noindex">\n<meta name="viewport"'))
 
 pages = ["/", "/about/", "/team/", "/services/", "/invest/", "/contact/", "/our-projects/", "/bebop/", "/briq-bistro/",
-         "/brock-butchery/", "/the-bluebell/", "/the-bluebell/food/", "/the-bluebell/private-rooms/", "/the-bluebell/football/", "/briq-bistro/food/", "/briq-bistro/weekend/", "/briq-bistro/groups/", "/bebop/live-music/", "/bebop/kitchen/", "/bebop/trivia/", "/bebop/private-hire/", "/bubbleandsqueakmedia/", "/blog/"] + [f"/blog/{p['slug']}/" for p in POSTS]
+         "/brock-butchery/", "/the-bluebell/", "/the-bluebell/food/", "/the-bluebell/private-rooms/", "/the-bluebell/football/", "/the-bluebell/brunch/", "/briq-bistro/food/", "/briq-bistro/weekend/", "/briq-bistro/groups/", "/bebop/live-music/", "/bebop/kitchen/", "/bebop/trivia/", "/bebop/private-hire/", "/bubbleandsqueakmedia/", "/blog/"] + [f"/blog/{p['slug']}/" for p in POSTS]
 (ROOT / "sitemap.xml").write_text(
     '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
     + "".join(f"  <url><loc>{DOMAIN}{p}</loc><lastmod>{TODAY.isoformat()}</lastmod></url>\n" for p in pages) + "</urlset>\n")
